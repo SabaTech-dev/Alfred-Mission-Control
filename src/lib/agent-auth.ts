@@ -27,7 +27,7 @@ function getAgentKeys(): Map<string, string> {
   if (_agentKeys) return _agentKeys;
 
   _agentKeys = new Map();
-  const raw = process.env.OPENCLAW_AGENT_KEYS || "";
+  const raw = process.env.KANBAN_AGENT_KEYS || process.env.OPENCLAW_AGENT_KEYS || "";
 
   for (const entry of raw.split(",")) {
     const trimmed = entry.trim();
