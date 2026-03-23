@@ -163,7 +163,7 @@ function getMetrics(subagents: SubagentInfo[]): {
 
 export async function GET() {
   try {
-    const result = safeExecFile("openclaw", ["sessions", "--json"], {
+    const result = safeExecFile("/home/ubuntu/.npm-global/bin/openclaw", ["sessions", "--json"], {
       timeout: 10000,
     });
 

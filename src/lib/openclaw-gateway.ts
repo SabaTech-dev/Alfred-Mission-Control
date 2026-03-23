@@ -168,7 +168,7 @@ function buildConnectParams(config: GatewayConfig, nonce?: string): Record<strin
     instanceId: "superbotijo-chat",
   } as const;
   const role = "operator";
-  const scopes = ["operator.admin"];
+  const scopes = ["operator.read", "operator.admin"];
 
   let device: Record<string, unknown> | undefined;
   if (config.device && nonce) {

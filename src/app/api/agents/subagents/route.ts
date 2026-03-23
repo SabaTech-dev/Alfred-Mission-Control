@@ -44,7 +44,7 @@ function parseSubagentKey(key: string): { parentId: string; subagentId: string }
 
 export async function GET() {
   try {
-    const result = safeExecFile("openclaw", ["sessions", "--json"], {
+    const result = safeExecFile("/home/ubuntu/.npm-global/bin/openclaw", ["sessions", "--json"], {
       timeout: 10000,
     });
 

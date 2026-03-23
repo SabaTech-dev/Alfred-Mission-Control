@@ -46,7 +46,7 @@ export async function GET() {
 
     // 1. Get OpenClaw cron jobs
     try {
-      const result = safeExecFile("openclaw", ["cron", "list", "--json", "--all"], {
+      const result = safeExecFile("/home/ubuntu/.npm-global/bin/openclaw", ["cron", "list", "--json", "--all"], {
         timeout: 10000,
       });
 
@@ -202,7 +202,7 @@ export async function DELETE(request: Request) {
     }
 
     try {
-      safeExecFile("openclaw", ["cron", "rm", jobId], {
+      safeExecFile("/home/ubuntu/.npm-global/bin/openclaw", ["cron", "rm", jobId], {
         timeout: 5000,
       });
       return NextResponse.json({ success: true, message: `Cron job ${jobId} deleted` });

@@ -45,7 +45,7 @@ async function testTelegram(): Promise<TestResult> {
 
     // Try to get bot info
     try {
-      const result = safeExecFile("openclaw", ["message", "send", "--help"], {
+      const result = safeExecFile("/home/ubuntu/.npm-global/bin/openclaw", ["message", "send", "--help"], {
         timeout: 5000,
       });
       

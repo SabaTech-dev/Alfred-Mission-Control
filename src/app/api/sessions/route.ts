@@ -120,7 +120,7 @@ export async function GET(request: NextRequest) {
 
 async function listSessions(): Promise<NextResponse> {
   try {
-    const result = safeExecFile("openclaw", ["sessions", "--json"], {
+    const result = safeExecFile("/home/ubuntu/.npm-global/bin/openclaw", ["sessions", "--json"], {
       timeout: 10000,
     });
 
@@ -128,7 +128,15 @@ async function listSessions(): Promise<NextResponse> {
       return NextResponse.json({ error: 'Failed to list sessions', sessions: [] }, { status: 500 });
     }
 
-    const data = JSON.parse(result.stdout);
+    // Fix: openclaw sessions --json may append Hindsight daemon output to stdout
+    // Extract only the valid JSON portion (everything before non-JSON output)
+    let jsonStr = result.stdout;
+    const lastBrace = jsonStr.lastIndexOf('\n}');
+    if (lastBrace !== -1) {
+      jsonStr = jsonStr.substring(0, lastBrace + 2);
+    }
+
+    const data = JSON.parse(jsonStr);
     const rawSessions: RawSession[] = data.sessions || [];
 
     const sessions: ParsedSession[] = rawSessions
@@ -173,7 +181,7 @@ async function listSessions(): Promise<NextResponse> {
 
     return NextResponse.json({ sessions, total: sessions.length });
   } catch (error) {
-    console.error('[sessions] Error listing sessions:', error);
+    console.error("[sessions] Error listing sessions:", error)
     return NextResponse.json({ error: 'Failed to list sessions', sessions: [] }, { status: 500 });
   }
 }

@@ -75,7 +75,7 @@ export async function GET() {
 }
 
 function fetchCronJobsFromCLI(): Record<string, unknown>[] {
-  const result = safeExecFile("openclaw", ["cron", "list", "--json", "--all"], {
+  const result = safeExecFile("/home/ubuntu/.npm-global/bin/openclaw", ["cron", "list", "--json", "--all"], {
     timeout: 5000,
   });
 
@@ -139,7 +139,7 @@ export async function POST(request: NextRequest) {
 
     console.log("[cron API] Creating job:", `openclaw ${args.slice(0, 4).join(" ")}... (message redacted)`);
 
-    const result = safeExecFile("openclaw", args, {
+    const result = safeExecFile("/home/ubuntu/.npm-global/bin/openclaw", args, {
       timeout: 15000,
     });
 
@@ -192,7 +192,7 @@ export async function PUT(request: NextRequest) {
         return NextResponse.json({ error: "Invalid action" }, { status: 400 });
       }
 
-      safeExecFile("openclaw", ["cron", action, id, "--json"], {
+      safeExecFile("/home/ubuntu/.npm-global/bin/openclaw", ["cron", action, id, "--json"], {
         timeout: 10000,
       });
       return NextResponse.json({ success: true, id, enabled });
@@ -240,7 +240,7 @@ export async function PUT(request: NextRequest) {
 
     console.log("[cron API] Updating job:", `openclaw ${args.slice(0, 3).join(" ")}... (message redacted)`);
 
-    const result = safeExecFile("openclaw", args, {
+    const result = safeExecFile("/home/ubuntu/.npm-global/bin/openclaw", args, {
       timeout: 15000,
     });
 
@@ -279,7 +279,7 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: "Invalid job ID" }, { status: 400 });
     }
 
-    safeExecFile("openclaw", ["cron", "rm", id], {
+    safeExecFile("/home/ubuntu/.npm-global/bin/openclaw", ["cron", "rm", id], {
       timeout: 10000,
     });
 

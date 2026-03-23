@@ -3,7 +3,7 @@ import { readFile } from "fs/promises";
 import { join, resolve } from "path";
 import { existsSync } from "fs";
 
-const SAFE_SESSION_KEY_PATTERN = /^[a-zA-Z0-9_\-./]+$/;
+const SAFE_SESSION_KEY_PATTERN = /^[a-zA-Z0-9_\-./:@]+$/;
 
 function isValidSessionKey(key: string): boolean {
   if (!key || key.length === 0 || key.length > 255) {

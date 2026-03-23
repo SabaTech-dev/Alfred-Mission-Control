@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid job ID" }, { status: 400 });
     }
 
-    const result = safeExecFile("openclaw", ["cron", "run", id, "--force"], {
+    const result = safeExecFile("/home/ubuntu/.npm-global/bin/openclaw", ["cron", "run", id, "--force"], {
       timeout: 15000,
     });
 

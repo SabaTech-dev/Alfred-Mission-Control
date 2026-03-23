@@ -41,7 +41,7 @@ export async function PATCH(
       );
     }
 
-    const result = safeExecFile("openclaw", ["session", "set-model", decodedKey, model], {
+    const result = safeExecFile("/home/ubuntu/.npm-global/bin/openclaw", ["session", "set-model", decodedKey, model], {
       timeout: 10000,
     });
 
