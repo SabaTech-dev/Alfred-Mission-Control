@@ -58,6 +58,24 @@ next-env.d.ts
 # backup files
 *.bak
 
+# Alfred-specific: never commit local operational data
+/data/activities.*
+/data/configured-skills.json
+/data/cron-jobs.json
+/data/kanban.*
+/data/notifications.json
+/data/outbox.json
+/data/suggestions.json
+/data/tasks.json
+/data/usage-tracking.*
+/data/agent-identities.*
+
+# Alfred-specific: credentials & secrets
+/credentials/
+**/.credentials
+**/.env.local
+**/.env.production
+
 # Temp files
 REVIEW-*.md
 dev.log
