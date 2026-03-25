@@ -1,6 +1,6 @@
 import { safeExecFile } from "@/lib/safe-exec";
 
-const OPENCLAW_DIR = process.env.OPENCLAW_DIR || "/home/daniel/.openclaw";
+const OPENCLAW_DIR = process.env.OPENCLAW_DIR || "/home/ubuntu/.openclaw";
 
 interface RawSession {
   key: string;

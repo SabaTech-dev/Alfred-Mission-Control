@@ -8,7 +8,7 @@ export interface AgentSkillMapping {
   skillIds: string[];
 }
 
-const WORKSPACE_AGENTS_DIR = process.env.OPENCLAW_DIR || '/home/daniel/.openclaw';
+const WORKSPACE_AGENTS_DIR = process.env.OPENCLAW_DIR || '/home/ubuntu/.openclaw';
 
 /**
  * Parse AGENTS.md to extract available_skills

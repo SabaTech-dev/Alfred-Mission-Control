@@ -5,7 +5,7 @@ import { safeExecFile, isValidId } from "@/lib/safe-exec";
 
 export const dynamic = "force-dynamic";
 
-const OPENCLAW_DIR = process.env.OPENCLAW_DIR || "/home/daniel/.openclaw";
+const OPENCLAW_DIR = process.env.OPENCLAW_DIR || "/home/ubuntu/.openclaw";
 
 /**
  * Parse duration string like "1m", "5m", "15m", "30m", "1h" to milliseconds

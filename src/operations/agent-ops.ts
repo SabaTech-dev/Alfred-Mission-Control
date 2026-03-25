@@ -21,7 +21,7 @@ import { createCache } from "@/lib/cache";
 import { readFileSync, existsSync, readdirSync } from "fs";
 import { join } from "path";
 
-const OPENCLAW_DIR = process.env.OPENCLAW_DIR || "/home/daniel/.openclaw";
+const OPENCLAW_DIR = process.env.OPENCLAW_DIR || "/home/ubuntu/.openclaw";
 
 /**
  * Discover skills by scanning the agent's skills directory

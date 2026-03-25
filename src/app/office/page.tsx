@@ -3,7 +3,7 @@ import path from 'path';
 import Office3D from '@/components/Office3D/Office3D';
 import { calculateDeskPosition, getGridDimensions } from '@/components/Office3D/desk-positions';
 
-const OPENCLAW_DIR = process.env.OPENCLAW_DIR || '/home/daniel/.openclaw';
+const OPENCLAW_DIR = process.env.OPENCLAW_DIR || '/home/ubuntu/.openclaw';
 const OPENCLAW_CONFIG = path.join(OPENCLAW_DIR, 'openclaw.json');
 
 /**

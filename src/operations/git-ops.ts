@@ -7,7 +7,7 @@ import { resolvePathWithinBase, safeExecFile, validatePath } from "@/lib/safe-ex
 
 const WORKSPACE = process.env.OPENCLAW_DIR
   ? `${process.env.OPENCLAW_DIR}/workspace`
-  : "/home/daniel/.openclaw/workspace";
+  : "/home/ubuntu/.openclaw/workspace";
 
 export function getGitWorkspacePath(): string {
   return WORKSPACE;

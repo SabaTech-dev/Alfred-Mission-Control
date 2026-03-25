@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 
-const WORKSPACE = process.env.OPENCLAW_WORKSPACE || '/home/daniel/.openclaw/workspace';
+const WORKSPACE = process.env.OPENCLAW_WORKSPACE || '/home/ubuntu/.openclaw/workspace';
 const MEMORY_DIR = path.join(WORKSPACE, 'memory');
 
 export const dynamic = "force-dynamic";

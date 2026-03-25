@@ -87,7 +87,7 @@ describe("system-stats", () => {
 
     setupExecResponses({
       "df -BG": "/dev/sda1 100G 45G 55G 45% /",
-      "tailscale": "100.64.0.1 myhost  daniel   linux   -",
+      "tailscale": "100.64.0.1 myhost  ubuntu   linux   -",
       "ufw status": "Status: active",
       "systemctl is-active alfred": "active",
       "systemctl is-active content-vault": "active",

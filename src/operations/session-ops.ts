@@ -26,7 +26,7 @@ export interface SessionMessage {
 }
 
 // Session storage path
-const SESSIONS_PATH = process.env.OPENCLAW_SESSIONS_PATH || '/home/daniel/.openclaw/sessions';
+const SESSIONS_PATH = process.env.OPENCLAW_SESSIONS_PATH || '/home/ubuntu/.openclaw/sessions';
 
 /**
  * List all sessions

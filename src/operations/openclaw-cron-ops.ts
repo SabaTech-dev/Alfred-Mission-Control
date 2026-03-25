@@ -5,7 +5,7 @@ import { readFileSync, existsSync } from "fs";
 import { join } from "path";
 import { safeExecFile } from "@/lib/safe-exec";
 
-const OPENCLAW_DIR = process.env.OPENCLAW_DIR || "/home/daniel/.openclaw";
+const OPENCLAW_DIR = process.env.OPENCLAW_DIR || "/home/ubuntu/.openclaw";
 const CRON_JOBS_FILE = join(OPENCLAW_DIR, "cron", "jobs.json");
 
 export interface OpenClawCronJob {

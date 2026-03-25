@@ -10,7 +10,7 @@ import { safeExecFile } from '@/lib/safe-exec';
 
 export const dynamic = "force-dynamic";
 
-const OPENCLAW_DIR = process.env.OPENCLAW_DIR || '/home/daniel/.openclaw';
+const OPENCLAW_DIR = process.env.OPENCLAW_DIR || '/home/ubuntu/.openclaw';
 
 interface RawSession {
   key: string;

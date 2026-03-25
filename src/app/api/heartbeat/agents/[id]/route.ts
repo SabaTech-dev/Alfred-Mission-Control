@@ -5,7 +5,7 @@ import { requireAuth } from "@/lib/auth-helpers";
 
 export const dynamic = "force-dynamic";
 
-const OPENCLAW_DIR = process.env.OPENCLAW_DIR || "/home/daniel/.openclaw";
+const OPENCLAW_DIR = process.env.OPENCLAW_DIR || "/home/ubuntu/.openclaw";
 
 interface HeartbeatConfig {
   every: string;

@@ -7,7 +7,7 @@ import { requireAuth } from '@/lib/auth-helpers';
 import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
 
-const OPENCLAW_DIR = process.env.OPENCLAW_DIR || '/home/daniel/.openclaw';
+const OPENCLAW_DIR = process.env.OPENCLAW_DIR || '/home/ubuntu/.openclaw';
 const OPENCLAW_CONFIG = join(OPENCLAW_DIR, 'openclaw.json');
 
 export const dynamic = 'force-dynamic';

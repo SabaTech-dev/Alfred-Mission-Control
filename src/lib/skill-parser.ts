@@ -51,7 +51,7 @@ function getNpmGlobalPath(): string {
 }
 
 const DEFAULT_SYSTEM_PATH = path.join(getNpmGlobalPath(), 'openclaw', 'skills');
-const OPENCLAW_DIR = process.env.OPENCLAW_DIR || '/home/daniel/.openclaw';
+const OPENCLAW_DIR = process.env.OPENCLAW_DIR || '/home/ubuntu/.openclaw';
 const DEFAULT_WORKSPACE_PATH = path.join(OPENCLAW_DIR, 'workspace/skills');
 
 /**
@@ -197,7 +197,7 @@ export function parseSkill(skillPath: string, skillName: string, agents: string[
  */
 function buildAgentSkillMap(): Map<string, string[]> {
   const map = new Map<string, string[]>();
-  const openclawDir = process.env.OPENCLAW_DIR || '/home/daniel/.openclaw';
+  const openclawDir = process.env.OPENCLAW_DIR || '/home/ubuntu/.openclaw';
 
   // Agent workspaces: workspace, workspace-infra, workspace-social, etc.
   // Read from openclaw.json if possible
