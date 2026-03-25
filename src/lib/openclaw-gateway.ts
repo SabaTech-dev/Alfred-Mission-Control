@@ -430,20 +430,32 @@ async function openGatewaySocket(timeoutMs = 4_000): Promise<WebSocket> {
 
 export async function checkGatewayStatus(): Promise<ChatGatewayStatus> {
   const start = Date.now();
-  let ws: WebSocket | null = null;
   try {
-    ws = await openGatewaySocket(3_500);
-    await sendRequest(ws, "health", {}, 3_500);
-    ws.close();
-    return {
-      available: true,
-      latencyMs: Date.now() - start,
-      error: null,
-    };
-  } catch (error) {
-    if (ws && ws.readyState === WebSocket.OPEN) {
-      ws.close();
+    // Use lightweight HTTP health check instead of WebSocket
+    // WebSocket requires device pairing which may not be configured
+    const config = readGatewayConfig();
+    const hosts = config.url ? [config.url] : [
+      `http://${config.host}:${config.port}`,
+      `http://127.0.0.1:${config.port}`,
+      `http://localhost:${config.port}`,
+    ];
+
+    for (const base of hosts) {
+      try {
+        const url = base.replace(/^ws/i, "http");
+        const res = await fetch(`${url}/health`, {
+          signal: AbortSignal.timeout(2_000),
+        });
+        if (res.ok) {
+          return { available: true, latencyMs: Date.now() - start, error: null };
+        }
+      } catch {
+        // try next host
+      }
     }
+
+    return { available: false, latencyMs: null, error: "Gateway HTTP health check failed" };
+  } catch (error) {
     return {
       available: false,
       latencyMs: null,
