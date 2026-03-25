@@ -1,6 +1,6 @@
 # Kanban Task Management Skill
 
-This skill allows OpenClaw agents to create, update, and manage tasks in the SuperBotijo Kanban board.
+This skill allows OpenClaw agents to create, update, and manage tasks in the Alfred Mission Control Kanban board.
 
 ## Authentication
 

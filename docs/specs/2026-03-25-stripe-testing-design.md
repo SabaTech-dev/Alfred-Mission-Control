@@ -18,7 +18,7 @@ Implementar suite de tests E2E para flujos de pago con Stripe en Mission Control
 > ⚠️ **IMPORTANTE:** Estos supuestos deben ser validados antes de implementar.
 
 1. **No existe integración Stripe activa** - Crearemos mock/stub para testing
-2. **Proyecto target:** `mission-control-superbotijo`
+2. **Proyecto target:** `mission-control-alfred-mission-control`
 3. **Stack:** Next.js App Router + TypeScript
 4. **Testing framework:** Jest + Playwright (E2E)
 5. **Stripe mode:** Test mode con tarjetas mock de Stripe

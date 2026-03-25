@@ -1,13 +1,13 @@
-# SuperBotijo — Dashboard para OpenClaw
+# Alfred Mission Control — Dashboard para OpenClaw
 
 [![English](https://img.shields.io/badge/lang-English-blue)](README.md)
 [![Español](https://img.shields.io/badge/lang-Español-red)](README.es.md)
 
-> **Basado en [TenecitOS](https://github.com/carlosazaustre/tenecitOS)** por [Carlos Azaustre](https://github.com/carlosazaustre)
+> **Fork de [SuperBotijo](https://github.com/boticlaw/SuperBotijo)** por [Carlos Azaustre](https://github.com/carlosazaustre)
 
 Un dashboard en tiempo real y centro de control para instancias de agentes de IA [OpenClaw](https://openclaw.ai). Construido con Next.js 16, React 19 y Tailwind CSS v4.
 
-> **SuperBotijo** vive dentro de tu workspace de OpenClaw y lee directamente su configuración, agentes, sesiones, memoria y logs. No requiere base de datos ni backend adicional — OpenClaw ES el backend.
+> **Alfred Mission Control** vive dentro de tu workspace de OpenClaw y lee directamente su configuración, agentes, sesiones, memoria y logs. No requiere base de datos ni backend adicional — OpenClaw ES el backend.
 
 ---
 
@@ -135,7 +135,7 @@ Un dashboard en tiempo real y centro de control para instancias de agentes de IA
 
 ### Configuración
 
-**Config** — ajustes de SuperBotijo, claves de agentes y configuración del sistema
+**Config** — ajustes de Alfred Mission Control, claves de agentes y configuración del sistema
 
 ![Config](./docs/screenshots/config.jpg)
 
@@ -183,7 +183,7 @@ Un dashboard en tiempo real y centro de control para instancias de agentes de IA
 
 ## Cómo Funciona
 
-SuperBotijo lee directamente de tu instalación de OpenClaw:
+Alfred Mission Control lee directamente de tu instalación de OpenClaw:
 
 ```
 /root/.openclaw/              ← OPENCLAW_DIR (configurable)
@@ -196,7 +196,7 @@ SuperBotijo lee directamente de tu instalación de OpenClaw:
 ├── workspace-studio/         ← workspaces de sub-agentes
 ├── workspace-infra/
 ├── ...
-└── workspace/superbotijo/    ← SuperBotijo vive aquí
+└── workspace/alfred-mission-control/    ← Alfred Mission Control vive aquí
 ```
 
 La app usa `OPENCLAW_DIR` para ubicar `openclaw.json` y todos los workspaces. **No requiere configuración manual de agentes** — se descubren automáticamente.
@@ -209,8 +209,8 @@ La app usa `OPENCLAW_DIR` para ubicar `openclaw.json` y todos los workspaces. **
 
 ```bash
 cd /root/.openclaw/workspace   # o tu OPENCLAW_DIR/workspace
-git clone https://github.com/boticlaw/SuperBotijo.git superbotijo
-cd superbotijo
+git clone https://github.com/boticlaw/Alfred Mission Control.git alfred-mission-control
+cd alfred-mission-control
 npm install
 ```
 
@@ -231,7 +231,7 @@ AUTH_SECRET=tu-secreto-aleatorio-de-32-caracteres-aqui
 # OPENCLAW_DIR=/root/.openclaw
 
 # --- Branding (personalizar) ---
-NEXT_PUBLIC_AGENT_NAME=SuperBotijo
+NEXT_PUBLIC_AGENT_NAME=Alfred Mission Control
 NEXT_PUBLIC_AGENT_EMOJI=🤖
 NEXT_PUBLIC_AGENT_DESCRIPTION=Tu co-piloto de IA
 NEXT_PUBLIC_AGENT_LOCATION=Madrid, España
@@ -280,7 +280,7 @@ npm run build && npm start  # Producción
 
 ```bash
 npm run build
-pm2 start npm --name "superbotijo" -- start
+pm2 start npm --name "alfred-mission-control" -- start
 pm2 save
 pm2 startup
 ```
@@ -288,15 +288,15 @@ pm2 startup
 ### systemd
 
 ```ini
-# /etc/systemd/system/superbotijo.service
+# /etc/systemd/system/alfred-mission-control.service
 [Unit]
-Description=SuperBotijo — Dashboard para OpenClaw
+Description=Alfred Mission Control — Dashboard para OpenClaw
 After=network.target
 
 [Service]
 Type=simple
 User=root
-WorkingDirectory=/root/.openclaw/workspace/superbotijo
+WorkingDirectory=/root/.openclaw/workspace/alfred-mission-control
 ExecStart=/usr/bin/npm start
 Restart=always
 RestartSec=10
@@ -308,14 +308,14 @@ WantedBy=multi-user.target
 
 ```bash
 sudo systemctl daemon-reload
-sudo systemctl enable superbotijo
-sudo systemctl start superbotijo
+sudo systemctl enable alfred-mission-control
+sudo systemctl start alfred-mission-control
 ```
 
 ### Proxy Inverso (Caddy)
 
 ```caddyfile
-superbotijo.tudominio.com {
+alfred-mission-control.tudominio.com {
     reverse_proxy localhost:3000
 }
 ```
@@ -340,7 +340,7 @@ superbotijo.tudominio.com {
 ## Estructura del Proyecto
 
 ```
-superbotijo/
+alfred-mission-control/
 ├── src/
 │   ├── app/
 │   │   ├── (dashboard)/     # 18 páginas del dashboard
@@ -348,7 +348,7 @@ superbotijo/
 │   │   ├── login/           # Página de login
 │   │   └── office/          # Oficina 3D (público)
 │   ├── components/          # ~117 componentes React
-│   │   ├── SuperBotijo/     # Shell UI estilo OS
+│   │   ├── Alfred Mission Control/     # Shell UI estilo OS
 │   │   ├── Office3D/        # Escena 3D de la oficina
 │   │   ├── charts/          # Wrappers de Recharts
 │   │   └── files-3d/        # Árbol de archivos 3D
@@ -504,9 +504,9 @@ Ver [docs/COST-TRACKING.md](./docs/COST-TRACKING.md) para detalles.
 
 ---
 
-## Novedades en SuperBotijo
+## Novedades en Alfred Mission Control
 
-Comparado con el TenecitOS original:
+Comparado con el Alfred Mission Control original:
 
 | Característica | Descripción |
 |----------------|-------------|
@@ -529,7 +529,7 @@ Comparado con el TenecitOS original:
 
 ## 🤖 Integración Kanban para Agentes
 
-SuperBotijo proporciona una API REST completa para que los agentes de OpenClaw gestionen tareas programáticamente.
+Alfred Mission Control proporciona una API REST completa para que los agentes de OpenClaw gestionen tareas programáticamente.
 
 ### Configuración Rápida para Agentes
 
@@ -544,18 +544,18 @@ echo -e "*Role:* <Tu Rol>\n*Domain:* <work|general|finance|personal>\n*agent-id:
 # En el auth-profiles.json de tu agente
 {
   "profiles": {
-    "superbotijo:kanban": {
+    "alfred-mission-control:kanban": {
       "type": "api_key",
-      "provider": "superbotijo",
+      "provider": "alfred-mission-control",
       "key": "sk-<agent-id>-secret-2026"
     }
   }
 }
 ```
 
-**Paso 3: Configurar SuperBotijo**
+**Paso 3: Configurar Alfred Mission Control**
 ```bash
-# Agregar a superbotijo/.env.local
+# Agregar a alfred-mission-control/.env.local
 KANBAN_AGENT_KEYS=<agent-id>:sk-<agent-id>-secret-2026,...
 ```
 
@@ -636,7 +636,7 @@ Si no hay tareas: responder con HEARTBEAT_OK
 
 ## Sincronización de Documentación i18n
 
-SuperBotijo mantiene la documentación en múltiples idiomas. Un verificador de sincronización asegura que las traducciones estén actualizadas.
+Alfred Mission Control mantiene la documentación en múltiples idiomas. Un verificador de sincronización asegura que las traducciones estén actualizadas.
 
 ### Cómo Funciona
 
@@ -712,7 +712,7 @@ MIT — ver [LICENSE](./LICENSE)
 
 ## Enlaces
 
-- [TenecitOS](https://github.com/carlosazaustre/tenecitOS) — Proyecto original
+- [SuperBotijo](https://github.com/boticlaw/SuperBotijo) — Proyecto original
 - [OpenClaw](https://openclaw.ai) — Runtime de agentes de IA
 - [OpenClaw Docs](https://docs.openclaw.ai)
 - [Comunidad Discord](https://discord.com/invite/clawd)

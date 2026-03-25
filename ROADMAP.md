@@ -1,10 +1,10 @@
-# 🫙 SuperBotijo - Roadmap
+# 🫙 Alfred Mission Control - Roadmap
 
 ## Fase 1: Fundamentos ✅ COMPLETO
 > Mejorar lo que ya existe y añadir datos reales
 
 ### 1.1 Activity Logger Real ✅
-- [x] Crear endpoint POST `/api/activities` para que SuperBotijo registre acciones
+- [x] Crear endpoint POST `/api/activities` para que Alfred Mission Control registre acciones
 - [x] Hook en OpenClaw para loguear automáticamente cada tool call
 - [x] Campos: timestamp, type, description, status, duration, tokens_used
 - [x] Retención: últimos 30 días
@@ -125,7 +125,7 @@
 > Interacción bidireccional
 
 ### 5.1 Command Terminal ✅
-- [x] Input para enviar mensajes/comandos a SuperBotijo
+- [x] Input para enviar mensajes/comandos a Alfred Mission Control
 - [x] Output en tiempo real de respuesta
 - [x] Historial de comandos
 - [x] Shortcuts para comandos frecuentes
@@ -219,7 +219,7 @@
 ### 7.1 Live Activity Stream ✅
 - [x] SSE connection (Server-Sent Events)
 - [x] Updates en tiempo real del activity feed
-- [x] Indicador "SuperBotijo está trabajando..." (LiveStatusIndicator)
+- [x] Indicador "Alfred Mission Control está trabajando..." (LiveStatusIndicator)
 - [x] Toast notifications (ToastProvider + useToast)
 - **Archivos:** `src/app/api/activities/stream/route.ts`, `src/hooks/useActivityStream.ts`, `src/components/LiveStatusIndicator.tsx`, `src/components/Toast.tsx`
 
@@ -593,7 +593,7 @@
 ---
 
 ## Fase 14: Mission Control Layer 🎯 ⏳
-> Transformar SuperBotijo de dashboard reactivo a orquestador autónomo alineado a misión
+> Transformar Alfred Mission Control de dashboard reactivo a orquestador autónomo alineado a misión
 >
 > **Inspiración:** `FUNCIO.md` - Panel maestro con Reverse Prompting, Projects, Agent Identities
 >

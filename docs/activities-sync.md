@@ -1,14 +1,14 @@
 # OpenClaw Activities Sync
 
-This script populates the SuperBotijo activities dashboard with real message data from OpenClaw agents.
+This script populates the Alfred Mission Control activities dashboard with real message data from OpenClaw agents.
 
 ## Problem
 
-By default, the "Activities" dashboard in SuperBotijo is empty because it uses its own SQLite database. Users expect to see real activity from their OpenClaw agents, but there's no integration to sync agent messages to the activities database.
+By default, the "Activities" dashboard in Alfred Mission Control is empty because it uses its own SQLite database. Users expect to see real activity from their OpenClaw agents, but there's no integration to sync agent messages to the activities database.
 
 ## Solution
 
-This script reads OpenClaw agent messages from `~/.openclaw/agents/*/sessions/*.jsonl` and syncs them to the SuperBotijo activities database, making the dashboard show real agent activity.
+This script reads OpenClaw agent messages from `~/.openclaw/agents/*/sessions/*.jsonl` and syncs them to the Alfred Mission Control activities database, making the dashboard show real agent activity.
 
 ## Features
 
@@ -56,16 +56,16 @@ sudo apt-get install sqlite3 jq  # Ubuntu/Debian
 ### 2. Run the script manually to test
 
 ```bash
-cd /root/.openclaw/workspace/superbotijo
+cd /root/.openclaw/workspace/alfred-mission-control
 ./scripts/sync-openclaw-sessions.sh
 ```
 
 ### 3. Set up cron job
 
 ```bash
-sudo tee /etc/cron.d/superbotijo-sync-activities <<'EOF'
-# Sync OpenClaw sessions to SuperBotijo activities every 5 minutes
-*/5 * * * * root /opt/superbotijo/sync-openclaw-sessions.sh >> /var/log/superbotijo-sync.log 2>&1
+sudo tee /etc/cron.d/alfred-mission-control-sync-activities <<'EOF'
+# Sync OpenClaw sessions to Alfred Mission Control activities every 5 minutes
+*/5 * * * * root /opt/alfred-mission-control/sync-openclaw-sessions.sh >> /var/log/alfred-mission-control-sync.log 2>&1
 EOF
 ```
 
@@ -74,7 +74,7 @@ EOF
 Environment variables (optional):
 
 - `OPENCLAW_DIR`: Path to OpenClaw installation (default: `/root/.openclaw`)
-- `SUPERBOTIJO_DB`: Path to SuperBotijo database (default: `$OPENCLAW_DIR/workspace/superbotijo/data/activities.db`)
+- `MISSION_CONTROL_DB`: Path to Alfred Mission Control database (default: `$OPENCLAW_DIR/workspace/alfred-mission-control/data/activities.db`)
 
 ## What it syncs
 
@@ -111,7 +111,7 @@ This prevents showing impossible channels in the dashboard.
 
 3. Check database:
    ```bash
-   sqlite3 ~/.openclaw/workspace/superbotijo/data/activities.db \
+   sqlite3 ~/.openclaw/workspace/alfred-mission-control/data/activities.db \
      "SELECT COUNT(*) FROM activities WHERE type='session';"
    ```
 
@@ -125,8 +125,8 @@ jq '.channels | keys' ~/.openclaw/openclaw.json
 
 ## Contributing
 
-Contributions welcome! This is a community contribution to make SuperBotijo more useful out of the box.
+Contributions welcome! This is a community contribution to make Alfred Mission Control more useful out of the box.
 
 ## License
 
-MIT (same as SuperBotijo)
+MIT (same as Alfred Mission Control)

@@ -1,6 +1,6 @@
 # Cost Tracking System
 
-SuperBotijo now tracks real usage costs by reading OpenClaw session data and calculating costs based on actual token usage.
+Alfred Mission Control now tracks real usage costs by reading OpenClaw session data and calculating costs based on actual token usage.
 
 ## How It Works
 
@@ -29,7 +29,7 @@ Pricing is defined in `src/lib/pricing.ts`.
 To collect usage data manually:
 
 ```bash
-cd /root/.openclaw/workspace/superbotijo
+cd /root/.openclaw/workspace/alfred-mission-control
 npx tsx scripts/collect-usage.ts
 ```
 
@@ -43,7 +43,7 @@ This will:
 To set up hourly automatic collection:
 
 ```bash
-cd /root/.openclaw/workspace/superbotijo
+cd /root/.openclaw/workspace/alfred-mission-control
 ./scripts/setup-cron.sh
 ```
 
@@ -56,7 +56,7 @@ crontab -l
 
 **View logs:**
 ```bash
-tail -f /var/log/superbotijo-usage.log
+tail -f /var/log/alfred-mission-control-usage.log
 ```
 
 **Remove cron job:**
@@ -164,7 +164,7 @@ Returns cost summary, breakdowns, and trends.
 **Unknown model warnings:**
 - Update `src/lib/pricing.ts` with new model pricing
 - Rebuild: `npm run build`
-- Restart: `systemctl restart superbotijo`
+- Restart: `systemctl restart alfred-mission-control`
 
 **Costs seem wrong:**
 - Verify pricing in `src/lib/pricing.ts`
@@ -183,4 +183,4 @@ Returns cost summary, breakdowns, and trends.
 ---
 
 **Created:** 2026-02-20  
-**Author:** SuperBotijo 🫙
+**Author:** Alfred Mission Control 🫙

@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Runtime Event Bridge provides a type-safe, decoupled event system for component communication in SuperBotijo.
+The Runtime Event Bridge provides a type-safe, decoupled event system for component communication in Alfred Mission Control.
 
 ## Architecture
 

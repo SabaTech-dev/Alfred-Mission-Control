@@ -124,4 +124,4 @@ We follow coordinated vulnerability disclosure:
 3. We release a patched version
 4. Disclosure is made public after patch is available
 
-Thank you for helping keep SuperBotijo secure! 🔒
+Thank you for helping keep Alfred Mission Control secure! 🔒

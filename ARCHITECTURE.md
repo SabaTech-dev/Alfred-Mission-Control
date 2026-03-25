@@ -1,6 +1,6 @@
-# SuperBotijo — Architecture Documentation
+# Alfred Mission Control — Architecture Documentation
 
-> Complete technical reference for the SuperBotijo dashboard architecture.
+> Complete technical reference for the Alfred Mission Control dashboard architecture.
 
 ---
 
@@ -21,7 +21,7 @@
 
 ## System Overview
 
-SuperBotijo is a real-time dashboard for OpenClaw AI agent instances. It reads directly from the OpenClaw installation without requiring a separate database backend.
+Alfred Mission Control is a real-time dashboard for OpenClaw AI agent instances. It reads directly from the OpenClaw installation without requiring a separate database backend.
 
 ### High-Level Architecture
 
@@ -78,7 +78,7 @@ graph TB
 ## Project Structure
 
 ```
-superbotijo/
+alfred-mission-control/
 ├── src/
 │   ├── app/
 │   │   ├── (dashboard)/          # Protected dashboard pages (21 pages)
@@ -139,7 +139,7 @@ superbotijo/
 │   │   └── reports/[token]/      # Shared reports (public)
 │   │
 │   ├── components/               # React components (~100)
-│   │   ├── SuperBotijo/          # OS-style UI shell (8)
+│   │   ├── Alfred Mission Control/          # OS-style UI shell (8)
 │   │   ├── Office3D/             # 3D office scene (~25)
 │   │   ├── office/               # 2D office variants (7)
 │   │   ├── charts/               # Chart components (4)
@@ -675,7 +675,7 @@ graph TB
 
 ### Component Categories
 
-#### SuperBotijo/* (OS-style UI Shell)
+#### Alfred Mission Control/* (OS-style UI Shell)
 
 | Component | Purpose | Props |
 |-----------|---------|-------|

@@ -1,11 +1,11 @@
-# Contributing to SuperBotijo
+# Contributing to Alfred Mission Control
 
 Thank you for your interest in contributing! 🫙
 
 ## Getting Started
 
 1. Fork the repository
-2. Clone your fork: `git clone https://github.com/YOUR-USERNAME/superbotijo.git`
+2. Clone your fork: `git clone https://github.com/YOUR-USERNAME/alfred-mission-control.git`
 3. Create a branch: `git checkout -b feature/your-feature-name`
 4. Make your changes
 5. Test thoroughly
@@ -163,7 +163,7 @@ Use the `BRANDING` config from `src/config/branding.ts` instead of hardcoding:
 
 **❌ Bad:**
 ```typescript
-const username = "@carlosazaustre";
+const username = "@llllJokerllll";
 ```
 
 **✅ Good:**

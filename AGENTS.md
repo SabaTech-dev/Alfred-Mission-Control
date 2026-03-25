@@ -1,6 +1,6 @@
-# AGENTS.md — SuperBotijo Codebase Guide
+# AGENTS.md — Alfred Mission Control Codebase Guide
 
-This document provides essential information for AI coding agents working in the SuperBotijo codebase.
+This document provides essential information for AI coding agents working in the Alfred Mission Control codebase.
 
 ---
 
@@ -32,7 +32,7 @@ npx tsc --noEmit
 
 ## Project Overview
 
-SuperBotijo is a real-time dashboard for OpenClaw AI agent instances. It reads directly from the OpenClaw installation (config, sessions, memory, logs) without requiring a separate database.
+Alfred Mission Control is a real-time dashboard for OpenClaw AI agent instances. It reads directly from the OpenClaw installation (config, sessions, memory, logs) without requiring a separate database.
 
 **Tech Stack:**
 - **Framework:** Next.js 16 (App Router)
@@ -50,7 +50,7 @@ SuperBotijo is a real-time dashboard for OpenClaw AI agent instances. It reads d
 **IMPORTANT**: This project has a dedicated UI style guide skill. Load it when working on UI components:
 
 ```
-skill: superbotijo-style
+skill: alfred-mission-control-style
 ```
 
 ### Quick Reference
@@ -85,7 +85,7 @@ src/
 │   ├── login/           # Login page
 │   └── office/          # 3D office (unprotected)
 ├── components/
-│   ├── SuperBotijo/     # OS-style UI shell (topbar, dock, status bar)
+│   ├── Alfred Mission Control/     # OS-style UI shell (topbar, dock, status bar)
 │   ├── Office3D/        # React Three Fiber 3D components
 │   ├── charts/          # Recharts wrappers
 │   ├── ConfirmDialog.tsx# Reusable confirmation dialog
@@ -420,7 +420,7 @@ Read environment variables via `process.env.VAR_NAME` or in `src/config/branding
 
 ## Contextual Help System
 
-SuperBotijo uses a **contextual help system** that explains what each section does and how to use it. All pages include tooltips with explanations accessible via this system.
+Alfred Mission Control uses a **contextual help system** that explains what each section does and how to use it. All pages include tooltips with explanations accessible via this system.
 
 ### Components
 
@@ -498,7 +498,7 @@ SuperBotijo uses a **contextual help system** that explains what each section do
 
 
 
-SuperBotijo supports **runtime configuration of model prices** via the Settings UI.
+Alfred Mission Control supports **runtime configuration of model prices** via the Settings UI.
 
 ### How It Works
 
@@ -548,7 +548,7 @@ calculateCost(modelId, inputTokens, outputTokens, cacheRead?, cacheWrite?): numb
 
 ## Kanban Heartbeat Integration
 
-SuperBotijo supports **heartbeat-driven task polling** for OpenClaw agents. This enables agents to autonomously check for new or updated tasks on the Kanban board—similar to how Vikunja or other task queue systems work.
+Alfred Mission Control supports **heartbeat-driven task polling** for OpenClaw agents. This enables agents to autonomously check for new or updated tasks on the Kanban board—similar to how Vikunja or other task queue systems work.
 
 ### The Problem
 

@@ -1,11 +1,11 @@
-# Color System Semántico - SuperBotijo
+# Color System Semántico - Alfred Mission Control
 
 > **Última actualización:** 2026-02-28  
 > **Issue:** #58
 
 ## Resumen
 
-Este documento describe el sistema de colores semánticos implementado en SuperBotijo. El objetivo es proporcionar una paleta consistente, accesible y fácil de mantener.
+Este documento describe el sistema de colores semánticos implementado en Alfred Mission Control. El objetivo es proporcionar una paleta consistente, accesible y fácil de mantener.
 
 ## Tokens Semánticos
 

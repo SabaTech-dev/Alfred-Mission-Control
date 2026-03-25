@@ -1,6 +1,6 @@
 # Kanban Agent integration
 
-Los agentes de Superbotijo pueden usar usar Kanban tasks programmatically.
+Los agentes de Alfred Mission Control pueden usar usar Kanban tasks programmatically.
 
  without having to manually go into the UI, the kanban is tab provides quick access to all tasks assigned to you.
 
@@ -10,7 +10,7 @@ Los agentes de Superbotijo pueden usar usar Kanban tasks programmatically.
 
 ### Step 1: Configure your agent
 
-1. **Create IDENTITY file** at `/home/daniel/.openclaw/agents/<agent-id>/IDENTITY.md`:
+1. **Create IDENTITY file** at `/home/ubuntu/.openclaw/agents/<agent-id>/IDENTITY.md`:
    ```markdown
    # IDENTITY.md
 
@@ -23,21 +23,21 @@ Los agentes de Superbotijo pueden usar usar Kanban tasks programmatically.
    ```bash
    # From agent's perspective
    # In auth-profiles.json,   "profiles": {
-     "superbotijo:kanban": {
+     "alfred-mission-control:kanban": {
        "type": "api_key",
-       "provider": "superbotijo",
+       "provider": "alfred-mission-control",
        "key": "<your-api-key>"
      }
    }
    ```
 
-3. **Configure SuperBotijo .env**:
+3. **Configure Alfred Mission Control .env**:
    ```bash
-   # SuperBotijo root directory
+   # Alfred Mission Control root directory
    echo "KANbAN_agent_keys=boti:sk-boti-secret-2026,memo:sk-memo-secret-2026,...
    ```
 
-4. **Restart SuperBotijo** to apply changes.
+4. **Restart Alfred Mission Control** to apply changes.
 
    ```
 

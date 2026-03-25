@@ -8,7 +8,7 @@ This document describes the technical design for heartbeat-driven task polling i
 
 ```
 ┌─────────────┐     ┌──────────────────┐     ┌─────────────────┐
-│   OpenClaw  │────▶│   SuperBotijo    │────▶│   Kanban DB     │
+│   OpenClaw  │────▶│   Alfred Mission Control    │────▶│   Kanban DB     │
 │    Agent    │     │  (Next.js API)   │     │   (SQLite)      │
 └─────────────┘     └──────────────────┘     └─────────────────┘
        │                    │
@@ -79,7 +79,7 @@ Returns heartbeat configuration from `openclaw.json` and optionally reads `HEART
   "target": "last",
   "activeHours": { "start": "09:00", "end": "18:00" },
   "heartbeatMd": "# Heartbeat\n\nTask list...",
-  "heartbeatMdPath": "/home/daniel/.openclaw/workspace/HEARTBEAT.md",
+  "heartbeatMdPath": "/home/ubuntu/.openclaw/workspace/HEARTBEAT.md",
   "configured": true,
   "autonomy": {
     "agentName": "developer",
@@ -223,13 +223,13 @@ The query parameter approach was chosen because:
 1. **Simplicity**: Agents call from scripts/CLIs where header management is cumbersome
 2. **Statelessness**: No session tokens to manage or expire
 3. **Transparency**: Agent identity is explicitly visible in logs/metrics
-4. **No security requirement**: Heartbeat endpoints are intended for internal agent use behind the same auth boundary as the rest of SuperBotijo
+4. **No security requirement**: Heartbeat endpoints are intended for internal agent use behind the same auth boundary as the rest of Alfred Mission Control
 
 ### 4.3 Security Considerations
 
 | Aspect | Current State | Recommendation |
 |--------|---------------|----------------|
-| Network | Behind SuperBotijo auth (middleware) | Keep internal-only |
+| Network | Behind Alfred Mission Control auth (middleware) | Keep internal-only |
 | Agent validation | Basic fallback to autonomy settings | Consider allowlist per agent |
 | Audit trail | Activity logging on claim/release | Already implemented |
 

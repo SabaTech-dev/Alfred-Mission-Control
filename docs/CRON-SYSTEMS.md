@@ -1,8 +1,8 @@
-# Cron Systems Guide - SuperBotijo
+# Cron Systems Guide - Alfred Mission Control
 
-> **Summary:** Guide for choosing between System Cron, OpenClaw Cron, and Heartbeat for scheduling tasks in SuperBotijo.
+> **Summary:** Guide for choosing between System Cron, OpenClaw Cron, and Heartbeat for scheduling tasks in Alfred Mission Control.
 
-This document explains the three scheduling systems available in SuperBotijo and when to use each one.
+This document explains the three scheduling systems available in Alfred Mission Control and when to use each one.
 
 ---
 
@@ -21,7 +21,7 @@ This document explains the three scheduling systems available in SuperBotijo and
 
 ## Overview
 
-SuperBotijo has **three different scheduling systems** available:
+Alfred Mission Control has **three different scheduling systems** available:
 
 | System | Location | Managed By | Use Case |
 |--------|----------|------------|----------|
@@ -100,8 +100,8 @@ Traditional Linux cron jobs stored in `/etc/cron.d/`. These run independently of
 # Obsidian vault backup (every 12 hours)
 0 */12 * * * root /usr/local/bin/obsidian-vault-backup.sh
 
-# SuperBotijo activities sync (every 5 minutes)
-*/5 * * * * root /opt/superbotijo/sync-activities-simple.sh
+# Alfred Mission Control activities sync (every 5 minutes)
+*/5 * * * * root /opt/alfred-mission-control/sync-activities-simple.sh
 
 # OpenClaw ICS calendar sync (every 15 minutes)
 */15 * * * * root /opt/openclaw-ics/.venv/bin/python /opt/openclaw-ics/ics_sync.py
@@ -369,7 +369,7 @@ Currently running in `/etc/cron.d/`:
 | `obsidian-daily-extract` | Daily 03:15 | Extract evergreen notes from daily |
 | `obsidian-llm-classify` | Daily 03:30 | Classify extracted notes with LLM |
 | `obsidian-vault-backup` | Every 12h | Backup vault to GitHub |
-| `superbotijo-sync-activities` | Every 5 min | Sync OpenClaw activities to dashboard |
+| `alfred-mission-control-sync-activities` | Every 5 min | Sync OpenClaw activities to dashboard |
 | `openclaw-ics-sync` | Every 15 min | Sync calendar from ICS feed |
 
 ### OpenClaw Cron Jobs
@@ -523,7 +523,7 @@ The most efficient setup uses **all three systems**:
 0 */12 * * * root /usr/local/bin/backup.sh
 
 # Sync every 5 min
-*/5 * * * * root /opt/superbotijo/sync.sh
+*/5 * * * * root /opt/alfred-mission-control/sync.sh
 ```
 
 **OpenClaw Cron:**
@@ -604,4 +604,4 @@ openclaw cron add --name "Weekly review" --cron "0 9 * * 1" --session isolated -
 ---
 
 **Last updated:** 2026-02-27  
-**Author:** SuperBotijo 🫙
+**Author:** Alfred Mission Control 🫙

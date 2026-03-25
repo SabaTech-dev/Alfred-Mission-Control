@@ -1,4 +1,4 @@
-# Heartbeat Setup Guide - SuperBotijo
+# Heartbeat Setup Guide - Alfred Mission Control
 
 > **Complete guide to configure autonomous task polling for OpenClaw agents**
 
@@ -30,7 +30,7 @@ Agents in OpenClaw are typically "set and forget" — they're spawned with tasks
 Agents configure a `heartbeat` in `openclaw.json` that specifies how often they should poll for work. When the heartbeat fires, the agent:
 
 1. Reads `HEARTBEAT.md` for instructions
-2. Calls the SuperBotijo API to get assigned tasks
+2. Calls the Alfred Mission Control API to get assigned tasks
 3. Claims and processes tasks
 4. Updates task status as work progresses
 
@@ -48,7 +48,7 @@ This enables **autonomous agent behavior**: agents work like employees checking 
 │           ↓                                                         │
 │  3. El agente llama GET /api/heartbeat/tasks?agentName=<id>        │
 │           ↓                                                         │
-│  4. SuperBotijo responde con tareas in_progress asignadas al agente │
+│  4. Alfred Mission Control responde con tareas in_progress asignadas al agente │
 │           ↓                                                         │
 │  5. El agente:                                                      │
 │     - Si claimedBy === null → claimTask() y procesar                │
@@ -67,14 +67,14 @@ This enables **autonomous agent behavior**: agents work like employees checking 
 
 Before setting up heartbeats, ensure:
 
-- [ ] SuperBotijo is running and accessible
+- [ ] Alfred Mission Control is running and accessible
 - [ ] OpenClaw agents are configured in `openclaw.json`
-- [ ] Agent API keys are configured in SuperBotijo's `.env.local`
+- [ ] Agent API keys are configured in Alfred Mission Control's `.env.local`
 - [ ] Agents have the `kanban-tasks` skill installed
 
 ### Configure API Keys
 
-In SuperBotijo's `.env.local`:
+In Alfred Mission Control's `.env.local`:
 
 ```env
 # Format: agentId:apiKey, comma-separated
@@ -150,7 +150,7 @@ pm2 restart openclaw-gateway
 Check that the heartbeat is configured:
 
 ```bash
-# Via SuperBotijo API
+# Via Alfred Mission Control API
 curl http://localhost:3000/api/heartbeat
 
 # Or check openclaw.json directly
@@ -555,12 +555,12 @@ HEARTBEAT_OK
 
 ```bash
 # Set your variables
-SUPERBOTIJO_URL="http://localhost:3000"
+MISSION_CONTROL_URL="http://localhost:3000"
 AGENT_ID="boti"
 AGENT_KEY="sk-boti-secret-2026"
 
 # Create a test task
-curl -X POST "$SUPERBOTIJO_URL/api/kanban/agent/tasks" \
+curl -X POST "$MISSION_CONTROL_URL/api/kanban/agent/tasks" \
   -H "Content-Type: application/json" \
   -H "X-Agent-Id: $AGENT_ID" \
   -H "X-Agent-Key: $AGENT_KEY" \
@@ -577,7 +577,7 @@ curl -X POST "$SUPERBOTIJO_URL/api/kanban/agent/tasks" \
 
 ```bash
 # Check that the agent can see the task
-curl "$SUPERBOTIJO_URL/api/heartbeat/tasks?agentName=$AGENT_ID" \
+curl "$MISSION_CONTROL_URL/api/heartbeat/tasks?agentName=$AGENT_ID" \
   -H "X-Agent-Id: $AGENT_ID" \
   -H "X-Agent-Key: $AGENT_KEY"
 ```
@@ -605,7 +605,7 @@ Wait for the next heartbeat interval (up to 15 minutes) and check:
 
 ```bash
 # Check if task was claimed and processed
-curl "$SUPERBOTIJO_URL/api/kanban/agent/tasks?assignee=$AGENT_ID" \
+curl "$MISSION_CONTROL_URL/api/kanban/agent/tasks?assignee=$AGENT_ID" \
   -H "X-Agent-Id: $AGENT_ID" \
   -H "X-Agent-Key: $AGENT_KEY"
 ```
@@ -621,7 +621,7 @@ journalctl -u openclaw-gateway -f | grep -i heartbeat
 
 ```bash
 # Delete test task
-curl -X DELETE "$SUPERBOTIJO_URL/api/kanban/agent/tasks/<task-id>" \
+curl -X DELETE "$MISSION_CONTROL_URL/api/kanban/agent/tasks/<task-id>" \
   -H "X-Agent-Id: $AGENT_ID" \
   -H "X-Agent-Key: $AGENT_KEY"
 ```
@@ -663,8 +663,8 @@ curl -X DELETE "$SUPERBOTIJO_URL/api/kanban/agent/tasks/<task-id>" \
 
 **Check:**
 1. Is API key configured correctly in `.env.local`?
-2. Does the key match between SuperBotijo and agent config?
-3. Check SuperBotijo logs for auth errors
+2. Does the key match between Alfred Mission Control and agent config?
+3. Check Alfred Mission Control logs for auth errors
 
 ### Task not processed after claim
 
@@ -734,11 +734,11 @@ curl -X DELETE "$SUPERBOTIJO_URL/api/kanban/agent/tasks/<task-id>" \
 
 ## Support
 
-- Check the [Kanban tab](http://localhost:3000/kanban) in SuperBotijo
+- Check the [Kanban tab](http://localhost:3000/kanban) in Alfred Mission Control
 - Review activity logs in the dashboard
 - Open a GitHub issue for bugs or feature requests
 
 ---
 
 **Last updated:** 2026-03-09
-**Author:** SuperBotijo 🫙
+**Author:** Alfred Mission Control 🫙

@@ -1,16 +1,16 @@
 # Agent Integration Guide
 
-> Configure your OpenClaw agents to use the Kanban system in SuperBotijo.
+> Configure your OpenClaw agents to use the Kanban system in Alfred Mission Control.
 
 ---
 
 ## Overview
 
-SuperBotijo provides a REST API for agents to manage tasks programmatically. Each agent needs:
+Alfred Mission Control provides a REST API for agents to manage tasks programmatically. Each agent needs:
 
 1. **IDENTITY.md** - Define role and domain
 2. **API Key** - In auth-profiles.json
-3. **SuperBotijo Config** - KANBAN_AGENT_KEYS in .env
+3. **Alfred Mission Control Config** - KANBAN_AGENT_KEYS in .env
 
 ---
 
@@ -18,7 +18,7 @@ SuperBotijo provides a REST API for agents to manage tasks programmatically. Eac
 
 ### Step 1: Create IDENTITY.md
 
-Create `/home/daniel/.openclaw/agents/<agent-id>/IDENTITY.md`:
+Create `/home/ubuntu/.openclaw/agents/<agent-id>/IDENTITY.md`:
 
 ```markdown
 # IDENTITY.md
@@ -30,23 +30,23 @@ Create `/home/daniel/.openclaw/agents/<agent-id>/IDENTITY.md`:
 
 ### Step 2: Add API Key to Agent
 
-Add to `/home/daniel/.openclaw/agents/<agent-id>/agent/auth-profiles.json`:
+Add to `/home/ubuntu/.openclaw/agents/<agent-id>/agent/auth-profiles.json`:
 
 ```json
 {
   "profiles": {
-    "superbotijo:kanban": {
+    "alfred-mission-control:kanban": {
       "type": "api_key",
-      "provider": "superbotijo",
+      "provider": "alfred-mission-control",
       "key": "sk-<agent-id>-secret-2026"
     }
   }
 }
 ```
 
-### Step 3: Configure SuperBotijo
+### Step 3: Configure Alfred Mission Control
 
-Add to `/home/daniel/.openclaw/workspace/superbotijo/.env`:
+Add to `/home/ubuntu/.openclaw/workspace/alfred-mission-control/.env`:
 
 ```bash
 KANBAN_AGENT_KEYS=boti:sk-boti-secret-2026,memo:sk-memo-secret-2026,opencode:sk-opencode-secret-2026
@@ -54,10 +54,10 @@ KANBAN_AGENT_KEYS=boti:sk-boti-secret-2026,memo:sk-memo-secret-2026,opencode:sk-
 
 Format: `agent-id:api-key,agent-id:api-key,...`
 
-### Step 4: Restart SuperBotijo
+### Step 4: Restart Alfred Mission Control
 
 ```bash
-cd /home/daniel/.openclaw/workspace/superbotijo
+cd /home/ubuntu/.openclaw/workspace/alfred-mission-control
 npm run build && npm start
 ```
 
@@ -211,12 +211,12 @@ curl -X PATCH http://localhost:3000/api/kanban/agent/tasks/{taskId} \
 - You're not creator/assignee/claimer of the task
 
 **Task not appearing:**
-- Restart SuperBotijo after adding KANBAN_AGENT_KEYS
-- Check .env file is in SuperBotijo root directory
+- Restart Alfred Mission Control after adding KANBAN_AGENT_KEYS
+- Check .env file is in Alfred Mission Control root directory
 
 ---
 
 ## See Also
 
-- **Skill:** `/home/daniel/.openclaw/workspace/skills/kanban-tasks/SKILL.md`
-- **API Docs:** `/home/daniel/.openclaw/workspace/superbotijo/docs/AGENT_KANBAN_API.md`
+- **Skill:** `/home/ubuntu/.openclaw/workspace/skills/kanban-tasks/SKILL.md`
+- **API Docs:** `/home/ubuntu/.openclaw/workspace/alfred-mission-control/docs/AGENT_KANBAN_API.md`

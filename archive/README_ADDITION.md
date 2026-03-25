@@ -2,7 +2,7 @@
 
 ## Heartbeat Setup for Autonomous Agents
 
-SuperBotijo supports **heartbeat-driven task polling** for OpenClaw agents. This enables agents to autonomously check for new or updated tasks on the Kanban board - similar to how Vikunja or other task queue systems work.
+Alfred Mission Control supports **heartbeat-driven task polling** for OpenClaw agents. This enables agents to autonomously check for new or updated tasks on the Kanban board - similar to how Vikunja or other task queue systems work.
 
 ### What It Does
 
@@ -52,7 +52,7 @@ KANBAN_AGENT_KEYS=developer:sk-developer-secret-2026,...
 
 ## Activity Sync
 
-The Activities dashboard shows real-time agent activity. By default, it's empty because SuperBotijo uses its own database. To populate it with real OpenClaw message data:
+The Activities dashboard shows real-time agent activity. By default, it's empty because Alfred Mission Control uses its own database. To populate it with real OpenClaw message data:
 
 ```bash
 # Install dependencies
@@ -62,9 +62,9 @@ sudo apt-get install sqlite3 jq
 ./scripts/sync-openclaw-activities.sh
 
 # Set up auto-sync every 5 minutes
-sudo cp scripts/sync-openclaw-activities.sh /opt/superbotijo/
-sudo tee /etc/cron.d/superbotijo-sync-activities <<'EOF'
-*/5 * * * * root /opt/superbotijo/sync-openclaw-activities.sh >> /var/log/superbotijo-sync.log 2>&1
+sudo cp scripts/sync-openclaw-activities.sh /opt/alfred-mission-control/
+sudo tee /etc/cron.d/alfred-mission-control-sync-activities <<'EOF'
+*/5 * * * * root /opt/alfred-mission-control/sync-openclaw-activities.sh >> /var/log/alfred-mission-control-sync.log 2>&1
 EOF
 ```
 
@@ -74,14 +74,14 @@ See [docs/activities-sync.md](./docs/activities-sync.md) for details.
 
 ## Service Configuration
 
-SuperBotijo automatically detects OpenClaw-related services. No configuration needed for most users.
+Alfred Mission Control automatically detects OpenClaw-related services. No configuration needed for most users.
 
 ### Auto-detected services
 
 Services containing these keywords are automatically allowed:
 - `openclaw` (e.g., openclaw-gateway)
-- `superbotijo` (e.g., superbotijo)
-- `superbotijo`
+- `alfred-mission-control` (e.g., alfred-mission-control)
+- `alfred-mission-control`
 
 ### Additional services (optional)
 
@@ -90,13 +90,13 @@ If you need to control services with different names (e.g., nginx, mysql):
 **Option 1: Environment variables**
 ```bash
 # In .env.local
-SUPERBOTIJO_SYSTEMD_SERVICES=nginx,mysql,redis-server
-SUPERBOTIJO_PM2_SERVICES=my-app,worker-1
+SYSTEMD_SERVICES=nginx,mysql,redis-server
+PM2_SERVICES=my-app,worker-1
 ```
 
 **Option 2: Config file**
 
-Create `allowed-services.json` in the superbotijo directory:
+Create `allowed-services.json` in the alfred-mission-control directory:
 
 ```json
 {
