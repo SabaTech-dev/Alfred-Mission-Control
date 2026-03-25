@@ -1,34 +1,26 @@
 #!/bin/bash
-# Sync OpenClaw sessions to TenacitOS activities database
-# This script populates the activities dashboard with real agent sessions
-# Run via cron every 5 minutes: */5 * * * * root /path/to/sync-openclaw-sessions.sh
+# Sync OpenClaw sessions to Alfred Mission Control activities database
+# Optimized: batch inserts + mtime-based delta
+# Run via cron every 5 minutes: */5 * * * * ubuntu /path/to/sync-openclaw-sessions.sh
 
-set -e
-
-# Configuration
-OPENCLAW_DIR="${OPENCLAW_DIR:-/root/.openclaw}"
-SUPERBOTIJO_DB="${SUPERBOTIJO_DB:-/root/.openclaw/workspace/superbotijo/data/activities.db}"
+OPENCLAW_DIR="${OPENCLAW_DIR:-/home/ubuntu/.openclaw}"
+MISSION_CONTROL_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+MISSION_CONTROL_DB="${MISSION_CONTROL_DB:-$MISSION_CONTROL_DIR/data/activities.db}"
+STATE_FILE="${MISSION_CONTROL_DIR}/data/.sessions-sync-state"
 OPENCLAW_CONFIG="$OPENCLAW_DIR/openclaw.json"
 
-# Check dependencies
-if ! command -v sqlite3 &> /dev/null; then
-    echo "Error: sqlite3 not installed" >&2
-    exit 1
-fi
+command -v sqlite3 >/dev/null 2>&1 || exit 1
+command -v jq >/dev/null 2>&1 || exit 1
+[ -f "$MISSION_CONTROL_DB" ] || exit 1
 
-if ! command -v jq &> /dev/null; then
-    echo "Error: jq not installed" >&2
-    exit 1
-fi
+mkdir -p "$(dirname "$STATE_FILE")"
 
-# Get list of configured channels from OpenClaw config
 CONFIGURED_CHANNELS=""
 if [ -f "$OPENCLAW_CONFIG" ]; then
     CONFIGURED_CHANNELS=$(jq -r '.channels | keys[]' "$OPENCLAW_CONFIG" 2>/dev/null | tr '\n' '|' | sed 's/|$//')
 fi
 
-# Ensure activities table exists
-sqlite3 "$SUPERBOTIJO_DB" "CREATE TABLE IF NOT EXISTS activities (
+sqlite3 "$MISSION_CONTROL_DB" "CREATE TABLE IF NOT EXISTS activities (
   id TEXT PRIMARY KEY,
   timestamp TEXT NOT NULL,
   type TEXT NOT NULL,
@@ -39,45 +31,49 @@ sqlite3 "$SUPERBOTIJO_DB" "CREATE TABLE IF NOT EXISTS activities (
   agent TEXT,
   metadata TEXT
 );"
+sqlite3 "$MISSION_CONTROL_DB" "CREATE INDEX IF NOT EXISTS idx_activities_timestamp ON activities(timestamp DESC);"
+sqlite3 "$MISSION_CONTROL_DB" "CREATE INDEX IF NOT EXISTS idx_activities_agent ON activities(agent);"
 
-# Create indexes for better performance
-sqlite3 "$SUPERBOTIJO_DB" "CREATE INDEX IF NOT EXISTS idx_activities_timestamp ON activities(timestamp DESC);"
-sqlite3 "$SUPERBOTIJO_DB" "CREATE INDEX IF NOT EXISTS idx_activities_agent ON activities(agent);"
+LAST_SYNC=0
+[ -f "$STATE_FILE" ] && LAST_SYNC=$(cat "$STATE_FILE" 2>/dev/null || echo 0)
 
-# Process each agent's sessions
 sessions_added=0
+batch=""
+
 for agent_dir in "$OPENCLAW_DIR"/agents/*/; do
     [ -d "$agent_dir" ] || continue
     
     agent_id=$(basename "$agent_dir")
     sessions_file="$agent_dir/sessions/sessions.json"
 
-    if [ ! -f "$sessions_file" ]; then
-        continue
-    fi
+    [ -f "$sessions_file" ] || continue
+    
+    # Delta: skip if not modified
+    file_mtime=$(stat -c%Y "$sessions_file" 2>/dev/null || echo 0)
+    [ "$file_mtime" -le "$LAST_SYNC" ] && continue
 
-    # Parse sessions and insert into DB
+    # Parse sessions
     while IFS= read -r activity; do
         [ -z "$activity" ] && continue
 
-        id=$(echo "$activity" | jq -r '.id')
-        timestamp=$(echo "$activity" | jq -r '.timestamp')
-        type=$(echo "$activity" | jq -r '.type')
-        description=$(echo "$activity" | jq -r '.description' | sed "s/'/''/g")
-        status=$(echo "$activity" | jq -r '.status')
-        agent=$(echo "$activity" | jq -r '.agent')
-        metadata=$(echo "$activity" | jq -c '.metadata' | sed "s/'/''/g")
+        id=$(echo "$activity" | jq -r '.id' 2>/dev/null)
+        timestamp=$(echo "$activity" | jq -r '.timestamp' 2>/dev/null)
+        atype=$(echo "$activity" | jq -r '.type' 2>/dev/null)
+        description=$(echo "$activity" | jq -r '.description' 2>/dev/null | sed "s/'/''/g")
+        agent=$(echo "$activity" | jq -r '.agent' 2>/dev/null | sed "s/'/''/g")
+        metadata=$(echo "$activity" | jq -c '.metadata' 2>/dev/null | sed "s/'/''/g")
 
-        # Insert if not exists
-        result=$(sqlite3 "$SUPERBOTIJO_DB" "INSERT OR IGNORE INTO activities (id, timestamp, type, description, status, duration_ms, tokens_used, agent, metadata) VALUES ('$id', '$timestamp', '$type', '$description', '$status', NULL, NULL, '$agent', '$metadata'); SELECT changes();")
+        [ -z "$id" ] || [ "$id" = "null" ] && continue
+
+        id_esc=$(echo "$id" | sed "s/'/''/g")
+        ts_esc=$(echo "$timestamp" | sed "s/'/''/g")
+
+        batch="${batch}INSERT OR IGNORE INTO activities (id, timestamp, type, description, status, agent, metadata) VALUES ('${id_esc}', '${ts_esc}', '${atype}', '${description}', 'success', '${agent}', '${metadata}');"$'\n'
+        ((sessions_added++))
         
-        if [ "$result" -gt 0 ]; then
-            ((sessions_added++))
-        fi
     done < <(jq -r --arg agent "$agent_id" --arg configured "$CONFIGURED_CHANNELS" '
         to_entries[] |
         .value as $session |
-        # Determine actual channel
         (
             if $session.deliveryContext.channel then
                 $session.deliveryContext.channel
@@ -87,7 +83,6 @@ for agent_dir in "$OPENCLAW_DIR"/agents/*/; do
                 $session.lastChannel // "unknown"
             end
         ) as $rawChannel |
-        # Validate channel is configured, else mark as test/internal
         (if ($configured == "" or ($configured | test($rawChannel))) then
             $rawChannel
         else
@@ -102,7 +97,7 @@ for agent_dir in "$OPENCLAW_DIR"/agents/*/; do
             agent: $agent,
             metadata: {
                 channel: $actualChannel,
-                chatType: $session.chatType,
+                chatType: ($session.chatType // "direct"),
                 from: ($session.origin.from // null)
             }
         } |
@@ -110,8 +105,13 @@ for agent_dir in "$OPENCLAW_DIR"/agents/*/; do
     ' "$sessions_file" 2>/dev/null)
 done
 
-# Prune activities older than 30 days
+if [ -n "$batch" ]; then
+    echo -n "$batch" | sqlite3 "$MISSION_CONTROL_DB" 2>/dev/null
+fi
+
+date +%s > "$STATE_FILE"
+
 cutoff=$(date -d "30 days ago" -u +"%Y-%m-%dT%H:%M:%S.000Z")
-pruned=$(sqlite3 "$SUPERBOTIJO_DB" "DELETE FROM activities WHERE timestamp < '$cutoff'; SELECT changes();")
+pruned=$(sqlite3 "$MISSION_CONTROL_DB" "DELETE FROM activities WHERE timestamp < '$cutoff'; SELECT changes();")
 
 echo "✓ Synced $sessions_added new sessions, pruned $pruned old records"
