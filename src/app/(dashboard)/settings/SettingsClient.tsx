@@ -286,25 +286,17 @@ export default function SettingsClient({ initialSystemData }: SettingsClientProp
                 style={{
                   border: "3px solid var(--accent)",
                   backgroundColor: "var(--background)",
-                  fontSize: BRANDING.agentAvatar ? undefined : "2rem",
                 }}
               >
-                {BRANDING.agentAvatar ? (
-                  <Image
-                    src={BRANDING.agentAvatar}
-                    alt={agentName}
-                    fill
-                    className="object-cover"
-                    unoptimized
-                  />
-                ) : (
-                  <Image
-                    src="/logo.png"
-                    alt={agentName}
-                    fill
-                    className="object-contain p-1"
-                  />
-                )}
+                <Image
+                  src={BRANDING.agentAvatar || "/logo.png"}
+                  alt={agentName}
+                  width={80}
+                  height={80}
+                  className="object-contain"
+                  style={{ maxWidth: "100%", maxHeight: "100%" }}
+                  unoptimized
+                />
               </div>
 
               <div className="flex-1">
