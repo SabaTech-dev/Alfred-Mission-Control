@@ -11,7 +11,7 @@ import fs from "fs";
 
 const execAsync = promisify(exec);
 
-const OPENCLAW_DIR = process.env.OPENCLAW_DIR || "/root/.openclaw";
+const OPENCLAW_DIR = process.env.OPENCLAW_DIR || "/home/ubuntu/.openclaw";
 const DB_PATH_DEFAULT = path.join(process.cwd(), "data", "usage-tracking.db");
 
 export interface SessionData {

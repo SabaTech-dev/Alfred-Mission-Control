@@ -1,7 +1,10 @@
-import "server-only";
 import { existsSync, readFileSync } from "fs";
 import { join } from "path";
 import { MODEL_PRICING_CONSTANTS } from "./model-pricing-constants";
+
+// Note: "server-only" removed — this module is used by both Next.js server routes
+// and standalone CLI scripts (collect-usage.ts). If re-adding, ensure CLI scripts
+// use a pricing-only wrapper that doesn't import server-only.
 
 /**
  * OpenClaw Model Pricing
@@ -89,9 +92,16 @@ export function normalizeModelId(modelId: string): string {
     "glm-5": "zai/glm-5",
     glm47: "zai/glm-4.7",
     "glm-4.7": "zai/glm-4.7",
+    "glm-4.6v": "zai/glm-4.6v",
     "glm-4.7-flash": "zai/glm-4.7-flash",
     "glm-4.7-flashx": "zai/glm-4.7-flashx",
     "glm-5-turbo": "zai/glm-5-turbo",
+    // Xiaomi / OpenRouter aliases
+    "xiaomi/mimo-v2-pro": "openrouter/xiaomi/mimo-v2-pro",
+    "mimo-v2-pro": "openrouter/xiaomi/mimo-v2-pro",
+    // Free model variants
+    "minimax/minimax-m2.5:free": "openrouter/minimax/minimax-m2.5:free",
+    "qwen/qwen3-coder:free": "qwen/qwen3-coder:free",
   };
 
   return aliasMap[modelId] || modelId;
