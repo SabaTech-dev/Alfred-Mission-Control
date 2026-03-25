@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { requireAuth } from "@/lib/auth-helpers";
 import { getAgentWorkload, listTasks, type AgentWorkload } from "@/lib/kanban-db";
 
 export const dynamic = "force-dynamic";
@@ -9,6 +10,12 @@ export const dynamic = "force-dynamic";
  * Query params: agentName (optional) - filter to a specific agent
  */
 export async function GET(request: NextRequest) {
+  // Auth check
+  const authResult = await requireAuth(request);
+  if (!authResult.authorized) {
+    return authResult.error;
+  }
+
   try {
     const { searchParams } = new URL(request.url);
     const agentName = searchParams.get("agentName");

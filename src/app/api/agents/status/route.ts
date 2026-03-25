@@ -1,4 +1,5 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { requireAuth } from "@/lib/auth-helpers";
 
 import { getAgentStatusList } from "@/operations";
 import type { AgentStatusEntry } from "@/operations/agent-ops";
@@ -71,7 +72,13 @@ const cachedAgentStatus = createAsyncCache<StatusResponse>({
   compute: computeAgentStatus,
 });
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  // Auth check
+  const authResult = await requireAuth(request);
+  if (!authResult.authorized) {
+    return authResult.error;
+  }
+
   try {
     const data = await cachedAgentStatus.get();
     return NextResponse.json(data);

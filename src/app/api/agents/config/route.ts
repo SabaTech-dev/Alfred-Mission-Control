@@ -2,7 +2,8 @@
  * Agents Config API - Lightweight endpoint for reading agents from openclaw.json
  * Does not depend on database or other services that may fail
  */
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { requireAuth } from '@/lib/auth-helpers';
 import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
 
@@ -11,7 +12,13 @@ const OPENCLAW_CONFIG = join(OPENCLAW_DIR, 'openclaw.json');
 
 export const dynamic = 'force-dynamic';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  // Auth check
+  const authResult = await requireAuth(request);
+  if (!authResult.authorized) {
+    return authResult.error;
+  }
+
   try {
     if (!existsSync(OPENCLAW_CONFIG)) {
       return NextResponse.json(
