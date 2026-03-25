@@ -5,6 +5,8 @@
 import { NextResponse } from 'next/server';
 import { exec } from 'child_process';
 import { promisify } from 'util';
+import { requireAuth } from '@/lib/auth-helpers';
+import type { NextRequest } from 'next/server';
 
 export const dynamic = "force-dynamic";
 
@@ -59,7 +61,9 @@ async function checkPm2Service(name: string): Promise<ServiceCheck> {
   }
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const auth = await requireAuth(request);
+  if (!auth.authorized) return auth.error!;
   const checks: ServiceCheck[] = [];
 
   // Internal services - check by port/process since systemd services may have wrong paths
