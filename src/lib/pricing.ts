@@ -101,6 +101,7 @@ export function normalizeModelId(modelId: string): string {
     "mimo-v2-pro": "openrouter/xiaomi/mimo-v2-pro",
     // Free model variants
     "minimax/minimax-m2.5:free": "openrouter/minimax/minimax-m2.5:free",
+    "openrouter/minimax/minimax-m2.5": "openrouter/minimax/minimax-m2.5:free",
     "qwen/qwen3-coder:free": "qwen/qwen3-coder:free",
   };
 
@@ -130,7 +131,8 @@ export function getModelsFromOpenClawConfig(): ModelPricing[] {
       if (!providerConfig.models) continue;
 
       for (const modelConfig of providerConfig.models) {
-        const fullId = `${providerId}/${modelConfig.id}`;
+        // Avoid double-prefixing if modelConfig.id already includes provider
+        const fullId = modelConfig.id.includes("/") ? modelConfig.id : `${providerId}/${modelConfig.id}`;
         const cost = modelConfig.cost || {};
 
         models.push({
@@ -203,11 +205,16 @@ export function getUsedModels(): string[] {
       models.add(normalizeModelId(defaultModel));
     }
     
-    // Add each agent's model
+    // Add each agent's model (primary + fallbacks)
     for (const agent of agentsList) {
-      const model = agent.model?.primary || agent.model;
-      if (model) {
-        models.add(normalizeModelId(model));
+      const modelConfig = agent.model;
+      const primary = modelConfig?.primary || modelConfig;
+      if (primary) {
+        models.add(normalizeModelId(primary));
+      }
+      const fallbacks = modelConfig?.fallbacks || [];
+      for (const fb of fallbacks) {
+        models.add(normalizeModelId(fb));
       }
     }
     

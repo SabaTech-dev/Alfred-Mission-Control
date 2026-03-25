@@ -76,4 +76,13 @@ export const MODEL_PRICING_CONSTANTS: ModelPricing[] = [
     contextWindow: 1000000,
   },
   // GLM models removed - now read from openclaw.json
+
+  // Legacy/OpenRouter free models (may appear in old sessions)
+  {
+    id: "openrouter/minimax/minimax-m2.5",
+    name: "MiniMax M2.5 (OpenRouter)",
+    inputPricePerMillion: 0,
+    outputPricePerMillion: 0,
+    contextWindow: 1000000,
+  },
 ];
