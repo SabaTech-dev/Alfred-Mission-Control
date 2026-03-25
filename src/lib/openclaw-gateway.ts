@@ -165,7 +165,7 @@ function buildConnectParams(config: GatewayConfig, nonce?: string): Record<strin
     version: "1.0.0",
     platform: "node",
     mode: "backend",
-    instanceId: "superbotijo-chat",
+    instanceId: "alfred-chat",
   } as const;
   const role = "operator";
   const scopes = ["operator.read", "operator.admin"];
@@ -205,7 +205,7 @@ function buildConnectParams(config: GatewayConfig, nonce?: string): Record<strin
     caps: [],
     auth: Object.keys(auth).length > 0 ? auth : undefined,
     locale: "en-US",
-    userAgent: "superbotijo-chat",
+    userAgent: "alfred-chat",
   };
 }
 

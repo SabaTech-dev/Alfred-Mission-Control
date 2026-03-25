@@ -21,7 +21,7 @@ const notifications = new Map<string, Notification>();
 notifications.set('welcome', {
   id: 'welcome',
   type: 'info',
-  title: 'Welcome to SuperBotijo',
+  title: 'Welcome to Alfred',
   message: 'Your AI agent dashboard is ready to use.',
   read: false,
   timestamp: new Date().toISOString(),

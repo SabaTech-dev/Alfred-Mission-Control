@@ -89,7 +89,7 @@ describe("system-stats", () => {
       "df -BG": "/dev/sda1 100G 45G 55G 45% /",
       "tailscale": "100.64.0.1 myhost  daniel   linux   -",
       "ufw status": "Status: active",
-      "systemctl is-active superbotijo": "active",
+      "systemctl is-active alfred": "active",
       "systemctl is-active content-vault": "active",
       "systemctl is-active classvault": "inactive",
       "systemctl is-active creatoros": "active",
@@ -178,7 +178,7 @@ describe("system-stats", () => {
         "df -BG": "/dev/sda1 100G 45G 55G 45% /",
         "tailscale": "Tailscale is stopped",
         "ufw status": "Status: active",
-        "systemctl is-active superbotijo": "inactive",
+        "systemctl is-active alfred": "inactive",
         "systemctl is-active content-vault": "inactive",
         "systemctl is-active classvault": "inactive",
         "systemctl is-active creatoros": "inactive",
@@ -198,7 +198,7 @@ describe("system-stats", () => {
     it("counts active systemd services", async () => {
       const stats = await getSystemStats();
 
-      // superbotijo, content-vault, creatoros = 3 active
+      // alfred, content-vault, creatoros = 3 active
       expect(stats.activeServices).toBe(3);
       expect(stats.totalServices).toBe(4);
     });

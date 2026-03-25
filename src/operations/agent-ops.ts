@@ -719,7 +719,7 @@ export async function registerAgent(
 export async function unregisterAgent(id: string): Promise<OperationResult> {
   try {
     // Don't allow unregistering the main agent
-    if (id === "superbotijo") {
+    if (id === "alfred") {
       return { success: false, error: "Cannot unregister main agent" };
     }
 

@@ -65,7 +65,7 @@
       "highlights": "Destacados",
       "topModels": "Modelos Principales",
       "requests": "solicitudes",
-      "generatedBy": "Generado por SuperBotijo el {date}",
+      "generatedBy": "Generado por Alfred el {date}",
       "linkExpires": "Enlace expira: {date}"
     }
   },
@@ -186,7 +186,7 @@
     "uptime": "Actividad"
   },
   "dashboard": {
-    "title": "SuperBotijo",
+    "title": "Alfred",
     "overview": "Resumen de la actividad de agentes",
     "totalActivities": "Actividades totales",
     "today": "Hoy",
@@ -275,11 +275,11 @@
       "frustrated": "Frustrado",
       "neutral": "Neutral",
       "descriptions": {
-        "productive": "¡SuperBotijo es muy productivo y está completando tareas!",
-        "busy": "SuperBotijo está ocupado manejando múltiples tareas.",
-        "idle": "SuperBotijo está inactivo, esperando tareas.",
-        "frustrated": "SuperBotijo ha encontrado varios errores recientemente.",
-        "neutral": "SuperBotijo está operando normalmente."
+        "productive": "¡Alfred es muy productivo y está completando tareas!",
+        "busy": "Alfred está ocupado manejando múltiples tareas.",
+        "idle": "Alfred está inactivo, esperando tareas.",
+        "frustrated": "Alfred ha encontrado varios errores recientemente.",
+        "neutral": "Alfred está operando normalmente."
       }
     },
     "status": {
@@ -491,7 +491,7 @@
     "title": "Configuración",
     "subtitle": "Estado del sistema, integraciones y configuración",
     "lastUpdated": "Última actualización",
-    "footerLeft": "SuperBotijo v1.0.0",
+    "footerLeft": "Alfred v1.0.0",
     "footerRight": "Panel de agentes OpenClaw",
     "tabs": {
       "system": "Sistema",

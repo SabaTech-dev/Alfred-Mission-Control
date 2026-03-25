@@ -11,7 +11,7 @@ interface AgentConfigEntry {
 }
 
 const AGENT_CONFIG = {
-  main: { emoji: "🫙", color: "#ff6b35", name: "SuperBotijo", role: "Boss" },
+  main: { emoji: "🫙", color: "#ff6b35", name: "Alfred", role: "Boss" },
   academic: {
     emoji: "🎓",
     color: "#4ade80",

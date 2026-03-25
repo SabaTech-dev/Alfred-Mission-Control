@@ -26,7 +26,7 @@ interface WorkspaceCandidate {
 
 const LEGACY_WORKSPACE_ALIASES: Record<string, string> = {
   openclaw: ".",
-  superbotijo: "workspace/superbotijo",
+  alfred: "workspace/alfred",
 };
 
 export interface WorkspaceEntry {
@@ -399,7 +399,7 @@ export async function listAvailableWorkspaces(): Promise<WorkspaceEntry[]> {
       name: toWorkspaceLabel(id),
       emoji: agentInfo?.emoji || (id === DEFAULT_WORKSPACE_ID ? "🫙" : "🤖"),
       path: workspace.path,
-      agentName: workspace.agentName || agentInfo?.name || (id === DEFAULT_WORKSPACE_ID ? "SuperBotijo" : undefined),
+      agentName: workspace.agentName || agentInfo?.name || (id === DEFAULT_WORKSPACE_ID ? "Alfred" : undefined),
     });
   }
 

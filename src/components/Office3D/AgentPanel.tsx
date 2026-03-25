@@ -76,11 +76,12 @@ export default function AgentPanel({ agent, state, onClose }: AgentPanelProps) {
   };
 
   // Format model name (extract model name from full path)
-  const formatModel = (model?: string): string => {
+  const formatModel = (model?: unknown): string => {
     if (!model || model === 'unknown') return 'N/A';
-    // Extract just the model name from paths like "anthropic/claude-sonnet-4-20250514"
-    const parts = model.split('/');
-    return parts[parts.length - 1] || model;
+    const str = typeof model === 'string' ? model : (model && typeof model === 'object' && 'primary' in model ? (model as {primary:string}).primary : String(model));
+    if (!str || str === 'unknown') return 'N/A';
+    const parts = str.split('/');
+    return parts[parts.length - 1] || str;
   };
 
   return (

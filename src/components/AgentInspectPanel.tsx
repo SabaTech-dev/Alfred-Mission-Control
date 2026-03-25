@@ -1,4 +1,5 @@
 'use client';
+import { getModelDisplayName } from "@/lib/model-utils";
 
 import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';

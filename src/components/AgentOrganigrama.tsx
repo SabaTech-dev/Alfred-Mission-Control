@@ -1,4 +1,5 @@
 "use client";
+import { getModelDisplayName } from "@/lib/model-utils";
 
 import { useState, useRef, useEffect } from "react";
 import { DEPARTMENTS, type DepartmentId, groupAgentsByDepartment } from "@/lib/agent-auto-config";
@@ -283,7 +284,7 @@ export function AgentOrganigrama({ agents }: AgentOrganigramaProps) {
               backgroundColor: "var(--card)",
             }}
           >
-            {rootAgent.model.split("/").pop() || rootAgent.model}
+            {getModelDisplayName(rootAgent.model)}
           </div>
         </div>
       </div>
@@ -476,7 +477,7 @@ function DepartmentCard({ deptId, agents, hoveredId, setHoveredId }: DepartmentC
                   marginLeft: "1.7rem",
                 }}
               >
-                {agent.model.split("/").pop() || agent.model}
+                {getModelDisplayName(agent.model)}
               </div>
             </div>
           );

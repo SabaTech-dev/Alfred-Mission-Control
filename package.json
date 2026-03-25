@@ -1,7 +1,7 @@
 {
-  "name": "superbotijo",
+  "name": "alfred-mission-control",
   "version": "1.0.0",
-  "description": "SuperBotijo - OpenClaw Dashboard",
+  "description": "Alfred - OpenClaw Mission Control Dashboard",
   "private": true,
   "scripts": {
     "dev": "next dev -H 0.0.0.0",

@@ -15,7 +15,7 @@ interface Service {
 }
 
 const SERVICE_DESCRIPTIONS: Record<string, string> = {
-  superbotijo: "SuperBotijo – Dashboard",
+  alfred: "Alfred – Dashboard",
   classvault: "ClassVault – LMS Platform",
   "content-vault": "Content Vault – Draft Management",
   "postiz-simple": "Postiz – Social Media Scheduler",
@@ -27,7 +27,7 @@ const SERVICE_DESCRIPTIONS: Record<string, string> = {
 
 const SERVICE_PATTERNS = [
   "openclaw",
-  "superbotijo",
+  "alfred",
   "brain",
   "classvault",
   "content-vault",

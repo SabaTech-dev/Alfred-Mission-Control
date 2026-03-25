@@ -62,7 +62,7 @@ function discoverAllowedServices(): Set<string> {
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
-  const service = searchParams.get("service") || "superbotijo";
+  const service = searchParams.get("service") || "alfred";
   const backend = searchParams.get("backend") || "systemd";
 
   const allowedServices = discoverAllowedServices();

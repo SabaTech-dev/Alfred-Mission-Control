@@ -64,7 +64,7 @@ export async function GET() {
 
   // Internal services - check by port/process since systemd services may have wrong paths
   const [missionControl, gateway] = await Promise.all([
-    checkProcessByPort(3000, 'superbotijo'),
+    checkProcessByPort(3000, 'alfred'),
     checkProcessByPort(18789, 'openclaw-gateway'),
   ]);
   checks.push(missionControl);
@@ -77,15 +77,15 @@ export async function GET() {
 
   // External URLs
   const urlChecks = await Promise.all([
-    checkUrl('https://superbotijo.cazaustre.dev'),
+    checkUrl('https://alfred.cazaustre.dev'),
     checkUrl('https://api.anthropic.com', 3000),
   ]);
 
   checks.push({
-    name: 'superbotijo.cazaustre.dev',
+    name: 'alfred.cazaustre.dev',
     status: urlChecks[0].status,
     latency: urlChecks[0].latency,
-    url: 'https://superbotijo.cazaustre.dev',
+    url: 'https://alfred.cazaustre.dev',
   });
 
   checks.push({

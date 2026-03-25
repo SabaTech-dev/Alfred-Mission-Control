@@ -1,4 +1,5 @@
 "use client";
+import { getModelDisplayName } from "@/lib/model-utils";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -258,7 +259,7 @@ export default function MorningPage() {
                     />
                   </div>
                   <p className="text-xs truncate" style={{ color: 'var(--text-muted)' }}>
-                    {agent.model.split('/').pop()}
+                    {getModelDisplayName(agent.model)}
                   </p>
                   <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>
                     {agent.status === 'active' ? '🟢 Active' : '⚪ Inactive'}

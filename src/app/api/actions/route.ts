@@ -83,7 +83,7 @@ async function runAction(action: string): Promise<ActionResult> {
 
       case 'heartbeat': {
         // Check all critical services
-        const services = ['superbotijo'];
+        const services = ['alfred'];
         const pm2services = ['classvault', 'content-vault', 'brain'];
         const results: string[] = [];
 
@@ -107,10 +107,10 @@ async function runAction(action: string): Promise<ActionResult> {
 
         // Ping the main site
         try {
-          const { stdout: ping } = await execAsync('curl -s -o /dev/null -w "%{http_code}" --max-time 5 https://superbotijo.cazaustre.dev');
-          results.push(`\n🌐 superbotijo.cazaustre.dev: HTTP ${ping.trim()}`);
+          const { stdout: ping } = await execAsync('curl -s -o /dev/null -w "%{http_code}" --max-time 5 https://alfred.cazaustre.dev');
+          results.push(`\n🌐 alfred.cazaustre.dev: HTTP ${ping.trim()}`);
         } catch {
-          results.push('\n🌐 superbotijo.cazaustre.dev: unreachable');
+          results.push('\n🌐 alfred.cazaustre.dev: unreachable');
         }
 
         output = results.join('\n');
@@ -118,7 +118,7 @@ async function runAction(action: string): Promise<ActionResult> {
       }
 
       case 'npm-audit': {
-        const { stdout, stderr } = await execAsync(`cd "${WORKSPACE}/superbotijo" && npm audit --json 2>/dev/null | node -e "const d=require('fs').readFileSync('/dev/stdin','utf-8');const j=JSON.parse(d);console.log('Vulnerabilities: '+JSON.stringify(j.metadata?.vulnerabilities||{}))" 2>&1`).catch((e) => ({ stdout: '', stderr: e.message }));
+        const { stdout, stderr } = await execAsync(`cd "${WORKSPACE}/alfred" && npm audit --json 2>/dev/null | node -e "const d=require('fs').readFileSync('/dev/stdin','utf-8');const j=JSON.parse(d);console.log('Vulnerabilities: '+JSON.stringify(j.metadata?.vulnerabilities||{}))" 2>&1`).catch((e) => ({ stdout: '', stderr: e.message }));
         output = stdout || stderr || 'Audit completed';
         break;
       }

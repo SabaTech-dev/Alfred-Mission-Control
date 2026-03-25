@@ -59,7 +59,7 @@ vi.mock("@/i18n/provider", () => ({
     const i18n = {
       t: (key: string, values?: Record<string, string | number>) => {
         const messages: Record<string, string> = {
-          "dashboard.title": "SuperBotijo",
+          "dashboard.title": "Alfred",
           "dashboard.overview": "Overview of agent activity",
           "dashboard.totalActivities": "Total Activities",
           "dashboard.today": "Today",

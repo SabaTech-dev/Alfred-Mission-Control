@@ -56,7 +56,7 @@ function LoginForm() {
         <div className="flex items-center gap-2.5">
           <Image
             src={logo}
-            alt="SuperBotijo"
+            alt="Alfred"
             width={40}
             height={40}
             style={{ objectFit: "contain" }}
@@ -69,7 +69,7 @@ function LoginForm() {
               letterSpacing: "-0.5px",
             }}
           >
-            SuperBotijo
+            Alfred
           </h1>
         </div>
         <p

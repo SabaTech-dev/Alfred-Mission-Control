@@ -76,8 +76,8 @@ export function SystemInfo({ data }: SystemInfoProps) {
     {
       icon: Brain,
       labelKey: "systemInfo.currentModel",
-      value: data.system.model.split("/").pop() || data.system.model,
-      sublabel: data.system.model.includes("/") ? data.system.model.split("/")[0] : t("systemInfo.provider"),
+      value: typeof data.system.model === "string" ? data.system.model.split("/").pop() || data.system.model : String(data.system.model),
+      sublabel: typeof data.system.model === "string" && data.system.model.includes("/") ? data.system.model.split("/")[0] : t("systemInfo.provider"),
     },
     {
       icon: FolderOpen,

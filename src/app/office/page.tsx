@@ -69,7 +69,7 @@ async function loadOfficeAgents() {
 }
 
 export const metadata = {
-  title: 'The Office 3D | SuperBotijo',
+  title: 'The Office 3D | Alfred',
   description: 'Visualiza tus agentes trabajando en tiempo real en un entorno 3D',
 };
 

@@ -19,11 +19,11 @@ const QUICK_COMMANDS = [
   "free -h",
   "uptime",
   "ps aux | grep node",
-  "systemctl status superbotijo",
+  "systemctl status alfred",
   "pm2 list",
   "ls /home/daniel/.openclaw/workspace",
-  "git -C /home/daniel/.openclaw/workspace/superbotijo status",
-  "journalctl -u superbotijo -n 20 --no-pager",
+  "git -C /home/daniel/.openclaw/workspace/alfred status",
+  "journalctl -u alfred -n 20 --no-pager",
   "docker ps",
   "netstat -tlnp",
   "cat /proc/loadavg",
@@ -213,7 +213,7 @@ export default function TerminalClient() {
           history.map((entry, i) => (
             <div key={i} style={{ marginBottom: "1rem" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.25rem" }}>
-                <span style={{ color: "#4ade80" }}>superbotijo@srv</span>
+                <span style={{ color: "#4ade80" }}>alfred@srv</span>
                 <span style={{ color: "#8b949e" }}>:</span>
                 <span style={{ color: "#60a5fa" }}>~</span>
                 <span style={{ color: "#c9d1d9" }}>$ {entry.command}</span>

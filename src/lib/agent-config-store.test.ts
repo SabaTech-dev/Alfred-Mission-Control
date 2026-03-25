@@ -10,16 +10,16 @@ let tempDir: string;
 let tempDbPath: string;
 
 beforeEach(async () => {
-  tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "superbotijo-agent-config-"));
+  tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "alfred-agent-config-"));
   tempDbPath = path.join(tempDir, "test-configs.db");
-  process.env.SUPERBOTIJO_CONFIG_DB_PATH = tempDbPath;
+  process.env.ALFRED_CONFIG_DB_PATH = tempDbPath;
   vi.resetModules();
 });
 
 afterEach(async () => {
   const store = await import("@/lib/agent-config-store");
   store.closeDb();
-  delete process.env.SUPERBOTIJO_CONFIG_DB_PATH;
+  delete process.env.ALFRED_CONFIG_DB_PATH;
   vi.resetModules();
   if (tempDir && fs.existsSync(tempDir)) {
     fs.rmSync(tempDir, { recursive: true, force: true });

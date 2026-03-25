@@ -27,8 +27,8 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "SuperBotijo - OpenClaw SuperBotijo",
-  description: "Your OpenClaw agent dashboard powered by SuperBotijo",
+  title: "Alfred - OpenClaw Alfred",
+  description: "Your OpenClaw agent dashboard powered by Alfred",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,

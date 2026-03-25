@@ -188,7 +188,7 @@ function countFilesRecursively(dir: string, maxDepth: number = 10, currentDepth:
 // ============================================================================
 
 /**
- * Get Kanban statistics from SuperBotijo's database
+ * Get Kanban statistics from Alfred's database
  */
 export function getKanbanStats(): KanbanStats {
   const stats: KanbanStats = {

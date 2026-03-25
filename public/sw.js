@@ -1,4 +1,4 @@
-const CACHE = "mc-v1";
+const CACHE = "alfred-mc-v2";
 self.addEventListener("install", () => { self.skipWaiting(); });
 self.addEventListener("activate", () => { self.clients.claim(); });
 self.addEventListener("fetch", e => {

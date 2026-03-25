@@ -1,5 +1,6 @@
 "use client";
 
+import { getModelDisplayName } from "@/lib/model-utils";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
@@ -366,10 +367,10 @@ export default function DashboardClient({ initialTelemetry }: DashboardClientPro
                     <div
                       className="text-xs truncate mb-1"
                       style={{ color: "var(--text-muted)" }}
-                      title={agent.model}
+                      title={typeof agent.model === "string" ? agent.model : JSON.stringify(agent.model)}
                     >
                       <Bot className="inline-block w-3 h-3 mr-1" />
-                      {agent.model.split("/").pop()}
+                      {getModelDisplayName(agent.model)}
                     </div>
                     <div className="text-xs" style={{ color: "var(--text-muted)" }}>
                       {t(`agents.status.${agent.status}`)}

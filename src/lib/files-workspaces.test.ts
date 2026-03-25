@@ -16,7 +16,7 @@ describe("files-workspaces", () => {
   let openclawDir = "";
 
   beforeEach(async () => {
-    openclawDir = await fs.mkdtemp(path.join(os.tmpdir(), "superbotijo-workspaces-"));
+    openclawDir = await fs.mkdtemp(path.join(os.tmpdir(), "alfred-workspaces-"));
     process.env.OPENCLAW_DIR = openclawDir;
     delete process.env.FILES_WORKSPACE_ALLOWLIST;
 
@@ -49,7 +49,7 @@ describe("files-workspaces", () => {
   });
 
   it("blocks escaping workspace through symlink", async () => {
-    const outsideDir = await fs.mkdtemp(path.join(os.tmpdir(), "superbotijo-outside-"));
+    const outsideDir = await fs.mkdtemp(path.join(os.tmpdir(), "alfred-outside-"));
 
     try {
       await fs.writeFile(path.join(outsideDir, "secret.txt"), "secret");
@@ -81,8 +81,8 @@ describe("files-workspaces", () => {
     });
   });
 
-  it("resolves legacy aliases superbotijo and openclaw", async () => {
-    await fs.mkdir(path.join(openclawDir, "workspace", "superbotijo"), { recursive: true });
+  it("resolves legacy aliases alfred and openclaw", async () => {
+    await fs.mkdir(path.join(openclawDir, "workspace", "alfred"), { recursive: true });
 
     const { resolveWorkspaceDirectory } = await importFilesWorkspaces();
 
@@ -91,9 +91,9 @@ describe("files-workspaces", () => {
       workspacePath: await fs.realpath(openclawDir),
     });
 
-    await expect(resolveWorkspaceDirectory("superbotijo")).resolves.toMatchObject({
-      workspaceId: "superbotijo",
-      workspacePath: await fs.realpath(path.join(openclawDir, "workspace", "superbotijo")),
+    await expect(resolveWorkspaceDirectory("alfred")).resolves.toMatchObject({
+      workspaceId: "alfred",
+      workspacePath: await fs.realpath(path.join(openclawDir, "workspace", "alfred")),
     });
   });
 

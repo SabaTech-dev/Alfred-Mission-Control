@@ -8,7 +8,7 @@ import Database from "better-sqlite3";
 import path from "path";
 import fs from "fs";
 
-const DB_PATH = process.env.SUPERBOTIJO_CONFIG_DB_PATH || path.join(process.cwd(), "data", "agent-configs.db");
+const DB_PATH = process.env.ALFRED_CONFIG_DB_PATH || path.join(process.cwd(), "data", "agent-configs.db");
 
 export interface AgentConfig {
   agentId: string;

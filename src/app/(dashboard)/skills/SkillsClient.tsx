@@ -13,7 +13,7 @@ import {
   Download,
   Cloud,
 } from "lucide-react";
-import { SectionHeader, MetricCard } from "@/components/SuperBotijo";
+import { SectionHeader, MetricCard } from "@/components/Alfred";
 import { ClawHubBrowser } from "@/components/ClawHubBrowser";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { useI18n } from "@/i18n/provider";

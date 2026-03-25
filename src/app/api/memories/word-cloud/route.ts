@@ -40,7 +40,7 @@ const TECHNOLOGY_WORDS = new Set([
 ]);
 
 const PROJECT_WORDS = new Set([
-  "superbotijo", "openclaw", "dashboard", "bot", "agent", "workflow", "cron",
+  "alfred", "openclaw", "dashboard", "bot", "agent", "workflow", "cron",
   "memory", "session", "project", "app", "application", "system", "service",
 ]);
 

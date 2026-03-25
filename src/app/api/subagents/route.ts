@@ -193,7 +193,7 @@ export async function GET() {
       subagents.push({
         id: parsed.subagentId,
         parentId: parsed.parentId,
-        parentName: parsed.parentId === 'main' ? 'SuperBotijo' : parsed.parentId,
+        parentName: parsed.parentId === 'main' ? 'Alfred' : parsed.parentId,
         sessionKey: session.key,
         task: task || 'Working...',
         model: session.model || 'unknown',

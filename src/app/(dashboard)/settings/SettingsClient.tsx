@@ -632,7 +632,7 @@ export default function SettingsClient({ initialSystemData }: SettingsClientProp
         }}
       >
         <div className="flex items-center justify-between text-sm" style={{ color: "var(--text-muted)" }}>
-          <span>SuperBotijo v1.0.0</span>
+          <span>Alfred v1.0.0</span>
           <span>OpenClaw Agent Dashboard</span>
         </div>
       </div>

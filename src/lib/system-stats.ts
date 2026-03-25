@@ -18,7 +18,7 @@ import { createAsyncCache } from "@/lib/cache";
 
 const execAsync = promisify(exec);
 
-const SYSTEMD_SERVICES = ["superbotijo", "content-vault", "classvault", "creatoros"];
+const SYSTEMD_SERVICES = ["alfred", "content-vault", "classvault", "creatoros"];
 
 interface UsageRecord {
   timestamp: string;

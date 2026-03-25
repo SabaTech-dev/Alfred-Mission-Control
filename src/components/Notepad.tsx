@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { StickyNote, Trash2 } from "lucide-react";
 
-const STORAGE_KEY = "superbotijo-notepad";
+const STORAGE_KEY = "alfred-notepad";
 
 function loadInitialState(): { text: string; lastSaved: Date | null } {
   if (typeof window === "undefined") {

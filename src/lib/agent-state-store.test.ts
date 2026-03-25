@@ -7,7 +7,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 vi.mock("server-only", () => ({}));
 
 function createTempStatePath(): { dir: string; filePath: string } {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "superbotijo-agent-state-"));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "alfred-agent-state-"));
   return {
     dir,
     filePath: path.join(dir, "agent-runtime-state.json"),
@@ -15,14 +15,14 @@ function createTempStatePath(): { dir: string; filePath: string } {
 }
 
 afterEach(() => {
-  delete process.env.SUPERBOTIJO_AGENT_STATE_PATH;
+  delete process.env.ALFRED_AGENT_STATE_PATH;
   vi.resetModules();
 });
 
 describe("agent-state-store", () => {
   it("persists custom agents across reads", async () => {
     const { dir, filePath } = createTempStatePath();
-    process.env.SUPERBOTIJO_AGENT_STATE_PATH = filePath;
+    process.env.ALFRED_AGENT_STATE_PATH = filePath;
 
     const store = await import("@/lib/agent-state-store");
 
@@ -45,7 +45,7 @@ describe("agent-state-store", () => {
 
   it("cleans runtime state when custom agent is removed", async () => {
     const { dir, filePath } = createTempStatePath();
-    process.env.SUPERBOTIJO_AGENT_STATE_PATH = filePath;
+    process.env.ALFRED_AGENT_STATE_PATH = filePath;
 
     const store = await import("@/lib/agent-state-store");
 

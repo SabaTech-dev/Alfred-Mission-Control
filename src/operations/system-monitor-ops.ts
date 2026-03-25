@@ -8,7 +8,7 @@ import os from "os";
 
 const execAsync = promisify(exec);
 
-const SYSTEMD_SERVICES = ["openclaw-gateway", "superbotijo"];
+const SYSTEMD_SERVICES = ["openclaw-gateway", "alfred"];
 const _PM2_SERVICES: string[] = [];
 const _PLACEHOLDER_SERVICES: Array<{ name: string; description: string; status: string }> = [];
 
@@ -50,7 +50,7 @@ export interface SystemMonitorData {
 }
 
 const SERVICE_DESCRIPTIONS: Record<string, string> = {
-  "superbotijo": "SuperBotijo – SuperBotijo Dashboard",
+  "alfred": "Alfred – Alfred Dashboard",
   classvault: "ClassVault – LMS Platform",
   "content-vault": "Content Vault – Draft Management Webapp",
   "postiz-simple": "Postiz – Social Media Scheduler",

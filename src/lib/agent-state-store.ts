@@ -3,7 +3,7 @@ import "server-only";
 import fs from "fs";
 import path from "path";
 
-const AGENT_STATE_PATH = process.env.SUPERBOTIJO_AGENT_STATE_PATH || path.join(process.cwd(), "data", "agent-runtime-state.json");
+const AGENT_STATE_PATH = process.env.ALFRED_AGENT_STATE_PATH || path.join(process.cwd(), "data", "agent-runtime-state.json");
 
 export const AGENT_RUNTIME_STATUS = {
   working: "working",

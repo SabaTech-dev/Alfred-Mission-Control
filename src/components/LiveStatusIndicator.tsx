@@ -60,7 +60,7 @@ export function LiveStatusIndicator() {
     >
       <Loader2 className="w-4 h-4 animate-spin" style={{ color: "#3b82f6" }} />
       <span className="text-sm animate-pulse" style={{ color: "var(--text-primary)" }}>
-        {description || "SuperBotijo está trabajando..."}
+        {description || "Alfred está trabajando..."}
       </span>
     </div>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import { Dock, TopBar, StatusBar } from "@/components/SuperBotijo";
+import { Dock, TopBar, StatusBar } from "@/components/Alfred";
 import { I18nProvider } from "@/i18n/provider";
 import { CommandPalette } from "@/components/CommandPalette";
 
@@ -11,7 +11,7 @@ export default function DashboardLayout({
 }) {
   return (
     <I18nProvider>
-      <div className="superbotijo-shell" style={{ minHeight: "100vh" }}>
+      <div className="alfred-shell" style={{ minHeight: "100vh" }}>
         <Dock />
         <TopBar />
 

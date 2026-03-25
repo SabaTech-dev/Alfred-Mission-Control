@@ -222,7 +222,7 @@ export function Sidebar() {
               letterSpacing: "-0.5px",
             }}
           >
-            SuperBotijo
+            Alfred
           </h1>
         </div>
 

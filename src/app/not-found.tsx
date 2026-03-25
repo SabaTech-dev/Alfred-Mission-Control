@@ -2,10 +2,47 @@
 
 import { FileQuestion, Home, ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { useI18n } from "@/i18n/provider";
+import en from "@/i18n/messages/en.json";
+import es from "@/i18n/messages/es.json";
+
+type Messages = Record<string, unknown>;
+const DICTIONARY: Record<string, Messages> = { en, es };
+
+function getByPath(obj: Messages, path: string): unknown {
+  return path.split(".").reduce<unknown>((acc, part) => {
+    if (typeof acc === "object" && acc !== null && part in (acc as Record<string, unknown>)) {
+      return (acc as Record<string, unknown>)[part];
+    }
+    return undefined;
+  }, obj);
+}
+
+function interpolate(text: string, values?: Record<string, string | number>) {
+  if (!values) return text;
+  return text.replace(/\{(\w+)\}/g, (_, key: string) => String(values[key] ?? `{${key}}`));
+}
+
+function detectLocale(): string {
+  if (typeof window === "undefined") return "en";
+  const cookie = document.cookie
+    .split("; ")
+    .find((part) => part.startsWith("alfred-locale="))
+    ?.split("=")[1];
+  if (cookie === "en" || cookie === "es") return cookie;
+  return navigator.language.toLowerCase().startsWith("es") ? "es" : "en";
+}
+
+function getT(locale: string) {
+  const messages = DICTIONARY[locale] || DICTIONARY.en;
+  return (key: string, values?: Record<string, string | number>) => {
+    const raw = getByPath(messages, key) ?? getByPath(DICTIONARY.en, key) ?? key;
+    return typeof raw === "string" ? interpolate(raw, values) : key;
+  };
+}
 
 export default function NotFound() {
-  const { t } = useI18n();
+  const locale = typeof window !== "undefined" ? detectLocale() : "en";
+  const t = getT(locale);
 
   return (
     <div 

@@ -26,7 +26,7 @@ function detectLocale(): string {
   if (typeof window === "undefined") return "en";
   const cookie = document.cookie
     .split("; ")
-    .find((part) => part.startsWith("superbotijo-locale="))
+    .find((part) => part.startsWith("alfred-locale="))
     ?.split("=")[1];
   if (cookie === "en" || cookie === "es") return cookie;
   return navigator.language.toLowerCase().startsWith("es") ? "es" : "en";

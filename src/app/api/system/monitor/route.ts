@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 
 // Services monitored per backend
 // Auto-detect OpenClaw-related services
-const SYSTEMD_SERVICES = ["openclaw-gateway", "superbotijo"];
+const SYSTEMD_SERVICES = ["openclaw-gateway", "alfred"];
 const PM2_SERVICES: string[] = []; // No PM2 services by default
 const PLACEHOLDER_SERVICES: Array<{ name: string; description: string; status: string }> = []; // No placeholders
 
@@ -60,7 +60,7 @@ function normalizePm2Status(status: string): string {
 
 // Friendly display names for PM2 process names
 const SERVICE_DESCRIPTIONS: Record<string, string> = {
-  "superbotijo": "SuperBotijo – SuperBotijo Dashboard",
+  "alfred": "Alfred – Alfred Dashboard",
   classvault: "ClassVault – LMS Platform",
   "content-vault": "Content Vault – Draft Management Webapp",
   "postiz-simple": "Postiz – Social Media Scheduler",

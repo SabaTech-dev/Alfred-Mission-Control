@@ -1,4 +1,5 @@
 "use client";
+import { getModelDisplayName } from "@/lib/model-utils";
 
 import { useEffect, useState } from "react";
 import {
@@ -360,7 +361,7 @@ export default function AgentsClient({ initialAgents }: { initialAgents: Agent[]
                           {t("agents.model")}:
                         </span>
                         <span className="text-xs font-mono ml-2" style={{ color: "var(--text-primary)" }}>
-                          {agent.model.split("/").pop() || agent.model}
+                          {getModelDisplayName(agent.model)}
                         </span>
                       </div>
                     </div>
