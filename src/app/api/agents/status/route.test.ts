@@ -7,13 +7,18 @@ vi.mock("@/operations", () => ({
   getAgentStatusList: () => getAgentStatusListMock(),
 }));
 
+vi.mock("@/lib/auth-helpers", () => ({
+  requireAuth: vi.fn().mockResolvedValue({ authorized: true }),
+}));
+
 vi.mock("@/lib/telemetry/dashboard-snapshot", () => ({
   getDashboardTelemetrySnapshot: () => getDashboardTelemetrySnapshotMock(),
 }));
 
 async function callGet() {
   const route = await import("./route");
-  return route.GET();
+  const mockRequest = new Request("http://localhost:3000/api/agents/status");
+  return route.GET(mockRequest as any);
 }
 
 describe("/api/agents/status compatibility", () => {
