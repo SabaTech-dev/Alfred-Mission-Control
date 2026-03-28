@@ -1,67 +1,103 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Loader2 } from "lucide-react";
-import { useActivityStream } from "@/hooks/useActivityStream";
+import { useEffect, useRef } from "react";
 
-interface Activity {
-  id: string;
-  type: string;
-  description: string;
-  timestamp: string;
-  status: string;
+/**
+ * LiveStatusIndicator — Animated status dot with pulsing ring.
+ *
+ * Modes:
+ * - "pulse"    : expanding ring (default)
+ * - "blink"    : fade in/out
+ * - "wave"     : three-dot wave animation
+ */
+
+interface LiveStatusIndicatorProps {
+  color: string;
+  size?: number;
+  mode?: "pulse" | "blink" | "wave";
+  label?: string;
+  speed?: number; // ms per cycle
 }
 
-export function LiveStatusIndicator() {
-  const { activities, isConnected } = useActivityStream({ enabled: true });
-  const [recentActivity, setRecentActivity] = useState<Activity | null>(null);
-  const [showIndicator, setShowIndicator] = useState(false);
+export function LiveStatusIndicator({
+  color,
+  size = 10,
+  mode = "pulse",
+  label,
+  speed = 2000,
+}: LiveStatusIndicatorProps) {
+  const dotRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (activities.length === 0) return;
+    const el = dotRef.current;
+    if (!el) return;
 
-    const latestActivity = activities[0];
-    const activityTime = new Date(latestActivity.timestamp).getTime();
-    const now = Date.now();
-    const isRecent = now - activityTime < 5000;
+    // Clean previous animations
+    el.getAnimations().forEach((a) => a.cancel());
 
-    if (
-      isRecent &&
-      (latestActivity.status === "pending" || latestActivity.status === "running")
-    ) {
-      // setState is intentional here - we're responding to new activity
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setRecentActivity(latestActivity);
-       
-      setShowIndicator(true);
-
-      const timeout = setTimeout(() => {
-        setShowIndicator(false);
-      }, 5000);
-
-      return () => clearTimeout(timeout);
+    if (mode === "pulse") {
+      el.animate(
+        [
+          { transform: "scale(1)", opacity: 1, boxShadow: `0 0 0 0 ${color}60` },
+          { transform: "scale(1)", opacity: 1, boxShadow: `0 0 0 ${size * 0.8}px ${color}00` },
+        ],
+        { duration: speed, iterations: Infinity, easing: "ease-out" },
+      );
+    } else if (mode === "blink") {
+      el.animate(
+        [
+          { opacity: 1 },
+          { opacity: 0.3 },
+          { opacity: 1 },
+        ],
+        { duration: speed, iterations: Infinity, easing: "ease-in-out" },
+      );
     }
-  }, [activities]);
+    // "wave" uses CSS keyframes via three dots — no JS animation needed
+  }, [color, size, mode, speed]);
 
-  if (!showIndicator || !isConnected || !recentActivity) return null;
-
-  const description =
-    recentActivity.description?.length > 50
-      ? recentActivity.description.substring(0, 50) + "..."
-      : recentActivity.description;
+  if (mode === "wave") {
+    return (
+      <div className="flex items-center gap-1" aria-label={label}>
+        {[0, 1, 2].map((i) => (
+          <span
+            key={i}
+            className="rounded-full inline-block"
+            style={{
+              width: size * 0.6,
+              height: size * 0.6,
+              backgroundColor: color,
+              animation: `liveWave 1.4s ease-in-out ${i * 0.2}s infinite`,
+            }}
+          />
+        ))}
+        <style>{`
+          @keyframes liveWave {
+            0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+            40% { transform: scale(1); opacity: 1; }
+          }
+        `}</style>
+      </div>
+    );
+  }
 
   return (
-    <div
-      className="flex items-center gap-2 px-3 py-1.5 rounded-full"
-      style={{
-        backgroundColor: "rgba(59, 130, 246, 0.15)",
-        border: "1px solid rgba(59, 130, 246, 0.3)",
-      }}
-    >
-      <Loader2 className="w-4 h-4 animate-spin" style={{ color: "#3b82f6" }} />
-      <span className="text-sm animate-pulse" style={{ color: "var(--text-primary)" }}>
-        {description || "Alfred está trabajando..."}
-      </span>
+    <div className="inline-flex items-center gap-2" aria-label={label}>
+      <div
+        ref={dotRef}
+        className="rounded-full"
+        style={{
+          width: size,
+          height: size,
+          backgroundColor: color,
+          flexShrink: 0,
+        }}
+      />
+      {label && (
+        <span className="text-xs font-medium" style={{ color }}>
+          {label}
+        </span>
+      )}
     </div>
   );
 }

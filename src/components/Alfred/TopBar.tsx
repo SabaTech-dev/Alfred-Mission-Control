@@ -101,7 +101,7 @@ export function TopBar() {
             {BRANDING.appTitle}
           </h1>
           <GatewayStatusBadge />
-          <LiveStatusIndicator />
+          <LiveStatusIndicator color="var(--success)" size={8} mode="pulse" />
         </div>
 
         <div className="flex items-center gap-3">
