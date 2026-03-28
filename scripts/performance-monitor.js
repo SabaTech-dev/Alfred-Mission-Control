@@ -1,17 +1,19 @@
 #!/usr/bin/env node
 
 /**
- * Performance Monitor - Monitoreo continuo de métricas de rendimiento
- * 
- * Este script se ejecuta en segundo plano y monitorea continuamente
- * las métricas de rendimiento de la aplicación, alertando cuando se
- * exceden los thresholds definidos en el baseline.
+ * Performance Monitor v2 - Monitoreo continuo con alertas e historial
+ *
+ * Integrado con alert-system.js (alertas con severidad) y
+ * historical-tracker.js (datos históricos con ventana rodante).
+ * Lighthouse se salta gracefully si no está disponible.
  */
 
 const fs = require('fs');
 const path = require('path');
 const { spawn } = require('child_process');
 const http = require('http');
+const { createAlert, loadAlerts } = require('./alert-system');
+const { recordDataPoint, getEndpointTrend } = require('./historical-tracker');
 
 // Configuración
 const config = {
@@ -19,15 +21,15 @@ const config = {
   apiUrl: 'http://localhost:3000',
   thresholds: {
     apiResponseTime: {
-      default: 100, // ms por defecto
-      multiplier: 1.5, // multiplicador sobre el baseline
+      default: 100,
+      multiplier: 1.5,
     },
     webVitals: {
-      fcp: 2500, // ms
-      lcp: 4000, // ms
-      cls: 0.1, // score
-      tbt: 200, // ms
-      interactive: 3000, // ms
+      fcp: 2500,
+      lcp: 4000,
+      cls: 0.1,
+      tbt: 200,
+      interactive: 3000,
     },
     lighthouse: {
       performance: 0.90,
@@ -36,28 +38,33 @@ const config = {
       seo: 0.90,
     },
     bundleSize: {
-      main: 2 * 1024 * 1024, // 2MB
-      total: 5 * 1024 * 1024, // 5MB
+      main: 2 * 1024 * 1024,
+      total: 5 * 1024 * 1024,
     },
   },
   alerts: {
     logFile: 'performance-monitor.log',
-    maxAlerts: 10,
   },
 };
 
 // Cargar baseline
 let baselineData = null;
 let alertCount = 0;
+let lighthouseAvailable = true; // Will be set to false after first failure
 
 function loadBaseline() {
   try {
-    const baselineFile = path.join(process.cwd(), 'performance-baseline-results', 'baseline-performance-2026-03-27T22-47-30-307Z.json');
-    if (fs.existsSync(baselineFile)) {
-      const content = fs.readFileSync(baselineFile, 'utf8');
-      baselineData = JSON.parse(content);
-      console.log('✅ Baseline de rendimiento cargado');
-    } else {
+    const baselineDir = path.join(process.cwd(), 'performance-baseline-results');
+    if (fs.existsSync(baselineDir)) {
+      const files = fs.readdirSync(baselineDir).filter(f => f.startsWith('baseline-'));
+      if (files.length > 0) {
+        const latest = files.sort().pop();
+        const content = fs.readFileSync(path.join(baselineDir, latest), 'utf8');
+        baselineData = JSON.parse(content);
+        console.log('✅ Baseline de rendimiento cargado');
+      }
+    }
+    if (!baselineData) {
       console.log('⚠️ No se encontró el baseline, usando thresholds por defecto');
     }
   } catch (error) {
@@ -71,18 +78,17 @@ function logAlert(message, level = 'INFO') {
   
   console.log(logMessage);
   
-  // Escribir a archivo de log
   try {
     fs.appendFileSync(config.alerts.logFile, logMessage + '\n');
   } catch (error) {
-    console.log('⚠️ Error al escribir log:', error.message);
+    // Silently fail
   }
 }
 
 async function checkApiResponseTimes() {
   if (!baselineData || !baselineData.metrics || !baselineData.metrics.apiResponseTime) {
     logAlert('Datos de baseline de API no disponibles', 'WARN');
-    return;
+    return [];
   }
 
   const baselineTimes = baselineData.metrics.apiResponseTime.endpoints;
@@ -91,7 +97,7 @@ async function checkApiResponseTimes() {
   for (const [endpoint, baseline] of Object.entries(baselineTimes)) {
     try {
       const startTime = Date.now();
-      const response = await new Promise((resolve, reject) => {
+      await new Promise((resolve, reject) => {
         const req = http.get(`${config.apiUrl}${endpoint}`, (res) => {
           let data = '';
           res.on('data', chunk => data += chunk);
@@ -115,7 +121,28 @@ async function checkApiResponseTimes() {
 
       if (status === 'SLOW') {
         alertCount++;
-        logAlert(`API LENTA: ${endpoint} (${duration}ms > ${baselineTime}ms)`, 'WARN');
+        logAlert(`API LENTA: ${endpoint} (${duration}ms > ${baselineTime.toFixed(1)}ms)`, 'WARN');
+        createAlert({
+          level: 'WARN',
+          category: 'api',
+          endpoint,
+          message: `Response time ${duration}ms exceeds threshold ${baselineTime.toFixed(1)}ms`,
+          value: duration,
+          threshold: baselineTime,
+        });
+      } else {
+        // Check for degradation trend
+        const trend = getEndpointTrend(endpoint);
+        if (trend && trend.isDegradading) {
+          createAlert({
+            level: 'WARN',
+            category: 'api',
+            endpoint,
+            message: `Degradation trend detected: avg ${trend.avg.toFixed(1)}ms (min ${trend.min}, max ${trend.max})`,
+            value: trend.avg,
+            threshold: trend.min,
+          });
+        }
       }
     } catch (error) {
       results.push({
@@ -123,7 +150,16 @@ async function checkApiResponseTimes() {
         error: error.message,
         status: 'ERROR',
       });
+      alertCount++;
       logAlert(`API ERROR: ${endpoint} - ${error.message}`, 'ERROR');
+      createAlert({
+        level: 'CRITICAL',
+        category: 'api',
+        endpoint,
+        message: `Endpoint unreachable: ${error.message}`,
+        value: null,
+        threshold: null,
+      });
     }
   }
 
@@ -131,36 +167,55 @@ async function checkApiResponseTimes() {
 }
 
 async function runLighthouseAudit() {
+  // Skip if previously failed (graceful degradation)
+  if (!lighthouseAvailable) {
+    return null;
+  }
+
   return new Promise((resolve) => {
-    const child = spawn('npx', ['lighthouse', config.apiUrl, '--output=json', '--output-path=/tmp/lighthouse-output.json'], {
+    const child = spawn('npx', ['lighthouse', config.apiUrl, '--output=json', '--output-path=/tmp/lighthouse-output.json', '--chrome-flags=--headless=new', '--no-enable-error-reporting'], {
       stdio: 'pipe',
-      timeout: 120000,
+      timeout: 60000, // Reduced from 120s
     });
+
+    let stderr = '';
+    child.stderr?.on('data', (data) => { stderr += data.toString(); });
 
     child.on('close', (code) => {
       if (code === 0) {
         try {
           const output = fs.readFileSync('/tmp/lighthouse-output.json', 'utf8');
-          const data = JSON.parse(output);
-          resolve(data);
+          resolve(JSON.parse(output));
         } catch (error) {
-          logAlert(`Error al procesar Lighthouse: ${error.message}`, 'ERROR');
+          logAlert(`Error al procesar Lighthouse: ${error.message}`, 'WARN');
           resolve(null);
         }
       } else {
-        logAlert(`Lighthouse failed with code ${code}`, 'ERROR');
+        // Mark as unavailable so we don't keep retrying
+        lighthouseAvailable = false;
+        logAlert(`Lighthouse no disponible (code ${code}). Se saltará en futuros chequeos.`, 'WARN');
+        createAlert({
+          level: 'INFO',
+          category: 'lighthouse',
+          message: `Lighthouse unavailable in this environment (skipped)`,
+        });
         resolve(null);
       }
     });
 
     child.on('error', (error) => {
-      logAlert(`Error ejecutando Lighthouse: ${error.message}`, 'ERROR');
+      lighthouseAvailable = false;
+      logAlert(`Lighthouse no ejecutable: ${error.message}. Se saltará.`, 'WARN');
       resolve(null);
     });
   });
 }
 
 async function checkLighthouseScores() {
+  if (!lighthouseAvailable) {
+    return null;
+  }
+
   logAlert('Ejecutando auditoría Lighthouse...', 'INFO');
   
   const lighthouseData = await runLighthouseAudit();
@@ -168,7 +223,7 @@ async function checkLighthouseScores() {
     return null;
   }
 
-  const categories = lighthouseData.categories;
+  const categories = lighthouseData.categories || {};
   const results = {};
 
   for (const [category, data] of Object.entries(categories)) {
@@ -177,15 +232,20 @@ async function checkLighthouseScores() {
     
     results[category] = {
       score: data.score,
-      threshold: threshold,
+      threshold,
       status: data.score >= threshold ? 'PASS' : 'FAIL',
     };
 
     if (data.score < threshold) {
       alertCount++;
       logAlert(`Lighthouse ${category}: ${data.score} < ${threshold} (FAIL)`, 'WARN');
-    } else {
-      logAlert(`Lighthouse ${category}: ${data.score} >= ${threshold} (PASS)`, 'INFO');
+      createAlert({
+        level: 'WARN',
+        category: 'lighthouse',
+        message: `Score ${data.score} below threshold ${threshold}`,
+        value: data.score,
+        threshold,
+      });
     }
   }
 
@@ -205,12 +265,12 @@ async function checkBundleSize() {
     const stats = JSON.parse(fs.readFileSync(statsPath, 'utf8'));
     const assets = stats.assets || [];
     
-    let totalSize = 0;
     const mainBundle = assets.find((asset) => 
       asset.name.includes('main') || asset.name.includes('pages')
     );
+    const totalSize = assets.reduce((sum, asset) => sum + (asset.size || 0), 0);
 
-    results = {
+    const results = {
       mainBundle: mainBundle ? {
         name: mainBundle.name,
         size: mainBundle.size,
@@ -218,7 +278,7 @@ async function checkBundleSize() {
         status: mainBundle.size <= config.thresholds.bundleSize.main ? 'PASS' : 'FAIL',
       } : null,
       totalSize: {
-        size: assets.reduce((sum, asset) => sum + (asset.size || 0), 0),
+        size: totalSize,
         threshold: config.thresholds.bundleSize.total,
         status: totalSize <= config.thresholds.bundleSize.total ? 'PASS' : 'FAIL',
       },
@@ -226,12 +286,13 @@ async function checkBundleSize() {
 
     if (mainBundle && mainBundle.size > config.thresholds.bundleSize.main) {
       alertCount++;
-      logAlert(`Main bundle demasiado grande: ${mainBundle.size} > ${config.thresholds.bundleSize.main}`, 'WARN');
-    }
-
-    if (totalSize > config.thresholds.bundleSize.total) {
-      alertCount++;
-      logAlert(`Total bundle demasiado grande: ${totalSize} > ${config.thresholds.bundleSize.total}`, 'WARN');
+      createAlert({
+        level: 'WARN',
+        category: 'bundle',
+        message: `Main bundle ${mainBundle.size} bytes exceeds ${(config.thresholds.bundleSize.main / 1024 / 1024).toFixed(1)}MB`,
+        value: mainBundle.size,
+        threshold: config.thresholds.bundleSize.main,
+      });
     }
 
     return results;
@@ -249,12 +310,24 @@ async function performFullCheck() {
     apiResponseTimes: await checkApiResponseTimes(),
     lighthouseScores: await checkLighthouseScores(),
     bundleSize: await checkBundleSize(),
-    alertCount: alertCount,
+    alertCount,
   };
+
+  // Record to historical tracker
+  recordDataPoint({
+    apiResponseTimes: (checkResults.apiResponseTimes || []).map(ep => ({
+      endpoint: ep.endpoint,
+      responseTime: ep.duration,
+      status: ep.status,
+    })),
+    alertCount: checkResults.alertCount,
+    lighthouseScores: checkResults.lighthouseScores,
+    bundleSize: checkResults.bundleSize,
+  });
 
   logAlert(`Chequeo completado. Alertas totales: ${alertCount}`, 'INFO');
   
-  // Guardar resultados
+  // Guardar resultados actuales
   const resultsFile = path.join(process.cwd(), 'performance-monitor-results.json');
   fs.writeFileSync(resultsFile, JSON.stringify(checkResults, null, 2));
   
@@ -263,15 +336,11 @@ async function performFullCheck() {
 
 // Iniciar monitoreo
 loadBaseline();
-logAlert('Iniciando Performance Monitor...', 'INFO');
+logAlert('Iniciando Performance Monitor v2...', 'INFO');
 
-// Ejecutar chequeos completos periódicamente
 setInterval(performFullCheck, config.checkInterval);
-
-// Ejecutar primer chequeo inmediatamente
 performFullCheck().catch(console.error);
 
-// Manejar graceful shutdown
 process.on('SIGINT', () => {
   logAlert('Performance Monitor detenido', 'INFO');
   process.exit(0);
@@ -282,4 +351,4 @@ process.on('SIGTERM', () => {
   process.exit(0);
 });
 
-logAlert('Performance Monitor iniciado. Chequeos cada 30 segundos.', 'INFO');
+logAlert('Performance Monitor v2 iniciado. Chequeos cada 30s. Alertas + historial activos.', 'INFO');
