@@ -12,8 +12,8 @@ import type { NextRequest } from "next/server";
  */
 
 function isPublicPath(pathname: string): boolean {
-  // Login page and auth endpoints only
-  if (pathname === "/login" || pathname.startsWith("/api/auth/")) return true;
+  // Login page, auth endpoints, and health check
+  if (pathname === "/login" || pathname.startsWith("/api/auth/") || pathname === "/api/health") return true;
 
   // Static files
   if (
@@ -37,7 +37,7 @@ function isPublicPath(pathname: string): boolean {
   return false;
 }
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (isPublicPath(pathname)) {

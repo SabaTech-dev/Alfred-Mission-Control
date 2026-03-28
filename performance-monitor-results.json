@@ -1,0 +1,29 @@
+{
+  "timestamp": "2026-03-28T04:23:15.639Z",
+  "apiResponseTimes": [
+    {
+      "endpoint": "/api/system",
+      "duration": 4,
+      "baseline": 9.023,
+      "threshold": 13.5345,
+      "status": "OK"
+    },
+    {
+      "endpoint": "/api/kanban/tasks",
+      "duration": 2,
+      "baseline": 6.498,
+      "threshold": 9.747,
+      "status": "OK"
+    },
+    {
+      "endpoint": "/api/kanban/heartbeat",
+      "duration": 3,
+      "baseline": 6.288,
+      "threshold": 9.432,
+      "status": "OK"
+    }
+  ],
+  "lighthouseScores": null,
+  "bundleSize": null,
+  "alertCount": 1
+}

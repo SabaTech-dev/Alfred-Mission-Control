@@ -9,7 +9,7 @@ export default defineConfig({
     globals: true,
     fileParallelism: false,
     setupFiles: ["./vitest.setup.ts"],
-    include: ["src/**/*.test.{ts,tsx}"],
+    include: ["src/**/*.test.{ts,tsx}", "tests/**/*.test.{ts,tsx}"],
     exclude: ["e2e/**/*"],
     testTimeout: 30000,
     hookTimeout: 30000,

@@ -1,0 +1,26 @@
+{
+  "timestamp": "2026-03-27T22-47-30-307Z",
+  "project": "alfred-mission-control",
+  "version": "1.0.0",
+  "metrics": {
+    "lighthouse": true,
+    "apiResponseTime": {
+      "timestamp": "2026-03-27T22-47-30-307Z",
+      "endpoints": {
+        "/api/system": {
+          "responseTime": 0.009023,
+          "status": "success"
+        },
+        "/api/kanban/tasks": {
+          "responseTime": 0.006498,
+          "status": "success"
+        },
+        "/api/kanban/heartbeat": {
+          "responseTime": 0.006288,
+          "status": "success"
+        }
+      }
+    },
+    "bundleSize": null
+  }
+}

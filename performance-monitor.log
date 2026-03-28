@@ -1,0 +1,1673 @@
+[2026-03-28T02:38:15.025Z] [INFO] Iniciando Performance Monitor...
+[2026-03-28T02:38:15.027Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T02:38:15.039Z] [INFO] Performance Monitor iniciado. Chequeos cada 30 segundos.
+[2026-03-28T02:38:15.043Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:38:15.047Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:38:15.049Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:38:15.049Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T02:38:41.855Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T02:38:41.855Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T02:38:41.856Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T02:38:45.029Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T02:38:45.031Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:38:45.032Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:38:45.033Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:38:45.033Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T02:39:11.332Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T02:39:11.332Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T02:39:11.333Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T02:39:15.034Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T02:39:15.037Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:39:15.040Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:39:15.045Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:39:15.045Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T02:39:41.650Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T02:39:41.650Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T02:39:41.650Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T02:39:45.036Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T02:39:45.039Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:39:45.039Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:39:45.042Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:39:45.042Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T02:40:11.862Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T02:40:11.862Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T02:40:11.863Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T02:40:15.039Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T02:40:15.040Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:40:15.041Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:40:15.041Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:40:15.042Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T02:40:41.380Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T02:40:41.380Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T02:40:41.380Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T02:40:45.044Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T02:40:45.045Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:40:45.046Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:40:45.047Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:40:45.047Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T02:41:11.379Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T02:41:11.380Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T02:41:11.380Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T02:41:15.045Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T02:41:15.046Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:41:15.047Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:41:15.047Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:41:15.047Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T02:41:41.350Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T02:41:41.350Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T02:41:41.350Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T02:41:45.049Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T02:41:45.050Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:41:45.050Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:41:45.051Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:41:45.051Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T02:42:11.370Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T02:42:11.370Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T02:42:11.370Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T02:42:15.052Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T02:42:15.053Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:42:15.054Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:42:15.054Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:42:15.055Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T02:42:41.344Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T02:42:41.344Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T02:42:41.344Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T02:42:45.054Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T02:42:45.055Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:42:45.056Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:42:45.056Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:42:45.056Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T02:43:11.354Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T02:43:11.355Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T02:43:11.355Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T02:43:15.055Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T02:43:15.056Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:43:15.057Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:43:15.057Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:43:15.057Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T02:43:41.352Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T02:43:41.352Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T02:43:41.352Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T02:43:45.059Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T02:43:45.060Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:43:45.061Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:43:45.062Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:43:45.062Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T02:44:11.441Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T02:44:11.441Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T02:44:11.441Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T02:44:15.063Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T02:44:15.064Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:44:15.065Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:44:15.066Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:44:15.066Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T02:44:41.445Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T02:44:41.446Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T02:44:41.446Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T02:44:45.067Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T02:44:45.070Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:44:45.074Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:44:45.080Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:44:45.083Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T02:45:12.215Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T02:45:12.215Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T02:45:12.215Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T02:45:15.070Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T02:45:15.071Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:45:15.072Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:45:15.073Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:45:15.073Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T02:45:41.393Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T02:45:41.393Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T02:45:41.393Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T02:45:45.075Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T02:45:45.076Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:45:45.076Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:45:45.077Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:45:45.077Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T02:46:11.398Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T02:46:11.399Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T02:46:11.399Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T02:46:15.078Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T02:46:15.079Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:46:15.079Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:46:15.080Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:46:15.080Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T02:46:41.408Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T02:46:41.408Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T02:46:41.408Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T02:46:45.082Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T02:46:45.083Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:46:45.084Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:46:45.084Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:46:45.085Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T02:47:11.409Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T02:47:11.409Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T02:47:11.409Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T02:47:15.087Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T02:47:15.088Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:47:15.088Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:47:15.089Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:47:15.089Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T02:47:41.416Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T02:47:41.416Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T02:47:41.416Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T02:47:45.088Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T02:47:45.089Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:47:45.089Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:47:45.090Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:47:45.090Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T02:48:11.404Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T02:48:11.404Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T02:48:11.404Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T02:48:15.089Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T02:48:15.090Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:48:15.090Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:48:15.091Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:48:15.091Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T02:48:41.440Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T02:48:41.440Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T02:48:41.440Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T02:48:45.092Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T02:48:45.093Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:48:45.093Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:48:45.094Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:48:45.094Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T02:49:11.385Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T02:49:11.385Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T02:49:11.385Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T02:49:15.096Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T02:49:15.098Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:49:15.098Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:49:15.099Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:49:15.099Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T02:49:41.397Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T02:49:41.398Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T02:49:41.398Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T02:49:45.099Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T02:49:45.100Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:49:45.100Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:49:45.101Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:49:45.101Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T02:50:11.490Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T02:50:11.490Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T02:50:11.490Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T02:50:15.103Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T02:50:15.105Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:50:15.105Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:50:15.106Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:50:15.106Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T02:50:41.415Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T02:50:41.415Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T02:50:41.415Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T02:50:45.104Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T02:50:45.105Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:50:45.105Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:50:45.106Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:50:45.106Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T02:51:11.417Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T02:51:11.417Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T02:51:11.417Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T02:51:15.106Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T02:51:15.107Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:51:15.108Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:51:15.108Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:51:15.108Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T02:51:41.399Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T02:51:41.399Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T02:51:41.399Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T02:51:45.107Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T02:51:45.108Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:51:45.109Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:51:45.109Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:51:45.109Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T02:52:11.428Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T02:52:11.428Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T02:52:11.428Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T02:52:15.111Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T02:52:15.111Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:52:15.112Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:52:15.113Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:52:15.113Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T02:52:41.400Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T02:52:41.400Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T02:52:41.400Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T02:52:45.114Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T02:52:45.115Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:52:45.116Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:52:45.116Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:52:45.116Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T02:53:11.395Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T02:53:11.395Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T02:53:11.395Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T02:53:15.115Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T02:53:15.116Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:53:15.117Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:53:15.118Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:53:15.118Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T02:53:41.416Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T02:53:41.416Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T02:53:41.416Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T02:53:45.119Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T02:53:45.120Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:53:45.121Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:53:45.122Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:53:45.122Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T02:54:11.419Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T02:54:11.419Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T02:54:11.419Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T02:54:15.123Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T02:54:15.124Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:54:15.125Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:54:15.125Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:54:15.125Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T02:54:41.423Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T02:54:41.424Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T02:54:41.424Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T02:54:45.126Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T02:54:45.127Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:54:45.127Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:54:45.128Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:54:45.128Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T02:55:11.497Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T02:55:11.498Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T02:55:11.498Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T02:55:15.131Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T02:55:15.132Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:55:15.135Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:55:15.137Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:55:15.137Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T02:55:41.852Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T02:55:41.852Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T02:55:41.852Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T02:55:45.135Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T02:55:45.136Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:55:45.136Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:55:45.137Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:55:45.137Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T02:56:11.494Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T02:56:11.494Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T02:56:11.494Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T02:56:15.137Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T02:56:15.138Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:56:15.138Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:56:15.139Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:56:15.139Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T02:56:41.475Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T02:56:41.475Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T02:56:41.475Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T02:56:45.138Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T02:56:45.139Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:56:45.139Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:56:45.140Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:56:45.140Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T02:57:11.444Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T02:57:11.444Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T02:57:11.444Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T02:57:15.142Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T02:57:15.143Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:57:15.143Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:57:15.144Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:57:15.144Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T02:57:41.429Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T02:57:41.429Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T02:57:41.429Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T02:57:45.145Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T02:57:45.146Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:57:45.147Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:57:45.148Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:57:45.148Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T02:58:11.478Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T02:58:11.478Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T02:58:11.478Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T02:58:15.146Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T02:58:15.147Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:58:15.148Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:58:15.148Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:58:15.148Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T02:58:41.426Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T02:58:41.426Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T02:58:41.426Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T02:58:45.151Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T02:58:45.152Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:58:45.153Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:58:45.153Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:58:45.153Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T02:59:11.448Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T02:59:11.448Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T02:59:11.448Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T02:59:15.156Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T02:59:15.157Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:59:15.157Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:59:15.158Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:59:15.158Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T02:59:41.461Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T02:59:41.462Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T02:59:41.462Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T02:59:45.158Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T02:59:45.159Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:59:45.160Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:59:45.160Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T02:59:45.160Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:00:11.597Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:00:11.598Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:00:11.599Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:00:15.162Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:00:15.165Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:00:15.169Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:00:15.170Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:00:15.173Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:00:41.877Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:00:41.877Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:00:41.877Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:00:45.166Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:00:45.167Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:00:45.167Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:00:45.168Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:00:45.168Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:01:11.525Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:01:11.525Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:01:11.525Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:01:15.169Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:01:15.170Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:01:15.170Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:01:15.171Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:01:15.171Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:01:41.486Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:01:41.487Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:01:41.487Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:01:45.170Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:01:45.171Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:01:45.171Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:01:45.172Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:01:45.172Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:02:11.462Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:02:11.462Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:02:11.462Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:02:15.174Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:02:15.175Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:02:15.175Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:02:15.176Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:02:15.176Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:02:41.528Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:02:41.528Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:02:41.528Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:02:45.177Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:02:45.178Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:02:45.179Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:02:45.180Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:02:45.180Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:03:11.509Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:03:11.509Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:03:11.509Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:03:15.178Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:03:15.179Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:03:15.179Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:03:15.180Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:03:15.180Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:03:41.491Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:03:41.491Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:03:41.491Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:03:45.182Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:03:45.183Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:03:45.183Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:03:45.184Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:03:45.184Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:04:11.492Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:04:11.493Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:04:11.493Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:04:15.187Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:04:15.188Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:04:15.191Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:04:15.192Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:04:15.195Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:04:41.910Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:04:41.910Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:04:41.910Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:04:45.189Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:04:45.190Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:04:45.191Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:04:45.191Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:04:45.191Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:05:11.534Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:05:11.534Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:05:11.534Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:05:15.189Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:05:15.190Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:05:15.190Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:05:15.191Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:05:15.191Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:05:41.487Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:05:41.487Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:05:41.487Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:05:45.193Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:05:45.194Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:05:45.195Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:05:45.196Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:05:45.196Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:06:11.485Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:06:11.486Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:06:11.486Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:06:15.204Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:06:15.210Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:06:15.215Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:06:15.225Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:06:15.226Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:06:44.851Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:06:44.852Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:06:44.852Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:06:45.205Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:06:45.206Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:06:45.211Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:06:45.212Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:06:45.212Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:07:11.776Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:07:11.776Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:07:11.777Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:07:15.208Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:07:15.209Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:07:15.210Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:07:15.210Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:07:15.210Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:07:41.504Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:07:41.504Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:07:41.504Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:07:45.212Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:07:45.213Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:07:45.214Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:07:45.214Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:07:45.214Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:08:11.558Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:08:11.558Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:08:11.558Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:08:15.214Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:08:15.215Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:08:15.215Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:08:15.216Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:08:15.216Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:08:41.553Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:08:41.553Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:08:41.553Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:08:45.219Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:08:45.220Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:08:45.223Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:08:45.224Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:08:45.227Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:09:12.311Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:09:12.311Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:09:12.311Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:09:15.222Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:09:15.223Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:09:15.224Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:09:15.224Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:09:15.224Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:09:41.594Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:09:41.594Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:09:41.594Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:09:45.225Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:09:45.226Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:09:45.227Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:09:45.227Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:09:45.228Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:10:11.548Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:10:11.548Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:10:11.548Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:10:15.224Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:10:15.225Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:10:15.226Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:10:15.227Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:10:15.227Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:10:41.543Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:10:41.543Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:10:41.543Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:10:45.229Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:10:45.230Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:10:45.230Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:10:45.231Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:10:45.231Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:11:11.564Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:11:11.564Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:11:11.564Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:11:15.232Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:11:15.233Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:11:15.233Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:11:15.234Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:11:15.234Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:11:41.570Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:11:41.570Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:11:41.570Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:11:45.233Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:11:45.234Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:11:45.235Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:11:45.235Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:11:45.235Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:12:11.563Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:12:11.564Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:12:11.564Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:12:15.236Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:12:15.237Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:12:15.238Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:12:15.238Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:12:15.238Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:12:41.542Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:12:41.542Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:12:41.542Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:12:45.240Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:12:45.241Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:12:45.242Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:12:45.242Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:12:45.242Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:13:11.530Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:13:11.531Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:13:11.531Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:13:15.243Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:13:15.244Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:13:15.244Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:13:15.245Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:13:15.245Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:13:41.564Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:13:41.564Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:13:41.564Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:13:45.247Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:13:45.248Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:13:45.249Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:13:45.249Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:13:45.249Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:14:11.721Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:14:11.722Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:14:11.722Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:14:15.251Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:14:15.252Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:14:15.252Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:14:15.253Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:14:15.253Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:14:41.633Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:14:41.633Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:14:41.633Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:14:45.254Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:14:45.255Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:14:45.255Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:14:45.256Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:14:45.256Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:15:11.561Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:15:11.561Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:15:11.561Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:15:15.254Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:15:15.255Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:15:15.256Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:15:15.257Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:15:15.257Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:15:41.549Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:15:41.549Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:15:41.549Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:15:45.259Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:15:45.260Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:15:45.260Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:15:45.261Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:15:45.261Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:16:11.596Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:16:11.596Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:16:11.596Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:16:15.263Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:16:15.264Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:16:15.264Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:16:15.265Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:16:15.265Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:16:41.581Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:16:41.581Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:16:41.581Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:16:45.264Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:16:45.265Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:16:45.266Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:16:45.266Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:16:45.266Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:17:11.563Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:17:11.563Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:17:11.563Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:17:15.268Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:17:15.269Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:17:15.269Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:17:15.270Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:17:15.270Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:17:41.551Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:17:41.551Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:17:41.551Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:17:45.272Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:17:45.273Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:17:45.274Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:17:45.274Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:17:45.274Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:18:11.599Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:18:11.599Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:18:11.599Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:18:15.275Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:18:15.276Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:18:15.276Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:18:15.277Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:18:15.277Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:18:41.603Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:18:41.604Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:18:41.604Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:18:45.275Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:18:45.276Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:18:45.276Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:18:45.277Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:18:45.277Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:19:11.586Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:19:11.586Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:19:11.586Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:19:15.279Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:19:15.280Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:19:15.281Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:19:15.281Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:19:15.281Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:19:41.589Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:19:41.589Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:19:41.589Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:19:45.282Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:19:45.283Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:19:45.284Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:19:45.284Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:19:45.284Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:20:11.571Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:20:11.571Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:20:11.571Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:20:15.282Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:20:15.283Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:20:15.283Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:20:15.284Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:20:15.284Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:20:41.587Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:20:41.587Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:20:41.587Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:20:45.286Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:20:45.287Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:20:45.288Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:20:45.288Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:20:45.288Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:21:11.601Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:21:11.601Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:21:11.602Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:21:15.290Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:21:15.291Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:21:15.291Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:21:15.292Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:21:15.292Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:21:41.607Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:21:41.607Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:21:41.607Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:21:45.292Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:21:45.293Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:21:45.294Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:21:45.294Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:21:45.294Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:22:11.596Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:22:11.596Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:22:11.596Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:22:15.296Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:22:15.297Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:22:15.297Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:22:15.298Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:22:15.298Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:22:41.619Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:22:41.620Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:22:41.620Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:22:45.300Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:22:45.301Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:22:45.301Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:22:45.302Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:22:45.302Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:23:11.594Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:23:11.594Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:23:11.594Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:23:15.303Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:23:15.304Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:23:15.304Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:23:15.305Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:23:15.305Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:23:41.593Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:23:41.593Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:23:41.593Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:23:45.303Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:23:45.304Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:23:45.304Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:23:45.305Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:23:45.305Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:24:11.626Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:24:11.626Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:24:11.626Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:24:15.307Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:24:15.308Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:24:15.309Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:24:15.309Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:24:15.310Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:24:41.628Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:24:41.628Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:24:41.628Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:24:45.311Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:24:45.312Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:24:45.312Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:24:45.313Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:24:45.313Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:25:11.622Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:25:11.622Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:25:11.622Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:25:15.312Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:25:15.314Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:25:15.318Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:25:15.319Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:25:15.319Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:25:42.071Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:25:42.071Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:25:42.071Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:25:45.316Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:25:45.318Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:25:45.319Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:25:45.320Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:25:45.320Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:26:11.610Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:26:11.610Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:26:11.610Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:26:15.320Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:26:15.321Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:26:15.322Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:26:15.322Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:26:15.322Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:26:41.657Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:26:41.658Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:26:41.658Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:26:45.323Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:26:45.324Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:26:45.324Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:26:45.325Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:26:45.325Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:27:11.628Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:27:11.628Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:27:11.628Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:27:15.327Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:27:15.328Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:27:15.329Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:27:15.329Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:27:15.329Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:27:41.626Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:27:41.626Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:27:41.626Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:27:45.331Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:27:45.332Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:27:45.333Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:27:45.333Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:27:45.333Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:28:11.633Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:28:11.633Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:28:11.633Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:28:15.334Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:28:15.335Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:28:15.336Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:28:15.336Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:28:15.336Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:28:41.626Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:28:41.626Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:28:41.626Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:28:45.336Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:28:45.337Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:28:45.338Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:28:45.338Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:28:45.338Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:29:11.625Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:29:11.625Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:29:11.625Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:29:15.340Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:29:15.341Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:29:15.341Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:29:15.342Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:29:15.342Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:29:41.669Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:29:41.669Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:29:41.669Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:29:45.344Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:29:45.345Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:29:45.345Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:29:45.346Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:29:45.346Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:30:11.641Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:30:11.641Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:30:11.642Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:30:15.344Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:30:15.345Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:30:15.345Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:30:15.346Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:30:15.346Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:30:41.645Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:30:41.646Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:30:41.646Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:30:45.348Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:30:45.349Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:30:45.349Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:30:45.350Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:30:45.350Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:31:11.684Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:31:11.684Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:31:11.684Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:31:15.352Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:31:15.353Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:31:15.354Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:31:15.354Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:31:15.354Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:31:41.669Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:31:41.669Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:31:41.669Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:31:45.354Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:31:45.355Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:31:45.356Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:31:45.356Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:31:45.356Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:32:11.693Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:32:11.693Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:32:11.693Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:32:15.354Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:32:15.355Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:32:15.356Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:32:15.357Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:32:15.357Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:32:41.692Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:32:41.693Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:32:41.693Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:32:45.357Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:32:45.357Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:32:45.358Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:32:45.358Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:32:45.358Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:33:11.661Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:33:11.661Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:33:11.661Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:33:15.360Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:33:15.361Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:33:15.361Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:33:15.362Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:33:15.362Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:33:41.691Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:33:41.691Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:33:41.691Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:33:45.361Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:33:45.362Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:33:45.362Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:33:45.363Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:33:45.363Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:34:11.653Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:34:11.653Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:34:11.653Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:34:15.365Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:34:15.366Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:34:15.366Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:34:15.367Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:34:15.367Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:34:41.669Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:34:41.670Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:34:41.670Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:34:45.368Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:34:45.369Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:34:45.369Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:34:45.370Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:34:45.370Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:35:11.660Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:35:11.660Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:35:11.660Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:35:15.370Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:35:15.371Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:35:15.371Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:35:15.372Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:35:15.372Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:35:41.690Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:35:41.690Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:35:41.690Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:35:45.374Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:35:45.375Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:35:45.376Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:35:45.376Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:35:45.376Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:36:11.690Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:36:11.690Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:36:11.690Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:36:15.378Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:36:15.379Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:36:15.380Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:36:15.380Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:36:15.380Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:36:41.687Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:36:41.687Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:36:41.687Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:36:45.381Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:36:45.382Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:36:45.382Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:36:45.383Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:36:45.383Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:37:11.677Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:37:11.678Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:37:11.678Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:37:15.381Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:37:15.382Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:37:15.382Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:37:15.383Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:37:15.383Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:37:41.685Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:37:41.685Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:37:41.685Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:37:45.384Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:37:45.385Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:37:45.385Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:37:45.386Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:37:45.386Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:38:11.719Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:38:11.719Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:38:11.719Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:38:15.387Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:38:15.388Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:38:15.388Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:38:15.389Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:38:15.389Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:38:41.707Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:38:41.707Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:38:41.707Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:38:45.388Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:38:45.389Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:38:45.390Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:38:45.390Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:38:45.391Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:39:12.241Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:39:12.241Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:39:12.241Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:39:15.391Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:39:15.392Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:39:15.394Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:39:15.395Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:39:15.395Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:39:41.716Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:39:41.716Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:39:41.716Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:39:45.395Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:39:45.396Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:39:45.396Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:39:45.397Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:39:45.397Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:40:11.697Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:40:11.697Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:40:11.697Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:40:15.397Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:40:15.398Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:40:15.398Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:40:15.399Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:40:15.399Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:40:41.715Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:40:41.715Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:40:41.716Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:40:45.400Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:40:45.401Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:40:45.401Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:40:45.402Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:40:45.402Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:41:11.724Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:41:11.724Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:41:11.724Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:41:15.404Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:41:15.405Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:41:15.405Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:41:15.406Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:41:15.406Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:41:41.711Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:41:41.711Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:41:41.711Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:41:45.407Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:41:45.408Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:41:45.409Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:41:45.409Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:41:45.409Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:42:11.714Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:42:11.714Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:42:11.714Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:42:15.409Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:42:15.410Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:42:15.410Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:42:15.411Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:42:15.411Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:42:41.715Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:42:41.716Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:42:41.716Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:42:45.412Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:42:45.413Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:42:45.414Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:42:45.414Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:42:45.414Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:43:11.693Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:43:11.693Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:43:11.693Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:43:15.416Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:43:15.417Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:43:15.418Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:43:15.418Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:43:15.418Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:43:41.707Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:43:41.707Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:43:41.707Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:43:45.419Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:43:45.420Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:43:45.421Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:43:45.421Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:43:45.421Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:44:11.723Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:44:11.723Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:44:11.723Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:44:15.421Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:44:15.422Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:44:15.422Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:44:15.423Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:44:15.423Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:44:41.759Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:44:41.760Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:44:41.760Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:44:45.425Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:44:45.426Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:44:45.428Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:44:45.429Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:44:45.430Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:45:11.844Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:45:11.845Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:45:11.845Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:45:15.427Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:45:15.428Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:45:15.432Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:45:15.433Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:45:15.433Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:45:42.013Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:45:42.013Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:45:42.013Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:45:45.427Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:45:45.428Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:45:45.428Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:45:45.429Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:45:45.429Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:46:11.768Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:46:11.769Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:46:11.769Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:46:15.431Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:46:15.432Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:46:15.433Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:46:15.434Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:46:15.434Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:46:41.763Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:46:41.763Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:46:41.763Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:46:45.431Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:46:45.432Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:46:45.432Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:46:45.433Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:46:45.433Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:47:11.745Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:47:11.745Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:47:11.745Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:47:15.432Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:47:15.432Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:47:15.433Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:47:15.434Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:47:15.434Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:47:41.729Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:47:41.729Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:47:41.729Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:47:45.436Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:47:45.437Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:47:45.438Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:47:45.438Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:47:45.438Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:48:11.755Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:48:11.755Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:48:11.755Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:48:15.440Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:48:15.441Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:48:15.442Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:48:15.442Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:48:15.443Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:48:41.742Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:48:41.742Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:48:41.742Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:48:45.440Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:48:45.441Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:48:45.442Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:48:45.442Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:48:45.442Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:49:11.755Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:49:11.755Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:49:11.755Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:49:15.444Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:49:15.445Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:49:15.445Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:49:15.446Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:49:15.446Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:49:41.761Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:49:41.762Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:49:41.762Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:49:45.448Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:49:45.448Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:49:45.449Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:49:45.450Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:49:45.450Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:50:11.750Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:50:11.750Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:50:11.750Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:50:15.450Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:50:15.451Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:50:15.452Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:50:15.452Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:50:15.452Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:50:41.761Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:50:41.761Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:50:41.761Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:50:45.450Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:50:45.451Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:50:45.452Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:50:45.452Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:50:45.452Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:51:11.747Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:51:11.747Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:51:11.747Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:51:15.454Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:51:15.455Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:51:15.455Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:51:15.456Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:51:15.456Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:51:41.745Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:51:41.745Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:51:41.745Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:51:45.456Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:51:45.457Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:51:45.457Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:51:45.458Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:51:45.458Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:52:11.758Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:52:11.758Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:52:11.758Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:52:15.457Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:52:15.458Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:52:15.459Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:52:15.459Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:52:15.459Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:52:41.783Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:52:41.783Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:52:41.783Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:52:45.461Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:52:45.462Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:52:45.462Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:52:45.463Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:52:45.463Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:53:11.784Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:53:11.784Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:53:11.784Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:53:15.465Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:53:15.466Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:53:15.467Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:53:15.467Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:53:15.467Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:53:41.781Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:53:41.782Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:53:41.782Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:53:45.467Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:53:45.468Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:53:45.468Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:53:45.469Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:53:45.469Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:54:11.775Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:54:11.775Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:54:11.775Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:54:15.468Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:54:15.469Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:54:15.469Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:54:15.470Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:54:15.470Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:54:41.807Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:54:41.807Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:54:41.807Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:54:45.468Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:54:45.469Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:54:45.470Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:54:45.470Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:54:45.470Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:55:11.835Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:55:11.836Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:55:11.836Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:55:15.475Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:55:15.478Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:55:15.481Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:55:15.483Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:55:15.483Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:55:42.155Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:55:42.156Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:55:42.156Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:55:45.475Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:55:45.476Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:55:45.477Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:55:45.477Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:55:45.478Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:56:11.825Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:56:11.826Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:56:11.827Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:56:15.477Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:56:15.478Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:56:15.479Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:56:15.479Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:56:15.479Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:56:41.823Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:56:41.823Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:56:41.823Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:56:45.480Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:56:45.481Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:56:45.481Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:56:45.482Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:56:45.482Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:57:11.849Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:57:11.850Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:57:11.850Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:57:15.482Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:57:15.483Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:57:15.483Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:57:15.484Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:57:15.484Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:57:41.793Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:57:41.793Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:57:41.793Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:57:45.486Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:57:45.487Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:57:45.487Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:57:45.488Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:57:45.488Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:58:11.769Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:58:11.769Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:58:11.769Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:58:15.490Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:58:15.491Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:58:15.492Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:58:15.492Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:58:15.492Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:58:41.815Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:58:41.816Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:58:41.816Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:58:45.491Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:58:45.492Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:58:45.493Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:58:45.493Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:58:45.493Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:59:11.760Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:59:11.761Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:59:11.761Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:59:15.491Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:59:15.492Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:59:15.493Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:59:15.493Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:59:15.493Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T03:59:41.818Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T03:59:41.819Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T03:59:41.819Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T03:59:45.495Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T03:59:45.496Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:59:45.496Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:59:45.497Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T03:59:45.497Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T04:00:11.800Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T04:00:11.800Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T04:00:11.800Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T04:00:15.499Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T04:00:15.500Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:00:15.500Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:00:15.501Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:00:15.501Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T04:00:41.818Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T04:00:41.818Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T04:00:41.818Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T04:00:45.501Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T04:00:45.502Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:00:45.502Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:00:45.503Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:00:45.503Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T04:01:11.849Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T04:01:11.849Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T04:01:11.849Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T04:01:15.505Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T04:01:15.506Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:01:15.506Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:01:15.507Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:01:15.507Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T04:01:41.823Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T04:01:41.823Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T04:01:41.823Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T04:01:45.509Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T04:01:45.510Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:01:45.511Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:01:45.511Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:01:45.511Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T04:02:11.816Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T04:02:11.816Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T04:02:11.816Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T04:02:15.510Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T04:02:15.511Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:02:15.512Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:02:15.513Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:02:15.513Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T04:02:41.829Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T04:02:41.829Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T04:02:41.829Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T04:02:45.514Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T04:02:45.515Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:02:45.515Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:02:45.516Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:02:45.516Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T04:03:11.820Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T04:03:11.820Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T04:03:11.820Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T04:03:15.518Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T04:03:15.520Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:03:15.521Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:03:15.522Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:03:15.522Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T04:03:41.835Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T04:03:41.835Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T04:03:41.835Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T04:03:45.521Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T04:03:45.521Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:03:45.522Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:03:45.522Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:03:45.522Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T04:04:11.814Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T04:04:11.814Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T04:04:11.814Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T04:04:15.521Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T04:04:15.522Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:04:15.522Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:04:15.522Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:04:15.523Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T04:04:41.821Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T04:04:41.821Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T04:04:41.821Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T04:04:45.524Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T04:04:45.525Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:04:45.525Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:04:45.526Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:04:45.526Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T04:05:11.854Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T04:05:11.854Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T04:05:11.854Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T04:05:15.527Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T04:05:15.528Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:05:15.529Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:05:15.529Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:05:15.529Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T04:05:41.847Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T04:05:41.847Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T04:05:41.847Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T04:05:45.528Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T04:05:45.530Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:05:45.530Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:05:45.531Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:05:45.531Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T04:06:11.836Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T04:06:11.836Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T04:06:11.836Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T04:06:15.533Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T04:06:15.534Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:06:15.535Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:06:15.535Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:06:15.535Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T04:06:41.824Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T04:06:41.824Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T04:06:41.824Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T04:06:45.539Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T04:06:45.539Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:06:45.540Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:06:45.540Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:06:45.540Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T04:07:11.857Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T04:07:11.858Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T04:07:11.858Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T04:07:15.540Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T04:07:15.541Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:07:15.541Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:07:15.542Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:07:15.542Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T04:07:41.849Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T04:07:41.849Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T04:07:41.849Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T04:07:45.545Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T04:07:45.546Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:07:45.547Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:07:45.547Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:07:45.547Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T04:08:11.841Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T04:08:11.841Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T04:08:11.841Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T04:08:15.550Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T04:08:15.551Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:08:15.551Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:08:15.552Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:08:15.552Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T04:08:41.897Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T04:08:41.897Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T04:08:41.897Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T04:08:45.555Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T04:08:45.556Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:08:45.557Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:08:45.560Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:08:45.560Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T04:09:12.186Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T04:09:12.186Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T04:09:12.186Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T04:09:15.556Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T04:09:15.557Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:09:15.558Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:09:15.558Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:09:15.558Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T04:09:41.895Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T04:09:41.896Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T04:09:41.896Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T04:09:45.560Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T04:09:45.560Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:09:45.561Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:09:45.561Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:09:45.562Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T04:10:11.870Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T04:10:11.871Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T04:10:11.871Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T04:10:15.564Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T04:10:15.565Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:10:15.565Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:10:15.565Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:10:15.566Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T04:10:41.862Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T04:10:41.862Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T04:10:41.862Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T04:10:45.565Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T04:10:45.566Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:10:45.567Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:10:45.567Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:10:45.567Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T04:11:11.891Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T04:11:11.891Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T04:11:11.891Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T04:11:15.568Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T04:11:15.569Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:11:15.569Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:11:15.569Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:11:15.570Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T04:11:41.884Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T04:11:41.884Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T04:11:41.884Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T04:11:45.572Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T04:11:45.573Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:11:45.573Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:11:45.574Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:11:45.574Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T04:12:11.875Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T04:12:11.875Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T04:12:11.875Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T04:12:15.574Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T04:12:15.575Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:12:15.576Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:12:15.576Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:12:15.576Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T04:12:41.868Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T04:12:41.869Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T04:12:41.869Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T04:12:45.574Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T04:12:45.575Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:12:45.576Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:12:45.576Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:12:45.577Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T04:13:11.880Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T04:13:11.880Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T04:13:11.880Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T04:13:15.579Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T04:13:15.579Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:13:15.580Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:13:15.580Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:13:15.580Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T04:13:41.897Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T04:13:41.897Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T04:13:41.897Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T04:13:45.582Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T04:13:45.584Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:13:45.584Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:13:45.585Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:13:45.585Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T04:14:12.211Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T04:14:12.211Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T04:14:12.211Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T04:14:15.583Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T04:14:15.584Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:14:15.585Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:14:15.586Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:14:15.586Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T04:14:42.183Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T04:14:42.183Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T04:14:42.183Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T04:14:45.588Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T04:14:45.590Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:14:45.593Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:14:45.596Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:14:45.597Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T04:15:12.532Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T04:15:12.532Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T04:15:12.532Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T04:15:15.590Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T04:15:15.594Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:15:15.600Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:15:15.602Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:15:15.602Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T04:15:42.327Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T04:15:42.327Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T04:15:42.327Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T04:15:45.592Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T04:15:45.592Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:15:45.593Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:15:45.593Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:15:45.593Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T04:16:12.034Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T04:16:12.034Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T04:16:12.034Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T04:16:15.600Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T04:16:15.601Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:16:15.609Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:16:15.616Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:16:15.617Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T04:16:42.913Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T04:16:42.913Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T04:16:42.913Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T04:16:45.602Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T04:16:45.602Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:16:45.603Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:16:45.603Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:16:45.603Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T04:17:11.940Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T04:17:11.940Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T04:17:11.941Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T04:17:15.604Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T04:17:15.604Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:17:15.605Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:17:15.605Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:17:15.605Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T04:17:41.939Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T04:17:41.939Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T04:17:41.939Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T04:17:45.605Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T04:17:45.606Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:17:45.606Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:17:45.607Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:17:45.607Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T04:18:11.910Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T04:18:11.910Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T04:18:11.910Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T04:18:15.609Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T04:18:15.610Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:18:15.610Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:18:15.611Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:18:15.611Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T04:18:41.942Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T04:18:41.942Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T04:18:41.942Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T04:18:45.613Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T04:18:45.614Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:18:45.615Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:18:45.615Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:18:45.615Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T04:19:11.974Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T04:19:11.974Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T04:19:11.975Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T04:19:15.614Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T04:19:15.615Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:19:15.617Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:19:15.619Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:19:15.619Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T04:19:42.395Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T04:19:42.395Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T04:19:42.395Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T04:19:45.618Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T04:19:45.619Z] [ERROR] API ERROR: /api/system - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:19:45.619Z] [ERROR] API ERROR: /api/kanban/tasks - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:19:45.620Z] [ERROR] API ERROR: /api/kanban/heartbeat - connect ECONNREFUSED 127.0.0.1:3000
+[2026-03-28T04:19:45.620Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T04:20:12.176Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T04:20:12.176Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T04:20:12.176Z] [INFO] Chequeo completado. Alertas totales: 0
+[2026-03-28T04:20:15.621Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T04:20:15.717Z] [WARN] API LENTA: /api/system (96ms > 13.5345ms)
+[2026-03-28T04:20:15.727Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T04:20:42.054Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T04:20:42.054Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T04:20:42.054Z] [INFO] Chequeo completado. Alertas totales: 1
+[2026-03-28T04:20:45.623Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T04:20:45.637Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T04:21:11.930Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T04:21:11.930Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T04:21:11.930Z] [INFO] Chequeo completado. Alertas totales: 1
+[2026-03-28T04:21:15.627Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T04:21:15.636Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T04:21:41.935Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T04:21:41.935Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T04:21:41.935Z] [INFO] Chequeo completado. Alertas totales: 1
+[2026-03-28T04:21:45.631Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T04:21:45.640Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T04:22:12.011Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T04:22:12.011Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T04:22:12.011Z] [INFO] Chequeo completado. Alertas totales: 1
+[2026-03-28T04:22:15.634Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T04:22:15.643Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T04:22:41.995Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T04:22:41.995Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T04:22:41.995Z] [INFO] Chequeo completado. Alertas totales: 1
+[2026-03-28T04:22:45.635Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T04:22:45.644Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T04:23:12.020Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T04:23:12.020Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T04:23:12.020Z] [INFO] Chequeo completado. Alertas totales: 1
+[2026-03-28T04:23:15.639Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T04:23:15.648Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T04:23:41.969Z] [ERROR] Lighthouse failed with code 1
+[2026-03-28T04:23:41.969Z] [WARN] No se encontraron artefactos de build
+[2026-03-28T04:23:41.969Z] [INFO] Chequeo completado. Alertas totales: 1
+[2026-03-28T04:23:45.643Z] [INFO] === Iniciando chequeo completo de rendimiento ===
+[2026-03-28T04:23:45.652Z] [INFO] Ejecutando auditoría Lighthouse...
+[2026-03-28T04:24:02.037Z] [INFO] Performance Monitor detenido
