@@ -4,9 +4,8 @@
  * GET /api/sessions?id=xxx   → get messages from a specific session (reads JSONL)
  */
 import { NextRequest, NextResponse } from 'next/server';
-import { readFileSync, existsSync } from 'fs';
+import { readFileSync, existsSync, readdirSync, statSync } from 'fs';
 import { join } from 'path';
-import { safeExecFile } from '@/lib/safe-exec';
 
 export const dynamic = "force-dynamic";
 
@@ -120,24 +119,99 @@ export async function GET(request: NextRequest) {
 
 async function listSessions(): Promise<NextResponse> {
   try {
-    const result = safeExecFile("/home/ubuntu/.npm-global/bin/openclaw", ["sessions", "--json"], {
-      timeout: 10000,
-    });
-
-    if (result.status !== 0 || !result.stdout) {
-      return NextResponse.json({ error: 'Failed to list sessions', sessions: [] }, { status: 500 });
+    const agentsDir = join(OPENCLAW_DIR, 'agents');
+    if (!existsSync(agentsDir)) {
+      return NextResponse.json({ sessions: [], total: 0 });
     }
 
-    // Fix: openclaw sessions --json may append Hindsight daemon output to stdout
-    // Extract only the valid JSON portion (everything before non-JSON output)
-    let jsonStr = result.stdout;
-    const lastBrace = jsonStr.lastIndexOf('\n}');
-    if (lastBrace !== -1) {
-      jsonStr = jsonStr.substring(0, lastBrace + 2);
-    }
+    const rawSessions: RawSession[] = [];
+    const now = Date.now();
 
-    const data = JSON.parse(jsonStr);
-    const rawSessions: RawSession[] = data.sessions || [];
+    // Read all agent session indexes from sessions.json files
+    const agentDirs = readdirSync(agentsDir, { withFileTypes: true })
+      .filter(e => e.isDirectory() && !e.name.startsWith('.'));
+
+    for (const agentDir of agentDirs) {
+      const agentId = agentDir.name;
+      const sessionsJsonPath = join(agentsDir, agentId, 'sessions', 'sessions.json');
+
+      if (!existsSync(sessionsJsonPath)) continue;
+
+      let sessionsData: Record<string, RawSession>;
+      try {
+        sessionsData = JSON.parse(readFileSync(sessionsJsonPath, 'utf-8'));
+      } catch {
+        continue;
+      }
+
+      for (const [key, raw] of Object.entries(sessionsData)) {
+        const sessionId = raw.sessionId;
+
+        // Try to get model from the JSONL file
+        let model = raw.model || 'unknown';
+        let modelProvider = raw.modelProvider || 'unknown';
+        let updatedAt = raw.updatedAt || 0;
+        let inputTokens = raw.inputTokens || 0;
+        let outputTokens = raw.outputTokens || 0;
+        let totalTokens = raw.totalTokens || 0;
+        let contextTokens = raw.contextTokens || 0;
+        let totalTokensFresh = raw.totalTokensFresh || false;
+        let abortedLastRun = raw.abortedLastRun || false;
+
+        // If no updatedAt, use file mtime
+        if (!updatedAt && sessionId) {
+          const jsonlPath = join(agentsDir, agentId, 'sessions', `${sessionId}.jsonl`);
+          try {
+            updatedAt = statSync(jsonlPath).mtimeMs;
+          } catch {
+            // no jsonl file
+          }
+        }
+
+        // Extract model from JSONL if not present
+        if (model === 'unknown' && sessionId) {
+          const jsonlPath = join(agentsDir, agentId, 'sessions', `${sessionId}.jsonl`);
+          try {
+            if (existsSync(jsonlPath)) {
+              const content = readFileSync(jsonlPath, 'utf-8');
+              const lines = content.trim().split('\n');
+              // Search backwards for last model_change
+              for (let i = lines.length - 1; i >= 0; i--) {
+                try {
+                  const obj = JSON.parse(lines[i]);
+                  if (obj.type === 'model_change' && obj.modelId) {
+                    model = obj.modelId;
+                    modelProvider = obj.provider || 'unknown';
+                    break;
+                  }
+                } catch { /* skip */ }
+              }
+            }
+          } catch {
+            // ignore
+          }
+        }
+
+        const ageMs = updatedAt ? now - updatedAt : 0;
+
+        rawSessions.push({
+          key,
+          kind: '',
+          updatedAt,
+          ageMs,
+          sessionId,
+          systemSent: raw.systemSent,
+          abortedLastRun,
+          inputTokens,
+          outputTokens,
+          totalTokens,
+          totalTokensFresh,
+          model,
+          modelProvider,
+          contextTokens,
+        });
+      }
+    }
 
     const sessions: ParsedSession[] = rawSessions
       .reduce<ParsedSession[]>((acc, raw) => {
@@ -165,7 +239,7 @@ async function listSessions(): Promise<NextResponse> {
           updatedAt: raw.updatedAt,
           ageMs: raw.ageMs,
           model: raw.model || 'unknown',
-          modelProvider: raw.modelProvider || 'anthropic',
+          modelProvider: raw.modelProvider || 'unknown',
           inputTokens: raw.inputTokens || 0,
           outputTokens: raw.outputTokens || 0,
           totalTokens,
@@ -181,7 +255,7 @@ async function listSessions(): Promise<NextResponse> {
 
     return NextResponse.json({ sessions, total: sessions.length });
   } catch (error) {
-    console.error("[sessions] Error listing sessions:", error)
+    console.error('[sessions] Error listing sessions:', error);
     return NextResponse.json({ error: 'Failed to list sessions', sessions: [] }, { status: 500 });
   }
 }

@@ -1,82 +1,38 @@
 "use client";
 
 interface SuccessRateGaugeProps {
-  rate: number; // 0-100
+  rate: number;
 }
 
-// CSS variable values
-const THEME = {
-  accent: "#FF3B30",
-  success: "#34d399",
-  warning: "#facc15",
-  error: "#f87171",
-  border: "#2A2A2A",
-  textPrimary: "#FFFFFF",
-  textSecondary: "#8A8A8A",
-};
-
 export function SuccessRateGauge({ rate }: SuccessRateGaugeProps) {
-  const getColor = (rate: number) => {
-    if (rate >= 90) return THEME.success;
-    if (rate >= 70) return THEME.warning;
-    return THEME.error;
-  };
-
-  const getLabel = (rate: number) => {
-    if (rate >= 90) return "Excellent";
-    if (rate >= 70) return "Good";
-    return "Needs Attention";
-  };
-
-  const color = getColor(rate);
+  const clampedRate = Math.max(0, Math.min(100, rate));
+  const radius = 54;
+  const circumference = 2 * Math.PI * radius;
+  const offset = circumference - (clampedRate / 100) * circumference;
+  const color = clampedRate >= 90 ? "var(--success)" : clampedRate >= 70 ? "var(--warning)" : "var(--error)";
 
   return (
-    <div className="flex flex-col items-center justify-center h-72 gap-6">
-      {/* Main percentage display */}
-      <div className="text-center">
-        <span
-          className="text-6xl font-bold"
-          style={{ color: THEME.textPrimary }}
-        >
-          {rate.toFixed(0)}
-        </span>
-        <span
-          className="text-3xl font-bold"
-          style={{ color: THEME.textSecondary }}
-        >
-          %
-        </span>
-      </div>
-
-      {/* Progress bar */}
-      <div className="w-full max-w-xs">
-        <div
-          className="h-3 rounded-full w-full overflow-hidden"
-          style={{ backgroundColor: THEME.border }}
-        >
-          <div
-            className="h-full rounded-full transition-all duration-1000 ease-out"
-            style={{
-              width: `${rate}%`,
-              background: `linear-gradient(90deg, ${THEME.accent} 0%, ${THEME.accent}cc 100%)`,
-            }}
+    <div className="h-[300px] flex items-center justify-center">
+      <div className="relative w-40 h-40">
+        <svg className="w-40 h-40 -rotate-90" viewBox="0 0 140 140">
+          <circle cx="70" cy="70" r={radius} fill="none" stroke="var(--border)" strokeWidth="12" />
+          <circle
+            cx="70"
+            cy="70"
+            r={radius}
+            fill="none"
+            stroke={color}
+            strokeWidth="12"
+            strokeLinecap="round"
+            strokeDasharray={circumference}
+            strokeDashoffset={offset}
           />
+        </svg>
+        <div className="absolute inset-0 flex flex-col items-center justify-center">
+          <span className="text-3xl font-bold" style={{ color: "var(--text-primary)" }}>
+            {clampedRate.toFixed(0)}%
+          </span>
         </div>
-        <div className="flex justify-between mt-2">
-          <span className="text-xs" style={{ color: THEME.textSecondary }}>0%</span>
-          <span className="text-xs" style={{ color: THEME.textSecondary }}>100%</span>
-        </div>
-      </div>
-
-      {/* Status label */}
-      <div
-        className="px-4 py-1.5 rounded-full text-sm font-medium"
-        style={{
-          backgroundColor: `${color}20`,
-          color: color,
-        }}
-      >
-        {getLabel(rate)}
       </div>
     </div>
   );

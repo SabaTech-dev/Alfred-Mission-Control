@@ -54,6 +54,10 @@ export function AgentOrganigrama({ agents }: AgentOrganigramaProps) {
   const rootAgent = agents.find((a) => a.allowAgents && a.allowAgents.length > 0);
   const rootAgentId = rootAgent?.id || null;
 
+  // Override for main/alfred as CEO Agent
+  const isAlfredRoot = rootAgentId === "main" || rootAgentId === "alfred";
+  const alfredRoot = isAlfredRoot ? { ...rootAgent!, emoji: "🤖", name: "Alfred" } : rootAgent;
+
   // Get subagent IDs of the root agent
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const _subagentIds = new Set(rootAgent?.allowAgents || []);
@@ -238,11 +242,11 @@ export function AgentOrganigrama({ agents }: AgentOrganigramaProps) {
       >
         <div
           style={{
-            backgroundColor: `${rootAgent.color}08`,
+            backgroundColor: `${isAlfredRoot ? "#6366f1" : rootAgent.color}08`,
             borderRadius: "16px",
-            border: `2px solid ${rootAgent.color}`,
+            border: `2px solid ${isAlfredRoot ? "#6366f1" : rootAgent.color}`,
             overflow: "hidden",
-            boxShadow: `0 4px 20px ${rootAgent.color}20`,
+            boxShadow: `0 4px 20px ${isAlfredRoot ? "#6366f1" : rootAgent.color}20`,
           }}
         >
           {/* HQ Header */}
@@ -252,22 +256,24 @@ export function AgentOrganigrama({ agents }: AgentOrganigramaProps) {
               alignItems: "center",
               gap: "0.75rem",
               padding: "0.75rem 1rem",
-              backgroundColor: `${rootAgent.color}15`,
-              borderBottom: `1px solid ${rootAgent.color}20`,
+              backgroundColor: `${isAlfredRoot ? "#6366f1" : rootAgent.color}15`,
+              borderBottom: `1px solid ${isAlfredRoot ? "#6366f1" : rootAgent.color}20`,
             }}
           >
-            <span style={{ fontSize: "1.5rem" }}>{rootAgent.emoji}</span>
+            <span style={{ fontSize: "1.5rem" }}>{alfredRoot?.emoji || rootAgent.emoji}</span>
             <div style={{ flex: 1 }}>
               <h3
                 style={{
                   margin: 0,
                   fontSize: "1.1rem",
                   fontWeight: 600,
-                  color: rootAgent.color,
+                  color: alfredRoot?.color || rootAgent.color,
                 }}
               >
-                {rootAgent.name}
-                <span style={{ fontSize: "0.8rem", opacity: 0.7 }}> (HQ)</span>
+                {alfredRoot?.name || rootAgent.name}
+                <span style={{ fontSize: "0.8rem", opacity: 0.7 }}>
+                  {isAlfredRoot ? " (CEO Agent / Orquestador)" : " (HQ)"}
+                </span>
               </h3>
               <span style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}>
                 {rootAgent.allowAgents?.length || 0} subagent{(rootAgent.allowAgents?.length || 0) !== 1 ? "s" : ""}

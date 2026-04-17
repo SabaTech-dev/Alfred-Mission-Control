@@ -33,10 +33,7 @@ const FORBIDDEN_SUBSHELL_PATTERN = /\$\(|\$\{/;
 const FORBIDDEN_REDIRECTION_PATTERN = /(^|\s)(?:>|>>|<|<<)(?=\s|$)/;
 
 const COMMAND_POLICIES: Record<string, CommandPolicy> = {
-  awk: {
-    allowedFlags: ["-F", "-f", "-v"],
-    valueFlags: ["-F", "-f", "-v"],
-  },
+  // awk, sed, cut removed for security - can read sensitive files
   cat: {
     allowedFlags: ["-n", "-b", "-s", "-E", "-T", "-v", "--number", "--number-nonblank", "--squeeze-blank"],
   },
@@ -155,10 +152,6 @@ const COMMAND_POLICIES: Record<string, CommandPolicy> = {
     allowBundledShortFlags: true,
     allowedFlags: ["-A", "-a", "-e", "-f", "-o", "-p", "-u", "-x", "--format", "--pid", "--user"],
     valueFlags: ["-o", "-p", "-u", "--format", "--pid", "--user"],
-  },
-  sed: {
-    allowedFlags: ["-n", "-E", "-e"],
-    valueFlags: ["-e"],
   },
   sort: {
     allowBundledShortFlags: true,

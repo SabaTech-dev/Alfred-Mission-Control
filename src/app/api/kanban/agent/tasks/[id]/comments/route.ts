@@ -37,6 +37,11 @@ function isTaskAccessibleByAgent(task: ReturnType<typeof getTask>, agentId: stri
     return false;
   }
 
+  // Security agent can access comments on tasks in review status (for Security Gate)
+  if (agentId === "security" && task.status === "review") {
+    return true;
+  }
+
   return task.createdBy === agentId || task.assignee === agentId || task.claimedBy === agentId;
 }
 

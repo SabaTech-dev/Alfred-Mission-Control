@@ -46,8 +46,14 @@ interface LiveData {
 /* ------------------------------------------------------------------ */
 
 const AGENT_EMOJIS: Record<string, string> = {
-  alfred: "🤖", coder: "💻", research: "🔍", security: "🔒",
-  debug: "🐛", "refactor-expert": "⚡", unknown: "🤖",
+  alfred: "🤖",
+  main: "🤖",
+  coder: "💻",
+  research: "🔍",
+  security: "🔒",
+  debug: "🐛",
+  "qa-tester": "🧪",
+  unknown: "🤖",
 };
 
 const STATUS_CONFIG: Record<string, { color: string; icon: typeof Brain; mode: "pulse" | "blink" | "wave" }> = {

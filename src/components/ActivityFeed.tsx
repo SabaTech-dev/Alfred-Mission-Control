@@ -1,179 +1,137 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { formatDistanceToNow } from "date-fns";
-import {
-  FileText,
-  Search,
-  MessageSquare,
-  Terminal,
-  CheckCircle,
-  XCircle,
-  Clock,
-  Zap,
-  Shield,
-  Hammer,
-  Timer,
-  Brain,
-} from "lucide-react";
-import { RichDescription } from "./RichDescription";
+import { Activity, AlertTriangle, CheckCircle2, Clock3 } from "lucide-react";
 
-interface Activity {
+interface ActivityItem {
   id: string;
-  timestamp: string;
-  type: string;
-  description: string;
-  status: string;
-  duration_ms: number | null;
-  tokens_used: number | null;
+  description?: string;
+  timestamp?: string;
+  type?: string;
+  status?: string;
+  agent?: string | null;
 }
-
-interface ActivitiesResponse {
-  activities: Activity[];
-  total: number;
-  limit: number;
-  offset: number;
-  hasMore: boolean;
-}
-
-const typeConfig: Record<string, { 
-  icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>;
-  color: string;
-  bgColor: string;
-}> = {
-  file: { icon: FileText, color: 'var(--type-file)', bgColor: 'var(--type-file-bg)' },
-  search: { icon: Search, color: 'var(--type-search)', bgColor: 'var(--type-search-bg)' },
-  message: { icon: MessageSquare, color: 'var(--type-message)', bgColor: 'var(--type-message-bg)' },
-  command: { icon: Terminal, color: 'var(--type-command)', bgColor: 'var(--type-command-bg)' },
-  security: { icon: Shield, color: 'var(--type-security)', bgColor: 'var(--type-security-bg)' },
-  build: { icon: Hammer, color: 'var(--type-build)', bgColor: 'var(--type-build-bg)' },
-  cron: { icon: Timer, color: 'var(--type-cron)', bgColor: 'var(--type-cron-bg)' },
-  memory: { icon: Brain, color: 'var(--info)', bgColor: 'var(--info-bg)' },
-  default: { icon: Zap, color: 'var(--text-secondary)', bgColor: 'var(--card-elevated)' },
-};
-
-const statusConfig: Record<string, { 
-  icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>;
-  color: string;
-  bgColor: string;
-}> = {
-  success: { icon: CheckCircle, color: 'var(--success)', bgColor: 'var(--success-bg)' },
-  error: { icon: XCircle, color: 'var(--error)', bgColor: 'var(--error-bg)' },
-  pending: { icon: Clock, color: 'var(--warning)', bgColor: 'var(--warning-bg)' },
-};
 
 interface ActivityFeedProps {
   limit?: number;
 }
 
+function statusColor(status?: string): string {
+  switch (status) {
+    case "success":
+    case "approved":
+      return "var(--success)";
+    case "error":
+    case "rejected":
+      return "var(--error)";
+    case "pending":
+    case "running":
+      return "var(--warning)";
+    default:
+      return "var(--text-muted)";
+  }
+}
+
+function statusIcon(status?: string) {
+  switch (status) {
+    case "success":
+    case "approved":
+      return CheckCircle2;
+    case "error":
+    case "rejected":
+      return AlertTriangle;
+    default:
+      return Activity;
+  }
+}
+
 export function ActivityFeed({ limit = 10 }: ActivityFeedProps) {
-  const [activities, setActivities] = useState<Activity[] | null>(null);
+  const [activities, setActivities] = useState<ActivityItem[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`/api/activities?limit=${limit}&sort=newest`)
-      .then((res) => res.json())
-      .then((data: ActivitiesResponse) => setActivities(data.activities))
-      .catch(() => setActivities([]));
+    let active = true;
+
+    async function loadActivities() {
+      try {
+        const response = await fetch(`/api/activities?limit=${limit}`, { cache: "no-store" });
+        if (!response.ok) {
+          throw new Error(`Activity feed request failed: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const nextActivities = Array.isArray(data)
+          ? data
+          : Array.isArray(data.activities)
+            ? data.activities
+            : [];
+
+        if (active) {
+          setActivities(nextActivities);
+        }
+      } catch (error) {
+        console.error("Failed to load activity feed:", error);
+        if (active) {
+          setActivities([]);
+        }
+      } finally {
+        if (active) {
+          setLoading(false);
+        }
+      }
+    }
+
+    loadActivities();
+    return () => {
+      active = false;
+    };
   }, [limit]);
 
-  if (!activities) {
+  if (loading) {
     return (
-      <div className="animate-pulse">
-        {[...Array(5)].map((_, i) => (
-          <div 
-            key={i} 
-            className="h-16 mx-4 my-2 rounded-lg"
-            style={{ backgroundColor: 'var(--card-elevated)' }}
-          />
-        ))}
+      <div className="p-4 text-sm" style={{ color: "var(--text-secondary)" }}>
+        …
       </div>
     );
   }
 
   if (activities.length === 0) {
     return (
-      <div className="text-center py-12" style={{ color: 'var(--text-secondary)' }}>
-        <Zap className="w-12 h-12 mx-auto mb-4 opacity-50" />
-        <p>No activities logged yet</p>
+      <div className="p-4 text-sm" style={{ color: "var(--text-secondary)" }}>
+        —
       </div>
     );
   }
 
   return (
     <div>
-      {activities.map((activity) => {
-        const type = typeConfig[activity.type] || typeConfig.default;
-        const status = statusConfig[activity.status] || statusConfig.success;
-        const TypeIcon = type.icon;
+      {activities.map((activityItem) => {
+        const Icon = statusIcon(activityItem.status);
+        const color = statusColor(activityItem.status);
 
         return (
           <div
-            key={activity.id}
-            className="flex items-center gap-2 md:gap-3 px-3 md:px-4 py-2 md:py-3 transition-colors cursor-pointer"
-            style={{ 
-              borderRadius: '8px',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = 'var(--card-elevated)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = 'transparent';
-            }}
+            key={activityItem.id}
+            className="flex items-start gap-3 px-5 py-4"
+            style={{ borderBottom: "1px solid var(--border)" }}
           >
-            {/* Icon */}
-            <div 
-              className="w-7 h-7 md:w-9 md:h-9 rounded-lg flex items-center justify-center flex-shrink-0"
-              style={{ backgroundColor: type.bgColor }}
-            >
-              <TypeIcon className="w-3.5 h-3.5 md:w-[18px] md:h-[18px]" style={{ color: type.color }} />
+            <div className="mt-0.5 shrink-0" style={{ color }}>
+              <Icon className="w-4 h-4" />
             </div>
-
-            {/* Content */}
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-1.5 md:gap-2 mb-0.5">
-                <span 
-                  className="text-[10px] md:text-xs font-semibold uppercase"
-                  style={{ color: type.color }}
-                >
-                  {activity.type}
-                </span>
-                {activity.status === 'success' && (
-                  <span 
-                    className="badge text-[10px] md:text-xs py-0.5 px-1.5 md:px-2 hidden sm:inline-block"
-                    style={{ 
-                      backgroundColor: status.bgColor,
-                      color: status.color,
-                    }}
-                  >
-                    Success
+            <div className="min-w-0 flex-1">
+              <p className="text-sm" style={{ color: "var(--text-primary)" }}>
+                {activityItem.description || activityItem.type || activityItem.id}
+              </p>
+              <div className="mt-1 flex flex-wrap items-center gap-2 text-xs" style={{ color: "var(--text-muted)" }}>
+                {activityItem.agent ? <span>{activityItem.agent}</span> : null}
+                {activityItem.timestamp ? (
+                  <span className="inline-flex items-center gap-1">
+                    <Clock3 className="w-3 h-3" />
+                    {new Date(activityItem.timestamp).toLocaleString("es-ES")}
                   </span>
-                )}
-                {activity.status === 'error' && (
-                  <span 
-                    className="badge text-[10px] md:text-xs py-0.5 px-1.5 md:px-2"
-                    style={{ 
-                      backgroundColor: status.bgColor,
-                      color: status.color,
-                    }}
-                  >
-                    Error
-                  </span>
-                )}
+                ) : null}
               </div>
-              <RichDescription 
-                text={activity.description}
-                className="text-xs md:text-sm"
-                style={{ color: 'var(--text-primary)' }}
-              />
             </div>
-
-            {/* Time */}
-            <time 
-              className="text-[10px] md:text-xs whitespace-nowrap flex-shrink-0"
-              style={{ color: 'var(--text-muted)' }}
-            >
-              {formatDistanceToNow(new Date(activity.timestamp), { addSuffix: false })}
-            </time>
           </div>
         );
       })}

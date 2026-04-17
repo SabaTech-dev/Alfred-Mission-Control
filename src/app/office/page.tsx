@@ -34,10 +34,17 @@ async function loadOfficeAgents() {
 
   try {
     const config = JSON.parse(fs.readFileSync(OPENCLAW_CONFIG, 'utf-8'));
-    const agentsList = config.agents?.list || [];
+    let agentsList = config.agents?.list || [];
 
     if (agentsList.length === 0) {
       return [];
+    }
+
+    // Ensure main agent is always first (index 0 = center front)
+    const mainAgentIndex = agentsList.findIndex((a: { id: string }) => a.id === 'main');
+    if (mainAgentIndex > 0) {
+      const [mainAgent] = agentsList.splice(mainAgentIndex, 1);
+      agentsList = [mainAgent, ...agentsList];
     }
 
     const { cols } = getGridDimensions(agentsList.length);

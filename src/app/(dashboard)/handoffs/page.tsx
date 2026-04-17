@@ -53,7 +53,7 @@ const AGENT_EMOJIS: Record<string, string> = {
   research: "🔍",
   security: "🔒",
   debug: "🐛",
-  "refactor-expert": "⚡",
+  "qa-tester": "🧪",
 };
 
 export default function HandoffsPage() {

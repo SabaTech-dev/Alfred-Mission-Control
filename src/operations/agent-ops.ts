@@ -17,6 +17,7 @@ import {
   setPersistedStatusOverride,
 } from "@/lib/agent-state-store";
 import { getOpenClawSessionsTelemetry } from "@/lib/telemetry/sources/openclaw-sessions";
+import { getModelDisplayName } from "@/lib/model-utils";
 import { createCache } from "@/lib/cache";
 import { readFileSync, existsSync, readdirSync } from "fs";
 import { join } from "path";
@@ -72,6 +73,28 @@ export interface AgentInfo {
   mood?: AgentMood;
   skills?: string[];
 }
+
+// Hardcoded agent name mappings for known agents
+const AGENT_NAME_MAPPINGS: Record<string, string> = {
+  main: "Alfred (CEO Agent)",
+  coder: "Coder",
+  security: "Security",
+  research: "Research",
+  debug: "Debug",
+  qa_tester: "QA Tester",
+  "qa-tester": "QA Tester",
+};
+
+// Hardcoded skills for known agents
+const AGENT_SKILL_MAPPINGS: Record<string, string[]> = {
+  main: [], // Skills del workspace principal (se descubren dinámicamente)
+  coder: ["coder-brainstorming", "coder-writing-plans", "coder-plan-reviewer", "coder-tdd"],
+  security: ["security-audit-pipeline"],
+  qa_tester: ["coder-brainstorming", "coder-writing-plans", "coder-plan-reviewer"],
+  "qa-tester": ["coder-brainstorming", "coder-writing-plans", "coder-plan-reviewer"],
+  research: [],
+  debug: [],
+};
 
 export interface AgentMood {
   agentId: string;
@@ -177,8 +200,77 @@ function classifyAgentStatus(lastActivity: string | undefined, activeSessions: n
  * Load agents from openclaw.json configuration
  */
 function loadAgentsFromConfig(): AgentInfo[] {
-  const configPath = join(OPENCLAW_DIR, "openclaw.json");
+  // Primary: filesystem discovery from ~/.openclaw/agents/<id>/
+  const agentsDir = join(OPENCLAW_DIR, "agents");
+  if (existsSync(agentsDir)) {
+    try {
+      const entries = readdirSync(agentsDir, { withFileTypes: true });
+      const agentDirs = entries.filter(
+        (e) => e.isDirectory() && !e.name.startsWith(".")
+      );
 
+      if (agentDirs.length > 0) {
+        // Try to load CLI data for enrichment (name, model)
+        let cliAgentMap = new Map<string, { identityName?: string; model?: string; workspace?: string }>();
+        try {
+          const { execSync } = require("child_process");
+          const cliOutput = execSync("openclaw agents list --json", {
+            encoding: "utf-8",
+            timeout: 5000,
+            cwd: OPENCLAW_DIR,
+          });
+          const cliAgents = JSON.parse(cliOutput);
+          if (Array.isArray(cliAgents)) {
+            for (const a of cliAgents) {
+              cliAgentMap.set(a.id, a);
+            }
+          }
+        } catch {
+          // CLI unavailable, proceed without enrichment
+        }
+
+        return agentDirs.map((dir) => {
+          const id = dir.name;
+          const cliData = cliAgentMap.get(id);
+          const defaults = getAgentDefaults(id, cliData?.identityName);
+
+          // Determine workspace
+          let workspace = cliData?.workspace || join(OPENCLAW_DIR, "workspace");
+          const wsPath = join(OPENCLAW_DIR, `workspace-${id}`);
+          if (existsSync(wsPath)) {
+            workspace = wsPath;
+          }
+
+          // Discover skills from workspace directory
+          const discoveredSkills = discoverAgentSkills(workspace);
+          
+          // Combine discovered skills with hardcoded skills
+          const hardcodedSkills = AGENT_SKILL_MAPPINGS[id] || [];
+          const allSkills = [...new Set([...discoveredSkills, ...hardcodedSkills])];
+
+          return {
+            id,
+            name: AGENT_NAME_MAPPINGS[id] || cliData?.identityName || id,
+            emoji: defaults.emoji,
+            color: defaults.color,
+            status: "offline" as const,
+            model: getModelDisplayName(cliData?.model) || "unknown",
+            tokensUsed: 0,
+            sessionCount: 0,
+            activeSessions: 0,
+            workspace,
+            skills: allSkills,
+          };
+        });
+      }
+    } catch (error) {
+      console.error("[agent-ops] Error scanning agents directory:", error);
+      // Fall through to config-based loading
+    }
+  }
+
+  // Fallback: openclaw.json agents.list (legacy)
+  const configPath = join(OPENCLAW_DIR, "openclaw.json");
   if (!existsSync(configPath)) {
     console.warn("[agent-ops] openclaw.json not found at", configPath);
     return [];
@@ -200,7 +292,6 @@ function loadAgentsFromConfig(): AgentInfo[] {
       const allowAgents = agent.subagents?.allowAgents || [];
       const workspace = agent.workspace || join(OPENCLAW_DIR, "workspace", agent.id);
 
-      // Build allowAgentsDetails using auto-config
       const allowAgentsDetails = allowAgents.map((subId: string) => {
         const subDefaults = getAgentDefaults(subId, subId);
         return {
@@ -211,18 +302,18 @@ function loadAgentsFromConfig(): AgentInfo[] {
         };
       });
 
-      // Discover skills from workspace directory + config skills
       const discoveredSkills = discoverAgentSkills(workspace);
       const configSkills = agent.skills || [];
-      const allSkills = [...new Set([...discoveredSkills, ...configSkills])];
+      const hardcodedSkills = AGENT_SKILL_MAPPINGS[agent.id] || [];
+      const allSkills = [...new Set([...discoveredSkills, ...configSkills, ...hardcodedSkills])];
 
       return {
         id: agent.id,
-        name: agent.name || agent.id,
+        name: AGENT_NAME_MAPPINGS[agent.id] || agent.name || agent.id,
         emoji: defaults.emoji,
         color: defaults.color,
         status: "offline" as const,
-        model: agent.model || "unknown",
+        model: getModelDisplayName(agent.model) || "unknown",
         tokensUsed: 0,
         sessionCount: 0,
         activeSessions: 0,

@@ -80,3 +80,6 @@ next-env.d.ts
 REVIEW-*.md
 dev.log
 test-results/
+
+# Debug routes that expose sensitive info
+src/app/api/debug/

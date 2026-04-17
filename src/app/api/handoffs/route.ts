@@ -23,7 +23,7 @@ const SAMPLE_HANDOFFS: Handoff[] = [
     task: "Implement Fase 3 UX Pro features for Mission Control",
     status: "running",
     startedAt: new Date(Date.now() - 3600000).toISOString(),
-    model: "qwen/qwen3-coder:free",
+    model: "zai/glm-5.1",
   },
   {
     id: "h2",
@@ -34,7 +34,7 @@ const SAMPLE_HANDOFFS: Handoff[] = [
     startedAt: new Date(Date.now() - 7200000).toISOString(),
     completedAt: new Date(Date.now() - 6800000).toISOString(),
     durationMs: 400000,
-    model: "nvidia/kimi-k2.5",
+    model: "zai/glm-5",
   },
   {
     id: "h3",
@@ -45,7 +45,7 @@ const SAMPLE_HANDOFFS: Handoff[] = [
     startedAt: new Date(Date.now() - 86400000).toISOString(),
     completedAt: new Date(Date.now() - 86000000).toISOString(),
     durationMs: 400000,
-    model: "minimax/minimax-m2.5:free",
+    model: "zai/glm-5",
   },
   {
     id: "h4",
@@ -56,16 +56,16 @@ const SAMPLE_HANDOFFS: Handoff[] = [
     startedAt: new Date(Date.now() - 172800000).toISOString(),
     completedAt: new Date(Date.now() - 172700000).toISOString(),
     durationMs: 100000,
-    model: "openrouter/hunter-alpha",
+    model: "zai/glm-4.7",
   },
   {
     id: "h5",
     from: "coder",
-    to: "refactor-expert",
-    task: "Optimize Recharts rendering performance",
+    to: "qa-tester",
+    task: "Validate regression coverage for Mission Control rendering changes",
     status: "pending",
     startedAt: new Date().toISOString(),
-    model: "minimax/minimax-m2.5:free",
+    model: "zai/glm-4.7",
   },
 ];
 
@@ -84,6 +84,13 @@ export async function GET() {
       if (delegationsMatch) {
         // Parse delegation table rows
         const rowMatches = delegationsMatch[0].matchAll(/\|\s*(\w+)\s*\|\s*(\w+[\w-]*)\s*\|\s*(\S+)\s*\|/g);
+        const modelByAgent: Record<string, string> = {
+          coder: "zai/glm-5.1",
+          research: "zai/glm-5",
+          security: "zai/glm-5",
+          debug: "zai/glm-4.7",
+          "qa-tester": "zai/glm-4.7",
+        };
         for (const match of rowMatches) {
           const [, fase, agente, estado] = match;
           if (agente && agente !== "Agente") {
@@ -97,7 +104,7 @@ export async function GET() {
                 task: `${fase} implementation`,
                 status: estado.includes("✅") ? "completed" : estado.includes("⏳") ? "pending" : "running",
                 startedAt: new Date().toISOString(),
-                model: agente === "coder" ? "qwen/qwen3-coder:free" : undefined,
+                model: modelByAgent[agente],
               });
             }
           }

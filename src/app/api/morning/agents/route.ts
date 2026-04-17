@@ -12,7 +12,7 @@ interface AgentStatus {
 
 export async function GET() {
   try {
-    // Define known agents from AGENTS.md
+    // Define known agents from the current OpenClaw topology
     const agents: AgentStatus[] = [
       {
         id: 'main',
@@ -25,43 +25,43 @@ export async function GET() {
       },
       {
         id: 'coder',
-        name: 'Coder',
+        name: 'Code Assistant',
         emoji: '👨‍💻',
-        model: 'qwen/qwen3-coder:free',
+        model: 'zai/glm-5.1',
         status: 'inactive',
         workspace: 'coder',
       },
       {
         id: 'research',
-        name: 'Research',
+        name: 'Research Agent',
         emoji: '🔍',
-        model: 'nvidia/kimi-k2.5',
+        model: 'zai/glm-5',
         status: 'inactive',
         workspace: 'research',
       },
       {
         id: 'security',
-        name: 'Security',
+        name: 'Security Bot',
         emoji: '🛡️',
-        model: 'minimax/minimax-m2.5:free',
+        model: 'zai/glm-5',
         status: 'inactive',
         workspace: 'security',
       },
       {
         id: 'debug',
-        name: 'Debug',
+        name: 'Debug Specialist',
         emoji: '🐛',
-        model: 'openrouter/hunter-alpha',
+        model: 'zai/glm-4.7',
         status: 'inactive',
         workspace: 'debug',
       },
       {
-        id: 'refactor-expert',
-        name: 'Refactor',
-        emoji: '♻️',
-        model: 'minimax/minimax-m2.5:free',
+        id: 'qa-tester',
+        name: 'QA Tester',
+        emoji: '🧪',
+        model: 'zai/glm-4.7',
         status: 'inactive',
-        workspace: 'refactor',
+        workspace: 'qa-tester',
       },
     ];
 

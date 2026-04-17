@@ -1,122 +1,63 @@
 "use client";
 
-import { useState, useRef, KeyboardEvent } from "react";
-import { Save, AlertCircle } from "lucide-react";
+import { useState } from "react";
+import { Loader2, Save } from "lucide-react";
+
+import { useI18n } from "@/i18n/provider";
 
 interface MarkdownEditorProps {
   content: string;
-  onChange: (content: string) => void;
-  onSave: () => Promise<void>;
-  hasUnsavedChanges: boolean;
-  disabled?: boolean;
+  onChange: (value: string) => void;
+  onSave: () => Promise<void> | void;
+  hasUnsavedChanges?: boolean;
 }
 
 export function MarkdownEditor({
   content,
   onChange,
   onSave,
-  hasUnsavedChanges,
-  disabled = false,
+  hasUnsavedChanges = false,
 }: MarkdownEditorProps) {
-  const [isSaving, setIsSaving] = useState(false);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const { t } = useI18n();
+  const [saving, setSaving] = useState(false);
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Tab") {
-      e.preventDefault();
-      const target = e.currentTarget;
-      const start = target.selectionStart;
-      const end = target.selectionEnd;
-
-      const newValue =
-        content.substring(0, start) + "  " + content.substring(end);
-      onChange(newValue);
-
-      // Restore cursor position after state update
-      setTimeout(() => {
-        target.selectionStart = target.selectionEnd = start + 2;
-      }, 0);
-    }
-
-    // Ctrl/Cmd + S to save
-    if ((e.ctrlKey || e.metaKey) && e.key === "s") {
-      e.preventDefault();
-      handleSave();
-    }
-  };
-
-  const handleSave = async () => {
-    if (!hasUnsavedChanges || isSaving) return;
-    setIsSaving(true);
+  async function handleSave() {
     try {
+      setSaving(true);
       await onSave();
     } finally {
-      setIsSaving(false);
+      setSaving(false);
     }
-  };
+  }
 
   return (
     <div className="h-full flex flex-col">
-      {/* Toolbar */}
       <div
-        className="flex items-center justify-between px-4 py-2"
-        style={{
-          backgroundColor: "var(--card)",
-          borderBottom: "1px solid var(--border)",
-        }}
+        className="flex items-center justify-end gap-2 px-4 py-3"
+        style={{ borderBottom: "1px solid var(--border)", backgroundColor: "var(--card)" }}
       >
-        <div className="flex items-center gap-2">
-          {hasUnsavedChanges && (
-            <span
-              className="flex items-center gap-1.5 text-sm"
-              style={{ color: "#F59E0B" }}
-            >
-              <AlertCircle className="w-4 h-4" />
-              Unsaved changes
-            </span>
-          )}
-        </div>
         <button
+          type="button"
           onClick={handleSave}
-          disabled={!hasUnsavedChanges || isSaving || disabled}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-          style={{
-            backgroundColor:
-              hasUnsavedChanges && !isSaving && !disabled
-                ? "var(--accent)"
-                : "var(--border)",
-            color:
-              hasUnsavedChanges && !isSaving && !disabled
-                ? "var(--text-primary)"
-                : "var(--text-muted)",
-            cursor:
-              !hasUnsavedChanges || isSaving || disabled
-                ? "not-allowed"
-                : "pointer",
-          }}
+          disabled={!hasUnsavedChanges || saving}
+          className="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium disabled:opacity-50"
+          style={{ backgroundColor: "var(--accent)", color: "white" }}
         >
-          <Save className="w-4 h-4" />
-          {isSaving ? "Saving..." : "Save"}
+          {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+          {t("common.save")}
         </button>
       </div>
 
-      {/* Editor */}
       <textarea
-        ref={textareaRef}
         value={content}
-        onChange={(e) => onChange(e.target.value)}
-        onKeyDown={handleKeyDown}
-        disabled={disabled}
-        placeholder="Select a file to edit..."
-        className="flex-1 w-full p-4 resize-none focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+        onChange={(event) => onChange(event.target.value)}
+        className="flex-1 w-full resize-none p-4 outline-none"
         style={{
-          backgroundColor: "var(--card)",
+          backgroundColor: "var(--bg)",
           color: "var(--text-primary)",
-          fontFamily: "var(--font-jetbrains), 'JetBrains Mono', 'Fira Code', 'Roboto Mono', Consolas, monospace",
-          fontSize: "13px",
-          lineHeight: "1.7",
-          tabSize: 2,
-          letterSpacing: "0.01em",
+          fontFamily: "var(--font-mono, ui-monospace, SFMono-Regular, monospace)",
+          fontSize: "14px",
+          lineHeight: 1.6,
         }}
       />
     </div>

@@ -82,35 +82,26 @@ async function runAction(action: string): Promise<ActionResult> {
       }
 
       case 'heartbeat': {
-        // Check all critical services
-        const services = ['alfred'];
-        const pm2services = ['classvault', 'content-vault', 'brain'];
+        // Check all critical services by port
+        const services = [
+          { name: 'alfred-mc', port: 3000 },
+          { name: 'openclaw-gateway', port: 18789 },
+          { name: 'postgresql', port: 5432 },
+          { name: 'hindsight', port: 9077 },
+          { name: 'ollama', port: 11434 },
+          { name: 'coolify', port: 8000 },
+          { name: 'n8n', port: 5678 },
+        ];
         const results: string[] = [];
 
         for (const svc of services) {
-          const { stdout } = await execAsync(`systemctl is-active ${svc} 2>/dev/null || echo "inactive"`);
-          const status = stdout.trim();
-          results.push(`${status === 'active' ? '✅' : '❌'} ${svc}: ${status}`);
-        }
-
-        try {
-          const { stdout: pm2 } = await execAsync('pm2 jlist 2>/dev/null');
-          const pm2list = JSON.parse(pm2);
-          for (const svc of pm2services) {
-            const proc = pm2list.find((p: { name: string }) => p.name === svc);
-            const status = proc?.pm2_env?.status || 'not found';
-            results.push(`${status === 'online' ? '✅' : '❌'} ${svc} (pm2): ${status}`);
+          try {
+            const { stdout } = await execAsync(`ss -tlnp 2>/dev/null | grep :${svc.port} || echo ""`);
+            const running = stdout.trim().length > 0;
+            results.push(`${running ? '✅' : '❌'} ${svc.name}: ${running ? `listening on :${svc.port}` : 'down'}`);
+          } catch {
+            results.push(`❌ ${svc.name}: check failed`);
           }
-        } catch {
-          results.push('⚠️ PM2: could not connect');
-        }
-
-        // Ping the main site
-        try {
-          const { stdout: ping } = await execAsync('curl -s -o /dev/null -w "%{http_code}" --max-time 5 https://alfred.cazaustre.dev');
-          results.push(`\n🌐 alfred.cazaustre.dev: HTTP ${ping.trim()}`);
-        } catch {
-          results.push('\n🌐 alfred.cazaustre.dev: unreachable');
         }
 
         output = results.join('\n');

@@ -11,7 +11,6 @@ import { GatewayStatusBadge } from "@/components/GatewayStatusBadge";
 import { BRANDING } from "@/config/branding";
 import { useI18n } from "@/i18n/provider";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import logoSmall from "@/../public/logo-small.png";
 
 export function TopBar() {
   const [showSearch, setShowSearch] = useState(false);
@@ -83,7 +82,7 @@ export function TopBar() {
       >
         <div className="flex items-center gap-3">
           <Image 
-            src={logoSmall}
+            src="/logo-small.png"
             alt="Alfred Mission Control"
             width={28}
             height={28}

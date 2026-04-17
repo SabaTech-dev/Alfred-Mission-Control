@@ -1,163 +1,116 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { Search, FileText, Zap, Calendar, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { Search } from "lucide-react";
+
+import { useDebounce } from "@/hooks/useDebounce";
+import { useI18n } from "@/i18n/provider";
 
 interface SearchResult {
   type: "memory" | "activity" | "task";
   title: string;
   snippet: string;
-  path?: string;
-  timestamp?: string;
 }
 
-const typeConfig = {
-  memory: { icon: FileText, color: "#3B82F6", bg: "rgba(59, 130, 246, 0.1)" },
-  activity: { icon: Zap, color: "var(--accent)", bg: "rgba(255, 59, 48, 0.1)" },
-  task: { icon: Calendar, color: "#A855F7", bg: "rgba(168, 85, 247, 0.1)" },
-};
-
-interface GlobalSearchProps {
-  fullPage?: boolean;
+function resultHref(type: SearchResult["type"]): string {
+  switch (type) {
+    case "memory":
+      return "/memory";
+    case "activity":
+      return "/activity";
+    case "task":
+      return "/kanban";
+    default:
+      return "/";
+  }
 }
 
-export function GlobalSearch({ fullPage = false }: GlobalSearchProps) {
+export function GlobalSearch() {
+  const { t } = useI18n();
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
-
-  const searchDebounced = useCallback(async (q: string) => {
-    if (q.length < 2) {
-      setResults([]);
-      return;
-    }
-
-    setIsSearching(true);
-    try {
-      const res = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
-      const data = await res.json();
-      setResults(data);
-    } catch {
-      setResults([]);
-    }
-    setIsSearching(false);
-  }, []);
+  const debouncedQuery = useDebounce(query, 250);
 
   useEffect(() => {
-    const timer = setTimeout(() => searchDebounced(query), 300);
-    return () => clearTimeout(timer);
-  }, [query, searchDebounced]);
+    let active = true;
+
+    async function runSearch() {
+      if (!debouncedQuery.trim()) {
+        setResults([]);
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/search?q=${encodeURIComponent(debouncedQuery)}`);
+        if (!response.ok) {
+          throw new Error(`Global search request failed: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const nextResults = Array.isArray(data)
+          ? data
+          : Array.isArray(data.results)
+            ? data.results
+            : [];
+
+        if (active) {
+          setResults(nextResults);
+        }
+      } catch (error) {
+        console.error("Global search failed:", error);
+        if (active) {
+          setResults([]);
+        }
+      }
+    }
+
+    runSearch();
+    return () => {
+      active = false;
+    };
+  }, [debouncedQuery]);
 
   return (
-    <div className={fullPage ? "" : "relative"}>
-      {/* Search Input */}
-      <div className="relative">
-        <Search 
-          className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" 
-          style={{ color: "var(--text-secondary)" }} 
-        />
+    <div
+      className="rounded-xl overflow-hidden"
+      style={{ backgroundColor: "var(--card)", border: "1px solid var(--border)" }}
+    >
+      <div className="flex items-center gap-3 px-4 py-3" style={{ borderBottom: "1px solid var(--border)" }}>
+        <Search className="w-4 h-4" style={{ color: "var(--text-muted)" }} />
         <input
-          type="text"
+          autoFocus
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search activities, tasks, and documents..."
-          className="w-full pl-12 pr-10 py-3 rounded-xl transition-colors focus:outline-none"
-          style={{ 
-            backgroundColor: "var(--card)", 
-            color: "var(--text-primary)", 
-            border: "1px solid var(--border)" 
-          }}
+          onChange={(event) => setQuery(event.target.value)}
+          placeholder={t("topbar.search")}
+          className="w-full bg-transparent outline-none text-sm"
+          style={{ color: "var(--text-primary)" }}
         />
-        {query && (
-          <button
-            onClick={() => setQuery("")}
-            className="absolute right-4 top-1/2 -translate-y-1/2 p-1 rounded transition-colors"
-            style={{ color: "var(--text-secondary)" }}
-          >
-            <X className="w-4 h-4" />
-          </button>
-        )}
       </div>
 
-      {/* Results */}
-      {(query.length >= 2 || results.length > 0) && (
-        <div
-          className={`${
-            fullPage
-              ? "mt-6 rounded-xl"
-              : "absolute top-full left-0 right-0 mt-2 rounded-xl shadow-xl z-50 max-h-96 overflow-y-auto"
-          }`}
-          style={{ backgroundColor: "var(--card)" }}
-        >
-          {isSearching && (
-            <div className="p-4 text-center" style={{ color: "var(--text-secondary)" }}>
-              Searching...
-            </div>
-          )}
-
-          {!isSearching && results.length === 0 && query.length >= 2 && (
-            <div className="p-8 text-center" style={{ color: "var(--text-secondary)" }}>
-              <Search className="w-10 h-10 mx-auto mb-3 opacity-50" />
-              <p>No results found for &quot;{query}&quot;</p>
-            </div>
-          )}
-
-          {!isSearching && results.length > 0 && (
-            <div>
-              {results.map((result, index) => {
-                const config = typeConfig[result.type];
-                const Icon = config.icon;
-
-                return (
-                  <div
-                    key={index}
-                    className="p-4 transition-colors cursor-pointer"
-                    style={{ 
-                      borderBottom: index < results.length - 1 ? "1px solid var(--border)" : "none" 
-                    }}
-                  >
-                    <div className="flex items-start gap-3">
-                      <div 
-                        className="p-2 rounded-lg"
-                        style={{ backgroundColor: config.bg }}
-                      >
-                        <Icon className="w-4 h-4" style={{ color: config.color }} />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="font-medium" style={{ color: "var(--text-primary)" }}>
-                            {result.title}
-                          </span>
-                          <span
-                            className="text-xs px-2 py-0.5 rounded"
-                            style={{ backgroundColor: config.bg, color: config.color }}
-                          >
-                            {result.type}
-                          </span>
-                        </div>
-                        <p 
-                          className="text-sm line-clamp-2"
-                          style={{ color: "var(--text-secondary)" }}
-                        >
-                          {result.snippet}
-                        </p>
-                        {result.path && (
-                          <p 
-                            className="text-xs mt-1 truncate"
-                            style={{ color: "var(--text-muted)" }}
-                          >
-                            {result.path}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      )}
+      <div className="max-h-[420px] overflow-y-auto">
+        {results.length === 0 ? (
+          <div className="px-4 py-8 text-sm text-center" style={{ color: "var(--text-secondary)" }}>
+            {debouncedQuery ? "—" : t("topbar.search")}
+          </div>
+        ) : (
+          results.map((result, index) => (
+            <Link
+              key={`${result.type}-${result.title}-${index}`}
+              href={resultHref(result.type)}
+              className="block px-4 py-3"
+              style={{ borderBottom: "1px solid var(--border)" }}
+            >
+              <p className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>
+                {result.title}
+              </p>
+              <p className="text-xs mt-1 line-clamp-2" style={{ color: "var(--text-secondary)" }}>
+                {result.snippet}
+              </p>
+            </Link>
+          ))
+        )}
+      </div>
     </div>
   );
 }

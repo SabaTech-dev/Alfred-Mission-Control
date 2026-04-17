@@ -1,7 +1,12 @@
 /**
- * OpenClaw agents detection - reads from openclaw.json
+ * OpenClaw agents detection - filesystem discovery + CLI enrichment
+ *
+ * OpenClaw 2026.3.x+ discovers agents from ~/.openclaw/agents/<id>/ directories.
+ * The openclaw.json agents.list may be empty when using filesystem discovery.
+ * This module scans the agents directory and enriches with CLI data when available.
  */
 
+import { execSync } from "child_process";
 import fs from "fs";
 import path from "path";
 import { logActivity } from "@/lib/activity-logger";
@@ -48,62 +53,162 @@ export interface AgentInfo {
   domain: string | null;
   heartbeatInterval: number | null;
   hasIdentity: boolean;
+  isDefault?: boolean;
+}
+
+// Cache CLI agent data for 60s to avoid repeated subprocess calls
+let cliCache: { data: Map<string, Record<string, unknown>>; ts: number } | null = null;
+const CLI_CACHE_TTL = 60_000;
+
+function getCliAgentMap(): Map<string, Record<string, unknown>> {
+  const now = Date.now();
+  if (cliCache && now - cliCache.ts < CLI_CACHE_TTL) {
+    return cliCache.data;
+  }
+
+  const map = new Map<string, Record<string, unknown>>();
+  try {
+    const cliOutput = execSync("openclaw agents list --json", {
+      encoding: "utf-8",
+      timeout: 5000,
+      cwd: OPENCLAW_DIR,
+    });
+    const cliAgents = JSON.parse(cliOutput);
+    if (Array.isArray(cliAgents)) {
+      for (const a of cliAgents) {
+        map.set(a.id as string, a);
+      }
+    }
+  } catch {
+    // CLI unavailable
+  }
+
+  cliCache = { data: map, ts: now };
+  return map;
 }
 
 /**
- * Get list of agents from openclaw.json
+ * Get list of agents from filesystem discovery, enriched with CLI data
+ *
+ * Strategy:
+ * 1. Scan ~/.openclaw/agents/<id>/ for all agent directories
+ * 2. Enrich each with CLI data (identityName, isDefault, model)
+ * 3. Fall back to openclaw.json agents.list if no filesystem agents found
  */
 export function getOpenClawAgents(): AgentInfo[] {
-  const configPath = path.join(OPENCLAW_DIR, "openclaw.json");
+  // Method 1: Filesystem discovery (primary for modern OpenClaw)
+  const agentsDir = path.join(OPENCLAW_DIR, "agents");
+  if (fs.existsSync(agentsDir)) {
+    try {
+      const entries = fs.readdirSync(agentsDir, { withFileTypes: true });
+      const agentDirs = entries.filter(
+        (e) => e.isDirectory() && !e.name.startsWith(".")
+      );
 
-  if (!fs.existsSync(configPath)) {
-    console.warn("[openclaw-agents] Config not found:", configPath);
-    return [];
-  }
+      if (agentDirs.length > 0) {
+        const cliAgentMap = getCliAgentMap();
 
-  try {
-    const configRaw = fs.readFileSync(configPath, "utf-8");
-    const config: OpenClawConfig = JSON.parse(configRaw);
-    const agents = config.agents?.list ?? [];
+        return agentDirs.map((dir) => {
+          const id = dir.name;
+          const cliData = cliAgentMap.get(id);
 
-    return agents.map((agent) => {
-      const workspaceDir = agent.workspace || path.join(OPENCLAW_DIR, "workspace", "agents", agent.id);
-      const identityPath = path.join(workspaceDir, "IDENTITY.md");
+          // Determine workspace: prefer CLI, then workspace-<id> pattern, then default
+          let workspaceDir = path.join(OPENCLAW_DIR, "workspace");
+          if (cliData?.workspace) {
+            workspaceDir = cliData.workspace as string;
+          } else {
+            const wsPath = path.join(OPENCLAW_DIR, `workspace-${id}`);
+            if (fs.existsSync(wsPath)) {
+              workspaceDir = wsPath;
+            }
+          }
 
-      let identity: AgentIdentity | null = null;
-      let hasIdentity = false;
+          const identityPath = path.join(workspaceDir, "IDENTITY.md");
 
-      if (fs.existsSync(identityPath)) {
-        try {
-          const identityContent = fs.readFileSync(identityPath, "utf-8");
-          identity = parseIdentityMd(identityContent);
-          hasIdentity = true;
-        } catch (error) {
-          console.error("[openclaw-agents] Error reading identity for", agent.id, error);
-        }
+          let identity: AgentIdentity | null = null;
+          let hasIdentity = false;
+
+          if (fs.existsSync(identityPath)) {
+            try {
+              const identityContent = fs.readFileSync(identityPath, "utf-8");
+              identity = parseIdentityMd(identityContent);
+              hasIdentity = true;
+            } catch {
+              // ignore
+            }
+          }
+
+          return {
+            id,
+            name: (cliData?.identityName as string) || id,
+            workspace: workspaceDir,
+            role: identity?.role ?? "general",
+            personality: identity?.personality ?? null,
+            avatar: identity?.avatar ?? null,
+            mission: identity?.mission ?? null,
+            domain: identity?.domain ?? null,
+            heartbeatInterval: null,
+            hasIdentity,
+            isDefault: (cliData?.isDefault as boolean) ?? false,
+          };
+        });
       }
-
-      const heartbeatInterval = agent.heartbeat?.every
-        ? parseHeartbeatInterval(agent.heartbeat.every)
-        : null;
-
-      return {
-        id: agent.id,
-        name: agent.name ?? agent.id,
-        workspace: workspaceDir,
-        role: identity?.role ?? "general",
-        personality: identity?.personality ?? null,
-        avatar: identity?.avatar ?? null,
-        mission: identity?.mission ?? null,
-        domain: identity?.domain ?? null,
-        heartbeatInterval,
-        hasIdentity,
-      };
-    });
-  } catch (error) {
-    console.error("[openclaw-agents] Error loading agents:", error);
-    return [];
+    } catch {
+      // filesystem scan error, fall through
+    }
   }
+
+  // Method 2: openclaw.json agents.list (legacy fallback)
+  const configPath = path.join(OPENCLAW_DIR, "openclaw.json");
+  if (fs.existsSync(configPath)) {
+    try {
+      const configRaw = fs.readFileSync(configPath, "utf-8");
+      const config: OpenClawConfig = JSON.parse(configRaw);
+      const agents = config.agents?.list ?? [];
+
+      if (agents.length > 0) {
+        return agents.map((agent) => {
+          const workspaceDir = agent.workspace || path.join(OPENCLAW_DIR, "workspace", "agents", agent.id);
+          const identityPath = path.join(workspaceDir, "IDENTITY.md");
+
+          let identity: AgentIdentity | null = null;
+          let hasIdentity = false;
+
+          if (fs.existsSync(identityPath)) {
+            try {
+              const identityContent = fs.readFileSync(identityPath, "utf-8");
+              identity = parseIdentityMd(identityContent);
+              hasIdentity = true;
+            } catch {
+              // ignore
+            }
+          }
+
+          const heartbeatInterval = agent.heartbeat?.every
+            ? parseHeartbeatInterval(agent.heartbeat.every)
+            : null;
+
+          return {
+            id: agent.id,
+            name: agent.name ?? agent.id,
+            workspace: workspaceDir,
+            role: identity?.role ?? "general",
+            personality: identity?.personality ?? null,
+            avatar: identity?.avatar ?? null,
+            mission: identity?.mission ?? null,
+            domain: identity?.domain ?? null,
+            heartbeatInterval,
+            hasIdentity,
+          };
+        });
+      }
+    } catch {
+      // config parse error
+    }
+  }
+
+  console.warn("[openclaw-agents] No agents found via any method");
+  return [];
 }
 
 /**

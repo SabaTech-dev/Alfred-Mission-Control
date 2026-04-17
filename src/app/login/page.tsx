@@ -5,7 +5,6 @@ import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Lock, AlertCircle } from "lucide-react";
 import { useI18n, I18nProvider } from "@/i18n/provider";
-import logo from "@/../public/logo.png";
 
 function LoginForm() {
   const [password, setPassword] = useState("");
@@ -55,7 +54,7 @@ function LoginForm() {
       <div className="text-center mb-6 flex flex-col items-center gap-2">
         <div className="flex items-center gap-2.5">
           <Image
-            src={logo}
+            src="/logo.png"
             alt="Alfred"
             width={40}
             height={40}

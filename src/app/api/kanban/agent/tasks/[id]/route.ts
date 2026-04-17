@@ -34,6 +34,63 @@ const VALID_STATUSES = ["backlog", "in_progress", "review", "done", "blocked", "
 const VALID_PRIORITIES = ["low", "medium", "high", "critical"] as const;
 
 // ============================================================================
+// GET - Get Single Task
+// ============================================================================
+
+/**
+ * GET /api/kanban/agent/tasks/[id]
+ * Get a single task by ID
+ * 
+ * Authorization:
+ * - Agent auth: can access if creator, assignee, claimer, or security agent on review tasks
+ * - Session auth: full access
+ */
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const authResult = await requireAgentOrSessionAuth(request);
+  if (!authResult.authorized) {
+    return authResult.error;
+  }
+  const actorId = authResult.authType === "agent" ? authResult.agentId ?? "agent" : "session";
+  const { id } = await params;
+
+  try {
+    const task = getTask(id);
+    if (!task) {
+      return NextResponse.json(
+        { error: "Task not found" },
+        { status: 404 }
+      );
+    }
+
+    // Authorization check for agents
+    if (authResult.authType !== "session") {
+      const isCreator = task.createdBy === actorId;
+      const isAssignee = task.assignee === actorId;
+      const isClaimer = task.claimedBy === actorId;
+      const isSecurityOnReview = actorId === "security" && task.status === "review";
+
+      if (!isCreator && !isAssignee && !isClaimer && !isSecurityOnReview) {
+        return NextResponse.json(
+          { error: "Not authorized to access this task" },
+          { status: 403 }
+        );
+      }
+    }
+
+    return NextResponse.json({ task });
+  } catch (error) {
+    console.error("[agent-tasks] GET error:", error);
+    return NextResponse.json(
+      { error: "Failed to get task" },
+      { status: 500 }
+    );
+  }
+}
+
+// ============================================================================
 // PATCH - Update Task
 // ============================================================================
 
@@ -76,12 +133,14 @@ export async function PATCH(
     }
 
     // Authorization check: agent must be creator, assignee, or claimer
+    // Security agent can update tasks in review status (for Security Gate)
     const isSessionActor = authResult.authType === "session";
     const isCreator = task.createdBy === actorId;
     const isAssignee = task.assignee === actorId;
     const isClaimer = task.claimedBy === actorId;
+    const isSecurityOnReview = actorId === "security" && task.status === "review";
 
-    if (!isSessionActor && !isCreator && !isAssignee && !isClaimer) {
+    if (!isSessionActor && !isCreator && !isAssignee && !isClaimer && !isSecurityOnReview) {
       return NextResponse.json(
         { error: "Not authorized to update this task" },
         { status: 403 }
