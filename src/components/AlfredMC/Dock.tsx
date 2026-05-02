@@ -24,6 +24,7 @@ import {
   Sun,
   FileText,
   GitBranch,
+  FlaskConical,
 } from "lucide-react";
 
 interface DockItem {
@@ -54,6 +55,7 @@ function DockItems(): DockItem[] {
     { href: "/morning", labelKey: "dock.morning", helpKey: "help.morning", icon: Sun },
     { href: "/notepad", labelKey: "dock.notepad", helpKey: "help.notepad", icon: FileText },
     { href: "/workflows", labelKey: "dock.workflows", helpKey: "help.workflows", icon: GitBranch },
+    { href: "/learning", labelKey: "dock.learning", helpKey: "help.learning", icon: FlaskConical },
     { href: "/settings", labelKey: "dock.settings", helpKey: "help.settings", icon: Settings },
   ];
 }

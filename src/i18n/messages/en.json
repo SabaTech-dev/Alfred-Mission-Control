@@ -126,7 +126,8 @@
     "system": "System",
     "settings": "Settings",
     "logout": "Logout",
-    "pipeline": "Pipeline"
+    "pipeline": "Pipeline",
+    "learning": "Learning Lab"
   },
   "help": {
     "dashboard": {
@@ -180,6 +181,10 @@
     "pipeline": {
       "title": "Opportunity Pipeline",
       "description": "Track sales pipeline and revenue forecast"
+    },
+    "learning": {
+      "title": "Learning Lab",
+      "description": "Continuous learning center: lessons learned, errors, feature requests, and tech radar."
     }
   },
   "topbar": {

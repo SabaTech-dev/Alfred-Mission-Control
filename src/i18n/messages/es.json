@@ -126,7 +126,8 @@
     "system": "Sistema",
     "settings": "Config",
     "logout": "Salir",
-    "pipeline": "Pipeline"
+    "pipeline": "Pipeline",
+    "learning": "Learning Lab"
   },
   "help": {
     "dashboard": {
@@ -180,6 +181,10 @@
     "pipeline": {
       "title": "Pipeline de Oportunidades",
       "description": "Seguimiento del pipeline comercial y previsión de ingresos"
+    },
+    "learning": {
+      "title": "Learning Lab",
+      "description": "Centro de aprendizaje: lecciones aprendidas, errores, feature requests y radar tecnológico."
     }
   },
   "topbar": {
