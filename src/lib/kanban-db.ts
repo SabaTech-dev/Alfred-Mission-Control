@@ -1543,6 +1543,17 @@ function reindexColumnOrder(columnId: string): void {
 // ============================================================================
 
 function parseTaskRow(row: Record<string, unknown>): KanbanTask {
+  // Parse labels defensively - if JSON.parse fails, log error and return empty array
+  let labels: KanbanLabel[] = [];
+  if (row.labels) {
+    try {
+      labels = JSON.parse(row.labels as string);
+    } catch (error) {
+      console.error(`[kanban-db] Failed to parse labels for task ${row.id}:`, error, `labels value:`, row.labels);
+      labels = [];
+    }
+  }
+
   return {
     id: row.id as string,
     title: row.title as string,
@@ -1550,7 +1561,7 @@ function parseTaskRow(row: Record<string, unknown>): KanbanTask {
     status: row.status as string,
     priority: row.priority as TaskPriority,
     assignee: row.assignee as string | null,
-    labels: row.labels ? JSON.parse(row.labels as string) : [],
+    labels: labels,
     order: row.order as number,
     projectId: (row.project_id as string | null) ?? null,
     domain: (row.domain as string | null) ?? null,

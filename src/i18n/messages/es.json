@@ -125,7 +125,8 @@
     "terminal": "Terminal",
     "system": "Sistema",
     "settings": "Config",
-    "logout": "Salir"
+    "logout": "Salir",
+    "pipeline": "Pipeline"
   },
   "help": {
     "dashboard": {
@@ -175,6 +176,10 @@
     "mission": {
       "title": "Centro de Misión",
       "description": "Definir el propósito, objetivos y valores centrales de tu agente. Esto guía la toma de decisiones y priorización."
+    },
+    "pipeline": {
+      "title": "Pipeline de Oportunidades",
+      "description": "Seguimiento del pipeline comercial y previsión de ingresos"
     }
   },
   "topbar": {

@@ -134,13 +134,15 @@ export async function PATCH(
 
     // Authorization check: agent must be creator, assignee, or claimer
     // Security agent can update tasks in review status (for Security Gate)
+    // Main agent can update any task (for orchestration)
     const isSessionActor = authResult.authType === "session";
     const isCreator = task.createdBy === actorId;
     const isAssignee = task.assignee === actorId;
     const isClaimer = task.claimedBy === actorId;
     const isSecurityOnReview = actorId === "security" && task.status === "review";
+    const isMainAgent = actorId === "main";
 
-    if (!isSessionActor && !isCreator && !isAssignee && !isClaimer && !isSecurityOnReview) {
+    if (!isSessionActor && !isCreator && !isAssignee && !isClaimer && !isSecurityOnReview && !isMainAgent) {
       return NextResponse.json(
         { error: "Not authorized to update this task" },
         { status: 403 }

@@ -125,7 +125,8 @@
     "terminal": "Terminal",
     "system": "System",
     "settings": "Settings",
-    "logout": "Logout"
+    "logout": "Logout",
+    "pipeline": "Pipeline"
   },
   "help": {
     "dashboard": {
@@ -175,6 +176,10 @@
     "mission": {
       "title": "Mission Control",
       "description": "Define your agent's purpose, goals, and core values. This guides decision-making and prioritization."
+    },
+    "pipeline": {
+      "title": "Opportunity Pipeline",
+      "description": "Track sales pipeline and revenue forecast"
     }
   },
   "topbar": {

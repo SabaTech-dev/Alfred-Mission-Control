@@ -29,6 +29,7 @@ import {
   Bell,
   LayoutGrid,
   Target,
+  BookMarked,
   BookOpen,
   Briefcase,
 } from "lucide-react";
@@ -50,6 +51,7 @@ const navGroups = [
       { href: "/mission", label: "Mission", icon: Target },
       { href: "/kanban", label: "Kanban", icon: LayoutGrid },
       { href: "/projects", label: "Projects", icon: Briefcase },
+      { href: "/wiki", label: "Wiki", icon: BookMarked },
       { href: "/journal", label: "Journal", icon: BookOpen },
     ],
   },

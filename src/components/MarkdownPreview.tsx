@@ -4,6 +4,8 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import remarkWikiLinks from "remark-wiki-link";
+import rehypeSanitize from "rehype-sanitize";
 
 interface MarkdownPreviewProps {
   content: string;
@@ -14,7 +16,14 @@ function MarkdownBody({ content }: { content: string }) {
   return (
     <div className="max-w-none" style={{ color: "var(--text-secondary)" }}>
       <ReactMarkdown
-        remarkPlugins={[remarkGfm]}
+        remarkPlugins={[
+          remarkGfm,
+          [remarkWikiLinks, {
+            aliasDivider: "|",
+            permalinks: false,
+          }],
+        ]}
+        rehypePlugins={[rehypeSanitize]}
         components={{
           h1: ({ children }) => (
             <h1 style={{ fontSize: "1.5rem", fontWeight: 700, color: "var(--text-primary)", margin: "0 0 1rem" }}>
