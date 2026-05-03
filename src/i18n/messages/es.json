@@ -127,7 +127,8 @@
     "settings": "Config",
     "logout": "Salir",
     "pipeline": "Pipeline",
-    "learning": "Learning Lab"
+    "learning": "Learning Lab",
+    "catalog": "Catálogo"
   },
   "help": {
     "dashboard": {
@@ -185,6 +186,10 @@
     "learning": {
       "title": "Learning Lab",
       "description": "Centro de aprendizaje: lecciones aprendidas, errores, feature requests y radar tecnológico."
+    },
+    "catalog": {
+      "title": "Catálogo de Servicios",
+      "description": "Servicios SabaTech: pricing, landings y estado"
     }
   },
   "topbar": {

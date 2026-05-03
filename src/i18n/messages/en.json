@@ -127,7 +127,8 @@
     "settings": "Settings",
     "logout": "Logout",
     "pipeline": "Pipeline",
-    "learning": "Learning Lab"
+    "learning": "Learning Lab",
+    "catalog": "Catalog"
   },
   "help": {
     "dashboard": {
@@ -185,6 +186,10 @@
     "learning": {
       "title": "Learning Lab",
       "description": "Continuous learning center: lessons learned, errors, feature requests, and tech radar."
+    },
+    "catalog": {
+      "title": "Service Catalog",
+      "description": "SabaTech services: pricing, landings and status"
     }
   },
   "topbar": {

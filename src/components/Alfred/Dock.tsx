@@ -17,6 +17,7 @@ import {
   Box,
   MessagesSquare,
   Briefcase,
+  Package,
 } from "lucide-react";
 
 interface DockItem {
@@ -36,6 +37,7 @@ function DockItems(): DockItem[] {
     { href: "/memory", labelKey: "dock.memory", helpKey: "help.memory", icon: Brain },
     { href: "/files", labelKey: "dock.files", helpKey: "help.files", icon: FolderOpen },
     { href: "/pipeline", labelKey: "dock.pipeline", helpKey: "help.pipeline", icon: Briefcase },
+    { href: "/catalog", labelKey: "dock.catalog", helpKey: "help.catalog", icon: Package },
     { href: "/analytics", labelKey: "dock.analytics", helpKey: "help.analytics", icon: DollarSign },
     { href: "/terminal", labelKey: "dock.terminal", helpKey: "help.terminal", icon: SquareTerminal },
     { href: "/system", labelKey: "dock.system", helpKey: "help.system", icon: Server },
