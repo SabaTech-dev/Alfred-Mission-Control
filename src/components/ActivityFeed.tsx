@@ -14,6 +14,8 @@ interface ActivityItem {
 
 interface ActivityFeedProps {
   limit?: number;
+  status?: string;
+  agent?: string;
 }
 
 function statusColor(status?: string): string {
@@ -45,7 +47,7 @@ function statusIcon(status?: string) {
   }
 }
 
-export function ActivityFeed({ limit = 10 }: ActivityFeedProps) {
+export function ActivityFeed({ limit = 10, status, agent }: ActivityFeedProps) {
   const [activities, setActivities] = useState<ActivityItem[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -54,7 +56,12 @@ export function ActivityFeed({ limit = 10 }: ActivityFeedProps) {
 
     async function loadActivities() {
       try {
-        const response = await fetch(`/api/activities?limit=${limit}`, { cache: "no-store" });
+        const params = new URLSearchParams();
+        if (status && status !== "all") params.set("status", status);
+        if (agent && agent !== "all") params.set("agent", agent);
+        params.set("limit", String(limit));
+
+        const response = await fetch(`/api/activities?${params}`, { cache: "no-store" });
         if (!response.ok) {
           throw new Error(`Activity feed request failed: ${response.status}`);
         }
@@ -85,7 +92,7 @@ export function ActivityFeed({ limit = 10 }: ActivityFeedProps) {
     return () => {
       active = false;
     };
-  }, [limit]);
+  }, [limit, status, agent]);
 
   if (loading) {
     return (
