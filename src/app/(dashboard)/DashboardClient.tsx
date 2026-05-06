@@ -96,13 +96,13 @@ function isDashboardTelemetryPayload(value: unknown): value is DashboardTelemetr
 }
 
 export interface DashboardClientProps {
-  initialTelemetry: DashboardTelemetryResponse;
+  initialTelemetry: DashboardTelemetryResponse | null;
 }
 
 export default function DashboardClient({ initialTelemetry }: DashboardClientProps) {
   const { t } = useI18n();
-  const [telemetry, setTelemetry] = useState<DashboardTelemetryResponse>(initialTelemetry);
-  const [telemetryLoading, setTelemetryLoading] = useState(false);
+  const [telemetry, setTelemetry] = useState<DashboardTelemetryResponse | null>(initialTelemetry);
+  const [telemetryLoading, setTelemetryLoading] = useState(!initialTelemetry);
   const [telemetryError, setTelemetryError] = useState<string | null>(null);
   const [manualRefreshCounter, setManualRefreshCounter] = useState(0);
 
@@ -167,6 +167,27 @@ export default function DashboardClient({ initialTelemetry }: DashboardClientPro
     setTelemetryLoading(true);
     setManualRefreshCounter((current) => current + 1);
   };
+
+  // Loading skeleton while telemetry loads client-side
+  if (!telemetry) {
+    return (
+      <ErrorBoundary>
+        <div className="p-4 md:p-8">
+          <PageHeader
+            title={t("dashboard.title")}
+            subtitle={t("dashboard.overview")}
+            helpTitle={t("help.dashboard.title")}
+            helpDescription={t("help.dashboard.description")}
+          />
+          <div className="flex items-center justify-center py-20" style={{ color: "var(--text-muted)" }}>
+            <div className="text-center">
+              <div className="animate-pulse text-lg">{t("dashboard.telemetry.loading")}</div>
+            </div>
+          </div>
+        </div>
+      </ErrorBoundary>
+    );
+  }
 
   const hasDegradedSections = telemetry.degraded.length > 0;
   const hasStaleSnapshot = telemetry.freshness.status === "stale";
