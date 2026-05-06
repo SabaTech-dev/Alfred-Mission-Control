@@ -89,10 +89,10 @@ describe("system-stats", () => {
       "df -BG": "/dev/sda1 100G 45G 55G 45% /",
       "tailscale": "100.64.0.1 myhost  ubuntu   linux   -",
       "ufw status": "Status: active",
-      "systemctl is-active alfred": "active",
-      "systemctl is-active content-vault": "active",
-      "systemctl is-active classvault": "inactive",
-      "systemctl is-active creatoros": "active",
+      "systemctl --user is-active alfred": "active",
+      "systemctl --user is-active content-vault": "active",
+      "systemctl --user is-active classvault": "inactive",
+      "systemctl --user is-active creatoros": "active",
     });
   });
 
@@ -178,10 +178,10 @@ describe("system-stats", () => {
         "df -BG": "/dev/sda1 100G 45G 55G 45% /",
         "tailscale": "Tailscale is stopped",
         "ufw status": "Status: active",
-        "systemctl is-active alfred": "inactive",
-        "systemctl is-active content-vault": "inactive",
-        "systemctl is-active classvault": "inactive",
-        "systemctl is-active creatoros": "inactive",
+        "systemctl --user is-active alfred": "inactive",
+        "systemctl --user is-active content-vault": "inactive",
+        "systemctl --user is-active classvault": "inactive",
+        "systemctl --user is-active creatoros": "inactive",
       });
 
       const stats = await getSystemStats();

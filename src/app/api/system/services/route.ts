@@ -58,7 +58,7 @@ function discoverSystemdServices(): string[] {
   const services: Set<string> = new Set();
 
   try {
-    const result = safeExecFile("systemctl", ["list-units", "--type=service", "--state=running", "--no-pager", "-o", "json"], {});
+    const result = safeExecFile("systemctl", ["--user", "list-units", "--type=service", "--state=running", "--no-pager", "-o", "json"], {});
     if (result.status === 0 && result.stdout) {
       const units = JSON.parse(result.stdout) as Array<{ unit: string }>;
       for (const svc of units) {
@@ -73,7 +73,7 @@ function discoverSystemdServices(): string[] {
   }
 
   try {
-    const result = safeExecFile("systemctl", ["list-unit-files", "--type=service", "--no-pager"], {});
+    const result = safeExecFile("systemctl", ["--user", "list-unit-files", "--type=service", "--no-pager"], {});
     if (result.status === 0 && result.stdout) {
       const lines = result.stdout.split("\n");
       for (const line of lines) {

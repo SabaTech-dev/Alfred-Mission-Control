@@ -167,7 +167,7 @@ const COMMAND_POLICIES: Record<string, CommandPolicy> = {
     valueFlags: ["-c", "--format"],
   },
   systemctl: {
-    allowedFlags: ["--no-pager", "--type", "--state"],
+    allowedFlags: ["--no-pager", "--type", "--state", "--user"],
     allowedSubcommands: ["is-active", "is-enabled", "list-units", "show", "status"],
     valueFlags: ["--type", "--state"],
   },

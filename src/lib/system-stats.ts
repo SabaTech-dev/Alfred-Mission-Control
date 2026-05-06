@@ -110,7 +110,7 @@ export async function getSystemStats(): Promise<SystemStatsResponse> {
     safeExec("tailscale status 2>/dev/null || true"),
     safeExec("ufw status 2>/dev/null | head -1 || true"),
     ...SYSTEMD_SERVICES.map((name) =>
-      safeExec(`systemctl is-active ${name} 2>/dev/null || true`)
+      safeExec(`systemctl --user is-active ${name} 2>/dev/null || true`)
     ),
   ]);
 

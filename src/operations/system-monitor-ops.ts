@@ -141,7 +141,7 @@ export async function getSystemMonitorData(): Promise<SystemMonitorData> {
 
   for (const name of SYSTEMD_SERVICES) {
     try {
-      const { stdout } = await execAsync(`systemctl is-active ${name} 2>/dev/null || true`);
+      const { stdout } = await execAsync(`systemctl --user is-active ${name} 2>/dev/null || true`);
       const rawStatus = stdout.trim();
       services.push({
         name,
