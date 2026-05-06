@@ -38,12 +38,14 @@ export interface SkillsInitialData {
   skills: Skill[];
 }
 
-export default function SkillsClient({ initialData }: { initialData: SkillsInitialData }) {
+export default function SkillsClient(_props?: { initialData?: SkillsInitialData }) {
   const { t } = useI18n();
-  const [skills, setSkills] = useState<Skill[]>(initialData.skills);
+  const [skills, setSkills] = useState<Skill[]>(_props?.initialData?.skills ?? []);
+  const [loading, setLoading] = useState(!_props?.initialData?.skills?.length);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterSource, setFilterSource] = useState<"all" | "workspace" | "system">("all");
   const [selectedSkill, setSelectedSkill] = useState<Skill | null>(null);
+  const [loadingDetail, setLoadingDetail] = useState(false);
   const [togglingSkill, setTogglingSkill] = useState<string | null>(null);
   const [showClawHub, setShowClawHub] = useState(false);
   const [updates, setUpdates] = useState<Array<{
@@ -56,26 +58,79 @@ export default function SkillsClient({ initialData }: { initialData: SkillsIniti
   const [showUpdateAllConfirm, setShowUpdateAllConfirm] = useState(false);
   const [isUpdatingAll, setIsUpdatingAll] = useState(false);
 
+  // Pagination state
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [total, setTotal] = useState(0);
+  const PAGE_SIZE = 50;
+
+  // Fetch skills with pagination
+  const fetchSkills = async (p: number, search?: string, source?: string) => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams({
+        page: String(p),
+        limit: String(PAGE_SIZE),
+      });
+      if (search) params.set("search", search);
+      if (source && source !== "all") params.set("source", source);
+      const res = await fetch(`/api/skills?${params}`);
+      const data = await res.json();
+      if (data.skills) {
+        setSkills(data.skills as Skill[]);
+      }
+      if (data.pagination) {
+        setTotal(data.pagination.total);
+        setTotalPages(data.pagination.totalPages);
+        setPage(data.pagination.page);
+      }
+    } catch {
+      // ignore
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Load skill detail with fullContent on selection
+  const handleSelectSkill = async (skillId: string) => {
+    const existing = skills.find((s) => s.id === skillId);
+    if (existing?.fullContent) {
+      setSelectedSkill(existing);
+      return;
+    }
+    setLoadingDetail(true);
+    try {
+      const res = await fetch(`/api/skills/${encodeURIComponent(skillId)}`);
+      const data = await res.json();
+      if (data.skill) {
+        setSelectedSkill(data.skill as Skill);
+      }
+    } catch {
+      // fallback to list data
+      setSelectedSkill(existing ?? null);
+    } finally {
+      setLoadingDetail(false);
+    }
+  };
+
   useEffect(() => {
-    fetch("/api/skills/updates")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.updates) {
-          setUpdates(data.updates);
-        }
-      })
-      .catch(() => {});
+    if (!_props?.initialData?.skills?.length) {
+      fetchSkills(1);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Debounced search
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetchSkills(1, searchQuery, filterSource);
+    }, 300);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery, filterSource]);
+
   const handleInstallFromClawHub = () => {
-    fetch("/api/skills")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.skills) {
-          setSkills(data.skills);
-        }
-      })
-      .catch(() => {});
+    fetchSkills(page, searchQuery, filterSource);
     fetch("/api/skills/updates")
       .then((res) => res.json())
       .then((data) => {
@@ -146,27 +201,13 @@ export default function SkillsClient({ initialData }: { initialData: SkillsIniti
     window.location.reload();
   };
 
-  let filteredSkills = skills;
-
-  if (filterSource !== "all") {
-    filteredSkills = filteredSkills.filter((s) => s.source === filterSource);
-  }
-
-  if (searchQuery) {
-    const query = searchQuery.toLowerCase();
-    filteredSkills = filteredSkills.filter(
-      (skill) =>
-        skill.name.toLowerCase().includes(query) ||
-        skill.description.toLowerCase().includes(query) ||
-        skill.id.toLowerCase().includes(query)
-    );
-  }
-
-  const workspaceSkills = filteredSkills.filter((s) => s.source === "workspace");
-  const systemSkills = filteredSkills.filter((s) => s.source === "system");
-
+  // Server already filters, but keep local counts for sidebar badges
   const workspaceCount = skills.filter((s) => s.source === "workspace").length;
   const systemCount = skills.filter((s) => s.source === "system").length;
+
+  // Skills are already filtered server-side; render directly
+  const workspaceSkills = skills.filter((s) => s.source === "workspace");
+  const systemSkills = skills.filter((s) => s.source === "system");
 
   return (
     <div style={{ padding: "24px" }}>
@@ -341,7 +382,22 @@ export default function SkillsClient({ initialData }: { initialData: SkillsIniti
         </div>
       </div>
 
-      {filteredSkills.length === 0 ? (
+      {loading && (
+        <div
+          style={{
+            backgroundColor: "var(--surface)",
+            borderRadius: "12px",
+            padding: "48px",
+            textAlign: "center",
+          }}
+        >
+          <div className="animate-pulse" style={{ color: "var(--text-muted)" }}>
+            {t("dashboard.telemetry.loading")}
+          </div>
+        </div>
+      )}
+
+      {skills.length === 0 && !loading ? (
         <div
           style={{
             backgroundColor: "var(--surface)",
@@ -377,7 +433,7 @@ export default function SkillsClient({ initialData }: { initialData: SkillsIniti
                   <SkillCard
                     key={skill.id}
                     skill={skill}
-                    onClick={() => setSelectedSkill(skill)}
+                    onClick={() => handleSelectSkill(skill.id)}
                     onToggle={() => handleToggleSkill(skill.id, skill.enabled)}
                     isToggling={togglingSkill === skill.id}
                   />
@@ -401,7 +457,7 @@ export default function SkillsClient({ initialData }: { initialData: SkillsIniti
                   <SkillCard
                     key={skill.id}
                     skill={skill}
-                    onClick={() => setSelectedSkill(skill)}
+                    onClick={() => handleSelectSkill(skill.id)}
                     onToggle={() => handleToggleSkill(skill.id, skill.enabled)}
                     isToggling={togglingSkill === skill.id}
                   />
@@ -412,12 +468,65 @@ export default function SkillsClient({ initialData }: { initialData: SkillsIniti
         </div>
       )}
 
-      {selectedSkill && (
+      {/* Pagination */}
+      {totalPages > 1 && !loading && (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "8px",
+            marginTop: "16px",
+            padding: "12px",
+            backgroundColor: "var(--surface)",
+            borderRadius: "12px",
+          }}
+        >
+          <button
+            onClick={() => fetchSkills(page - 1, searchQuery, filterSource)}
+            disabled={page <= 1}
+            style={{
+              padding: "6px 12px",
+              borderRadius: "8px",
+              backgroundColor: page <= 1 ? "var(--card-elevated)" : "var(--accent)",
+              color: page <= 1 ? "var(--text-muted)" : "white",
+              border: "none",
+              cursor: page <= 1 ? "not-allowed" : "pointer",
+              opacity: page <= 1 ? 0.5 : 1,
+              fontSize: "13px",
+            }}
+          >
+            ← Prev
+          </button>
+          <span style={{ color: "var(--text-secondary)", fontSize: "13px" }}>
+            {page} / {totalPages} ({total} skills)
+          </span>
+          <button
+            onClick={() => fetchSkills(page + 1, searchQuery, filterSource)}
+            disabled={page >= totalPages}
+            style={{
+              padding: "6px 12px",
+              borderRadius: "8px",
+              backgroundColor: page >= totalPages ? "var(--card-elevated)" : "var(--accent)",
+              color: page >= totalPages ? "var(--text-muted)" : "white",
+              border: "none",
+              cursor: page >= totalPages ? "not-allowed" : "pointer",
+              opacity: page >= totalPages ? 0.5 : 1,
+              fontSize: "13px",
+            }}
+          >
+            Next →
+          </button>
+        </div>
+      )}
+
+      {(selectedSkill || loadingDetail) && (
         <SkillDetailModal
           skill={selectedSkill}
-          onClose={() => setSelectedSkill(null)}
-          onToggle={() => handleToggleSkill(selectedSkill.id, selectedSkill.enabled)}
-          isToggling={togglingSkill === selectedSkill.id}
+          loading={loadingDetail}
+          onClose={() => { setSelectedSkill(null); setLoadingDetail(false); }}
+          onToggle={() => selectedSkill && handleToggleSkill(selectedSkill.id, selectedSkill.enabled)}
+          isToggling={togglingSkill === selectedSkill?.id}
         />
       )}
 
@@ -654,12 +763,47 @@ function SkillDetailModal({
   onClose,
   onToggle,
   isToggling,
+  loading,
 }: {
-  skill: Skill;
+  skill: Skill | null;
   onClose: () => void;
   onToggle: () => void;
   isToggling: boolean;
+  loading?: boolean;
 }) {
+  if (loading || !skill) {
+    return (
+      <div
+        style={{
+          position: "fixed",
+          inset: 0,
+          backgroundColor: "rgba(0, 0, 0, 0.8)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "24px",
+          zIndex: 100,
+        }}
+        onClick={onClose}
+      >
+        <div
+          style={{
+            backgroundColor: "var(--surface)",
+            borderRadius: "12px",
+            padding: "48px",
+            textAlign: "center",
+            maxWidth: "400px",
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="animate-pulse" style={{ color: "var(--text-muted)" }}>
+            Loading skill details...
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
       style={{

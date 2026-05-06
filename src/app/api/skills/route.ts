@@ -44,12 +44,43 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ progress: progress || { step: "checking", message: "Not found", progress: 0 } });
   }
 
-  // List all skills
+  // List skills with pagination
   try {
-    const skills = await listMergedSkills();
+    const page = Math.max(1, Number(url.searchParams.get("page")) || 1);
+    const limit = Math.min(100, Math.max(1, Number(url.searchParams.get("limit")) || 50));
+    const search = url.searchParams.get("search") || "";
+    const source = url.searchParams.get("source") || "all";
+    const summary = url.searchParams.get("summary") !== "false"; // default true
+
+    const allSkills = await listMergedSkills();
+
+    // Filter
+    let filtered = allSkills;
+    if (source !== "all") {
+      filtered = filtered.filter((s) => s.source === source);
+    }
+    if (search) {
+      const q = search.toLowerCase();
+      filtered = filtered.filter(
+        (s) =>
+          s.name.toLowerCase().includes(q) ||
+          s.description.toLowerCase().includes(q),
+      );
+    }
+
+    const total = filtered.length;
+    const totalPages = Math.ceil(total / limit);
+    const offset = (page - 1) * limit;
+    const paged = filtered.slice(offset, offset + limit);
+
+    // Strip fullContent from listing to reduce payload (loaded on-demand)
+    const items = summary
+      ? paged.map(({ fullContent: _fc, ...rest }) => rest)
+      : paged;
 
     return NextResponse.json({
-      skills,
+      skills: items,
+      pagination: { page, limit, total, totalPages },
     });
   } catch (error) {
     console.error("Failed to list skills:", error);
