@@ -13,8 +13,8 @@ vi.mock("child_process", async (importOriginal) => {
   };
 });
 
-// Mock better-sqlite3
-vi.mock("better-sqlite3", () => ({
+// Mock sqlite-wrapper (node-sqlite3-wasm)
+vi.mock("@/lib/sqlite-wrapper", () => ({
   default: vi.fn(() => {
     throw new Error("mocked — no db");
   }),

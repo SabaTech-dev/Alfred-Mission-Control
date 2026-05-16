@@ -159,9 +159,9 @@ export async function getSystemStats(): Promise<SystemStatsResponse> {
     const startOfDay = new Date(today + "T00:00:00Z").getTime();
 
     if (fs.existsSync(usageDbPath)) {
-      // Use better-sqlite3 if available
+      // Use SQLite wrapper (node-sqlite3-wasm)
       try {
-        const Database = (await import("better-sqlite3")).default;
+        const { default: Database } = await import("@/lib/sqlite-wrapper");
         const db = new Database(usageDbPath, { readonly: true });
 
         // Tokens today

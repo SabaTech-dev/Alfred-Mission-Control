@@ -206,11 +206,11 @@ export function getKanbanStats(): KanbanStats {
       return stats;
     }
 
-    // Try to load better-sqlite3, but handle failure gracefully (e.g., in test environments)
+    // Try to load sqlite-wrapper (node-sqlite3-wasm), but handle failure gracefully (e.g., in test environments)
     let Database: ReturnType<typeof require> | null = null;
     try {
       // eslint-disable-next-line @typescript-eslint/no-require-imports
-      Database = require("better-sqlite3");
+      Database = require("@/lib/sqlite-wrapper");
     } catch {
       // Module not available (e.g., in test environment)
       return stats;
