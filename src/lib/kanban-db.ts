@@ -511,12 +511,12 @@ function getDb(): Database {
 
     const insertColumn = _db.prepare(`
       INSERT INTO kanban_columns (id, name, color, "order", "limit")
-      VALUES (@id, @name, @color, @order, @limit)
+      VALUES (?, ?, ?, ?, ?)
     `);
 
     const insertMany = _db.transaction((columns: typeof defaultColumns) => {
       for (const col of columns) {
-        insertColumn.run(col);
+        insertColumn.run(col.id, col.name, col.color, col.order, col.limit);
       }
     });
 
@@ -2227,12 +2227,12 @@ export function clearAllDataForTesting(): void {
 
   const insertColumn = db.prepare(`
     INSERT OR IGNORE INTO kanban_columns (id, name, color, "order", "limit")
-    VALUES (@id, @name, @color, @order, @limit)
+    VALUES (?, ?, ?, ?, ?)
   `);
 
   const insertMany = db.transaction((columns: typeof defaultColumns) => {
     for (const col of columns) {
-      insertColumn.run(col);
+      insertColumn.run(col.id, col.name, col.color, col.order, col.limit);
     }
   });
 

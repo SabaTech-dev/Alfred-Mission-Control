@@ -23,6 +23,7 @@ import { readFileSync, existsSync, readdirSync } from "fs";
 import { join } from "path";
 
 const OPENCLAW_DIR = process.env.OPENCLAW_DIR || "/home/ubuntu/.openclaw";
+const HOME_DIR = process.env.HOME || "/root";
 
 /**
  * Discover skills by scanning the agent's skills directory
@@ -83,6 +84,10 @@ const AGENT_NAME_MAPPINGS: Record<string, string> = {
   devops: "DevOps",
   qa_tester: "QA Tester",
   "qa-tester": "QA Tester",
+  opencode: "OpenCode",
+  "alfred-coder": "Alfred Coder",
+  "code-security": "Code Security",
+  "code-qa-tester": "Code QA Tester",
 };
 
 // Hardcoded skills for known agents
@@ -94,6 +99,10 @@ const AGENT_SKILL_MAPPINGS: Record<string, string[]> = {
   "qa-tester": ["coder-brainstorming", "coder-writing-plans", "coder-plan-reviewer"],
   research: [],
   devops: ["devops", "ci-cd", "pre-flight-check", "config-validator", "tmux", "n8n-workflow-automation"],
+  opencode: ["sdd-design", "sdd-spec", "sdd-tasks", "sdd-apply", "sdd-verify", "sdd-archive"],
+  "alfred-coder": ["sdd-apply", "sdd-spec"],
+  "code-security": ["security-audit-pipeline"],
+  "code-qa-tester": ["sdd-verify"],
 };
 
 export interface AgentMood {
@@ -197,6 +206,53 @@ function classifyAgentStatus(lastActivity: string | undefined, activeSessions: n
 }
 
 /**
+ * Discover external agents (e.g., OpenCode) that live outside OpenClaw's agent directory.
+ * These agents have their own config files and are injected into AMC's agent list.
+ */
+function discoverExternalAgents(existingIds: Set<string>): AgentInfo[] {
+  const external: AgentInfo[] = [];
+
+  // Discover OpenCode from ~/.config/opencode/config.json
+  const opencodeConfigPath = join(HOME_DIR, ".config/opencode/config.json");
+  if (!existingIds.has("opencode") && existsSync(opencodeConfigPath)) {
+    try {
+      const config = JSON.parse(readFileSync(opencodeConfigPath, "utf-8"));
+      const opencodeDefaults = getAgentDefaults("opencode");
+      const allowAgents = ["alfred-coder", "code-security", "code-qa-tester"];
+      const allowAgentsDetails = allowAgents.map((subId) => {
+        const subDefaults = getAgentDefaults(subId, subId);
+        return {
+          id: subId,
+          name: AGENT_NAME_MAPPINGS[subId] || subId,
+          emoji: subDefaults.emoji,
+          color: subDefaults.color,
+        };
+      });
+
+      external.push({
+        id: "opencode",
+        name: AGENT_NAME_MAPPINGS["opencode"] || "OpenCode",
+        emoji: "⚡",
+        color: "#f59e0b",
+        status: "offline" as const,
+        model: getModelDisplayName(config.model || "zai-custom/glm-5.1"),
+        tokensUsed: 0,
+        sessionCount: 0,
+        activeSessions: 0,
+        workspace: join(HOME_DIR, ".config/opencode"),
+        allowAgents,
+        allowAgentsDetails,
+        skills: AGENT_SKILL_MAPPINGS["opencode"] || [],
+      });
+    } catch {
+      // Config unreadable, skip
+    }
+  }
+
+  return external;
+}
+
+/**
  * Load agents from openclaw.json configuration
  */
 function loadAgentsFromConfig(): AgentInfo[] {
@@ -229,7 +285,32 @@ function loadAgentsFromConfig(): AgentInfo[] {
           // CLI unavailable, proceed without enrichment
         }
 
-        return agentDirs.map((dir) => {
+        // Read openclaw.json to extract allowAgents for hierarchy
+        let configAllowAgentsMap = new Map<string, { allowAgents: string[]; allowAgentsDetails: { id: string; name: string; emoji: string; color: string }[] }>();
+        try {
+          const configPath = join(OPENCLAW_DIR, "openclaw.json");
+          if (existsSync(configPath)) {
+            const config = JSON.parse(readFileSync(configPath, "utf-8"));
+            const agentsList = config.agents?.list || [];
+            for (const agent of agentsList) {
+              const allowAgents: string[] = agent.subagents?.allowAgents || [];
+              const allowAgentsDetails = allowAgents.map((subId: string) => {
+                const subDefaults = getAgentDefaults(subId, subId);
+                return {
+                  id: subId,
+                  name: subId,
+                  emoji: subDefaults.emoji,
+                  color: subDefaults.color,
+                };
+              });
+              configAllowAgentsMap.set(agent.id, { allowAgents, allowAgentsDetails });
+            }
+          }
+        } catch {
+          // Config unavailable, proceed without allowAgents
+        }
+
+        const openClawAgents = agentDirs.map((dir) => {
           const id = dir.name;
           const cliData = cliAgentMap.get(id);
           const defaults = getAgentDefaults(id, cliData?.identityName);
@@ -248,6 +329,9 @@ function loadAgentsFromConfig(): AgentInfo[] {
           const hardcodedSkills = AGENT_SKILL_MAPPINGS[id] || [];
           const allSkills = [...new Set([...discoveredSkills, ...hardcodedSkills])];
 
+          // Get allowAgents from openclaw.json config
+          const configAllowAgents = configAllowAgentsMap.get(id);
+
           return {
             id,
             name: AGENT_NAME_MAPPINGS[id] || cliData?.identityName || id,
@@ -259,9 +343,17 @@ function loadAgentsFromConfig(): AgentInfo[] {
             sessionCount: 0,
             activeSessions: 0,
             workspace,
+            allowAgents: configAllowAgents?.allowAgents,
+            allowAgentsDetails: configAllowAgents?.allowAgentsDetails,
             skills: allSkills,
           };
         });
+
+        // Append external agents (e.g., OpenCode) that live outside OpenClaw
+        const existingIds = new Set(openClawAgents.map((a) => a.id));
+        const externalAgents = discoverExternalAgents(existingIds);
+
+        return [...openClawAgents, ...externalAgents];
       }
     } catch (error) {
       console.error("[agent-ops] Error scanning agents directory:", error);
@@ -280,7 +372,7 @@ function loadAgentsFromConfig(): AgentInfo[] {
     const config = JSON.parse(readFileSync(configPath, "utf-8"));
     const agentsList = config.agents?.list || [];
 
-    return agentsList.map((agent: {
+    const configAgents = agentsList.map((agent: {
       id: string;
       name?: string
       model?: string
@@ -323,6 +415,12 @@ function loadAgentsFromConfig(): AgentInfo[] {
         skills: allSkills,
       };
     });
+
+    // Append external agents (e.g., OpenCode) in fallback path too
+    const existingIds = new Set<string>(configAgents.map((a: AgentInfo) => a.id));
+    const externalAgents = discoverExternalAgents(existingIds);
+
+    return [...configAgents, ...externalAgents];
   } catch (error) {
     console.error("[agent-ops] Error loading agents from config:", error);
     return [];
@@ -406,6 +504,14 @@ function buildMergedAgentMap(): Map<string, AgentInfo> {
   }
 
   for (const agent of getPersistedAgentEntries()) {
+    if (!merged.has(agent.id)) {
+      merged.set(agent.id, agent);
+    }
+  }
+
+  // Ensure virtual/external agents are included
+  const existingIds = new Set<string>(Array.from(merged.keys()));
+  for (const agent of discoverExternalAgents(existingIds)) {
     if (!merged.has(agent.id)) {
       merged.set(agent.id, agent);
     }

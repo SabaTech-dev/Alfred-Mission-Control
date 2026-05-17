@@ -9,11 +9,12 @@
 import { AgentConfig, AgentWithDesk, AvatarState } from "./agentsConfig";
 
 // Desk spacing - wider for better separation
-const DESK_SPACING_X = 5;
+const DESK_SPACING_X = 7;
 
 // Simple row offsets - all facing forward (towards camera/entrance)
 // z positive = towards entrance, z negative = towards back wall
-const ROW_OFFSETS = [4, 1, -2] as const;
+// NOTE: z=1 is reserved for main agent (index 0), so non-main rows avoid it
+const ROW_OFFSETS = [4, -1.5, -4, -6.5] as const;
 
 /**
  * Calculate grid dimensions based on agent count
@@ -38,9 +39,10 @@ export function getGridDimensions(agentCount: number): { rows: number; cols: num
  * Simple office grid layout - all agents face forward (towards camera/entrance)
  *
  * Layout pattern (3 columns):
- *   Row z=4:    [1]  [2]  [3]
- *   Row z=1:    [4]  [0]  [5]   <- main agent at center
- *   Row z=-2:   [6]  [7]  [8]
+ *   Row z=4:     [1]  [2]  [3]
+ *   Row z=1:              [0]       <- main agent at center (reserved)
+ *   Row z=-1.5:  [4]  [5]  [6]
+ *   Row z=-4:    [7]  [8]  [9]
  *
  * @param index - Agent index in the grid (0 = main agent at center)
  * @param gridWidth - Number of columns in the grid

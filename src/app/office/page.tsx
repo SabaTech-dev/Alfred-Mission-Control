@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import Office3D from '@/components/Office3D/Office3D';
 import { calculateDeskPosition, getGridDimensions } from '@/components/Office3D/desk-positions';
+import { getAgentDefaults } from '@/lib/agent-auto-config';
 
 const OPENCLAW_DIR = process.env.OPENCLAW_DIR || '/home/ubuntu/.openclaw';
 const OPENCLAW_CONFIG = path.join(OPENCLAW_DIR, 'openclaw.json');
@@ -52,16 +53,19 @@ async function loadOfficeAgents() {
     return agentsList.map((agent: {
       id: string;
       name?: string;
+      identity?: { name?: string };
       emoji?: string;
       color?: string;
       model?: string;
     }, index: number) => {
       const deskPosition = calculateDeskPosition(index, cols);
+      // Use centralized HARDCODED_DEFAULTS from agent-auto-config for emoji/color
+      const defaults = getAgentDefaults(agent.id, agent.name || agent.id);
       return {
         id: agent.id,
-        name: agent.name || agent.id,
-        emoji: agent.emoji || '🤖',
-        color: agent.color || '#666666',
+        name: agent.identity?.name || agent.name || agent.id,
+        emoji: agent.emoji || defaults.emoji,
+        color: agent.color || defaults.color,
         // AgentConfig format: position + deskRotation
         position: [deskPosition.x, deskPosition.y, deskPosition.z] as [number, number, number],
         deskRotation: [0, deskPosition.rotation, 0] as [number, number, number],

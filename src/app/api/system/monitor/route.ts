@@ -2,16 +2,25 @@ import { NextResponse } from "next/server";
 import { exec } from "child_process";
 import { promisify } from "util";
 import os from "os";
+import { readFileSync } from "fs";
 
 const execAsync = promisify(exec);
 
 export const dynamic = "force-dynamic";
 
-// Services monitored per backend
-// Auto-detect OpenClaw-related services
-const SYSTEMD_SERVICES = ["openclaw-gateway", "alfred"];
-const PM2_SERVICES: string[] = []; // No PM2 services by default
-const PLACEHOLDER_SERVICES: Array<{ name: string; description: string; status: string }> = []; // No placeholders
+const SYSTEM_SERVICES = [
+  "alfred-mission-control",
+  "docker",
+  "ollama",
+  "tailscaled",
+  "fail2ban",
+  "redis-server",
+  "ssh",
+  "cron",
+  "postgresql",
+];
+
+const USER_SERVICES = ["openclaw-gateway", "searxng"];
 
 interface ServiceEntry {
   name: string;
@@ -39,34 +48,102 @@ interface FirewallRule {
   comment: string;
 }
 
-// Normalize PM2 status to a common set
-function normalizePm2Status(status: string): string {
-  switch (status) {
-    case "online":
-      return "active";
-    case "stopped":
-    case "stopping":
-      return "inactive";
-    case "errored":
-    case "error":
-      return "failed";
-    case "launching":
-    case "waiting restart":
-      return "activating";
-    default:
-      return status;
+const SERVICE_DESCRIPTIONS: Record<string, string> = {
+  "alfred-mission-control": "Alfred Mission Control – Dashboard",
+  docker: "Docker Container Runtime",
+  ollama: "Ollama – Local LLM Server",
+  tailscaled: "Tailscale VPN Daemon",
+  fail2ban: "Fail2ban – Intrusion Prevention",
+  "redis-server": "Redis – In-Memory Store",
+  ssh: "SSH Server",
+  cron: "Cron – Scheduled Tasks",
+  postgresql: "PostgreSQL Database",
+  "openclaw-gateway": "OpenClaw Gateway",
+  searxng: "SearXNG – Privacy Search Engine",
+};
+
+/**
+ * Check if a systemd service is active (system-level)
+ */
+async function checkSystemdService(name: string): Promise<ServiceEntry> {
+  try {
+    const { stdout } = await execAsync(
+      `systemctl is-active ${name} 2>/dev/null || echo "unknown"`
+    );
+    const status = stdout.trim();
+    return {
+      name,
+      status,
+      description: SERVICE_DESCRIPTIONS[name] ?? name,
+      backend: "systemd",
+    };
+  } catch {
+    return {
+      name,
+      status: "unknown",
+      description: SERVICE_DESCRIPTIONS[name] ?? name,
+      backend: "systemd",
+    };
   }
 }
 
-// Friendly display names for PM2 process names
-const SERVICE_DESCRIPTIONS: Record<string, string> = {
-  "alfred": "Alfred – Alfred Dashboard",
-  classvault: "ClassVault – LMS Platform",
-  "content-vault": "Content Vault – Draft Management Webapp",
-  "postiz-simple": "Postiz – Social Media Scheduler",
-  brain: "Brain – Internal Tools",
-  creatoros: "Creatoros Platform",
-};
+/**
+ * Check if a user-level systemd service is active
+ */
+async function checkUserService(name: string): Promise<ServiceEntry> {
+  try {
+    const { stdout } = await execAsync(
+      `systemctl --user is-active ${name} 2>/dev/null || echo "unknown"`
+    );
+    const status = stdout.trim();
+    return {
+      name,
+      status,
+      description: SERVICE_DESCRIPTIONS[name] ?? name,
+      backend: "systemd-user",
+    };
+  } catch {
+    return {
+      name,
+      status: "unknown",
+      description: SERVICE_DESCRIPTIONS[name] ?? name,
+      backend: "systemd-user",
+    };
+  }
+}
+
+/**
+ * Docker container info
+ */
+interface DockerContainer {
+  name: string;
+  status: string;
+}
+
+/**
+ * Discover running Docker containers
+ */
+async function discoverDockerContainers(): Promise<ServiceEntry[]> {
+  try {
+    const { stdout } = await execAsync(
+      `docker ps --format '{{.Names}}\t{{.Status}}' 2>/dev/null || true`
+    );
+    const lines = stdout.trim().split("\n").filter(Boolean);
+    return lines.map((line) => {
+      const [name, ...statusParts] = line.split("\t");
+      const status = statusParts.join(" ");
+
+      return {
+        name: `docker-${name}`,
+        status: status.toLowerCase().includes("up") ? "active" : "inactive",
+        description: `Docker Container: ${name}`,
+        backend: "docker",
+      };
+    });
+  } catch {
+    return [];
+  }
+}
 
 export async function GET() {
   try {
@@ -98,8 +175,6 @@ export async function GET() {
     // ── Network (real stats from /proc/net/dev) ───────────────────────────────
     let network = { rx: 0, tx: 0 };
     try {
-      const { readFileSync } = await import('fs');
-      
       function readNetStats(): { rx: number; tx: number; ts: number } {
         const netDev = readFileSync('/proc/net/dev', 'utf-8');
         const lines = netDev.trim().split('\n').slice(2);
@@ -113,9 +188,9 @@ export async function GET() {
         }
         return { rx, tx, ts: Date.now() };
       }
-      
+
       const current = readNetStats();
-      
+
       // Use module-level cache for previous reading
       if ((global as Record<string, unknown>).__netPrev) {
         const prev = (global as Record<string, unknown>).__netPrev as { rx: number; tx: number; ts: number };
@@ -132,113 +207,39 @@ export async function GET() {
       console.error("Failed to get network stats:", error);
     }
 
-    // ── Services ─────────────────────────────────────────────────────────────
+    // ── Services (auto-discovered) ────────────────────────────────────────────
     const services: ServiceEntry[] = [];
 
-    // 1. Systemd services
-    for (const name of SYSTEMD_SERVICES) {
-      try {
-        const { stdout } = await execAsync(`systemctl --user is-active ${name} 2>/dev/null || true`);
-        const rawStatus = stdout.trim(); // "active" | "inactive" | "failed" | ...
-        services.push({
-          name,
-          status: rawStatus,
-          description: SERVICE_DESCRIPTIONS[name] ?? name,
-          backend: "systemd",
-        });
-      } catch {
-        services.push({
-          name,
-          status: "unknown",
-          description: SERVICE_DESCRIPTIONS[name] ?? name,
-          backend: "systemd",
-        });
-      }
-    }
+    // 1. System-level systemd services
+    const systemChecks = SYSTEM_SERVICES.map(checkSystemdService);
+    const userServiceChecks = USER_SERVICES.map(checkUserService);
 
-    // 2. PM2 services — single call, parse JSON (only if PM2 services exist)
-    if (PM2_SERVICES.length > 0) {
-      try {
-        const { stdout: pm2Json } = await execAsync("pm2 jlist 2>/dev/null");
-        const pm2List = JSON.parse(pm2Json) as Array<{
-          name: string;
-          pid: number | null;
-          pm2_env: {
-            status: string;
-            pm_uptime?: number;
-            restart_time?: number;
-            monit?: { cpu: number; memory: number };
-          };
-        }>;
+    // 2. Docker containers
+    const dockerChecks = discoverDockerContainers();
 
-        const pm2Map: Record<string, (typeof pm2List)[0]> = {};
-        for (const proc of pm2List) {
-          pm2Map[proc.name] = proc;
-        }
+    // Run all service checks in parallel
+    const [systemResults, userResults, dockerResults] = await Promise.all([
+      Promise.all(systemChecks),
+      Promise.all(userServiceChecks),
+      dockerChecks,
+    ]);
 
-        for (const name of PM2_SERVICES) {
-          const proc = pm2Map[name];
-          if (!proc) {
-            services.push({
-              name,
-              status: "unknown",
-              description: SERVICE_DESCRIPTIONS[name] ?? name,
-              backend: "pm2",
-            });
-            continue;
-          }
-
-          const rawStatus = proc.pm2_env?.status ?? "unknown";
-          const uptime =
-            rawStatus === "online" && proc.pm2_env?.pm_uptime
-              ? Date.now() - proc.pm2_env.pm_uptime
-              : null;
-
-          services.push({
-            name,
-            status: normalizePm2Status(rawStatus),
-            description: SERVICE_DESCRIPTIONS[name] ?? name,
-            backend: "pm2",
-            uptime,
-            restarts: proc.pm2_env?.restart_time ?? 0,
-            pid: proc.pid,
-            cpu: proc.pm2_env?.monit?.cpu ?? null,
-            mem: proc.pm2_env?.monit?.memory ?? null,
-          });
-        }
-      } catch (err) {
-        console.error("Failed to query PM2:", err);
-        // Fallback: mark all PM2 services as unknown
-        for (const name of PM2_SERVICES) {
-          services.push({
-            name,
-            status: "unknown",
-            description: SERVICE_DESCRIPTIONS[name] ?? name,
-            backend: "pm2",
-          });
-        }
-      }
-    }
-
-    // 3. Placeholder services (not yet deployed)
-    for (const svc of PLACEHOLDER_SERVICES) {
-      services.push({ ...svc, backend: "none" });
-    }
+    services.push(...systemResults);
+    services.push(...userResults);
+    services.push(...dockerResults);
 
     // ── Tailscale VPN ─────────────────────────────────────────────────────────
     let tailscaleActive = false;
     let tailscaleIp = "";
     const tailscaleDevices: TailscaleDevice[] = [];
-    
-    // Check if Tailscale is installed first
+
     try {
       await execAsync("which tailscale");
-      
-      // Tailscale is installed, get real status
+
       try {
         const { stdout: tsStatus } = await execAsync("tailscale status 2>/dev/null || true");
         const lines = tsStatus.trim().split("\n").filter(Boolean);
-        
+
         if (lines.length > 0 && !tsStatus.includes("not running")) {
           tailscaleActive = true;
           for (const line of lines) {
@@ -262,14 +263,12 @@ export async function GET() {
       }
     } catch {
       // Tailscale not installed
-      tailscaleActive = false;
-      tailscaleIp = "";
     }
 
     // ── Firewall (UFW) ────────────────────────────────────────────────────────
     let firewallActive = false;
     const firewallRulesList: FirewallRule[] = [];
-    
+
     try {
       const { stdout: ufwStatus } = await execAsync("ufw status numbered 2>/dev/null || true");
       if (ufwStatus.includes("Status: active")) {

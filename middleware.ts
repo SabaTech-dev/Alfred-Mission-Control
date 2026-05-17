@@ -14,25 +14,25 @@ const PUBLIC_API_ROUTES = new Set([
   "/api/health",
 ]);
 
-// API routes requiring agent credentials (X-Agent-Id + X-Agent-Key)
+// API routes requiring agent credentials ONLY (no browser session)
 const AGENT_ONLY_API_PREFIXES = [
   "/api/heartbeat",
-  "/api/agents",
   "/api/config",
+  "/api/cron",
+  "/api/collect-usage",
+  "/api/terminal",
+];
+
+// API routes allowing agent credentials OR authenticated browser session
+const AGENT_OR_SESSION_API_PREFIXES = [
+  "/api/agents",
   "/api/system",
   "/api/gateway",
-  "/api/cron",
   "/api/subagents",
   "/api/handoffs",
-  "/api/terminal",
-  "/api/collect-usage",
   "/api/openclaw",
   "/api/logs",
   "/api/telemetry",
-];
-
-// API routes allowing agent credentials OR authenticated session
-const AGENT_OR_SESSION_API_PREFIXES = [
   "/api/kanban",
   "/api/files",
   "/api/sessions",

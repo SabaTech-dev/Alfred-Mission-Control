@@ -13,6 +13,9 @@ export const DEPARTMENTS = {
   COMMUNICATION: { id: "communication", name: "Communication", emoji: "💬", color: "#8b5cf6" },
   INFRASTRUCTURE: { id: "infrastructure", name: "Infrastructure", emoji: "🏗️", color: "#6366f1" },
   ENTERTAINMENT: { id: "entertainment", name: "Entertainment", emoji: "🎮", color: "#f59e0b" },
+  SECURITY: { id: "security", name: "Security", emoji: "🛡️", color: "#ef4444" },
+  RESEARCH: { id: "research", name: "Research & Analysis", emoji: "🔍", color: "#f97316" },
+  QA_TESTING: { id: "qa-testing", name: "QA & Testing", emoji: "🧪", color: "#22c55e" },
   GENERAL: { id: "general", name: "General", emoji: "🤖", color: "#3b82f6" },
   OTHER: { id: "other", name: "Other", emoji: "📁", color: "#6b7280" },
 } as const;
@@ -28,7 +31,10 @@ export interface AgentDefaults {
 // Hardcoded defaults for known agents (these always take precedence)
 export const HARDCODED_DEFAULTS: Record<string, AgentDefaults> = {
   boti: { emoji: "🤖", color: "#3b82f6", department: "GENERAL" },
-  opencode: { emoji: "⚡", color: "#8b5cf6", department: "DEVELOPMENT" },
+  opencode: { emoji: "⚡", color: "#f59e0b", department: "DEVELOPMENT" },
+  "alfred-coder": { emoji: "💻", color: "#06b6d4", department: "DEVELOPMENT" },
+  "code-security": { emoji: "🛡️", color: "#ef4444", department: "SECURITY" },
+  "code-qa-tester": { emoji: "🧪", color: "#22c55e", department: "QA_TESTING" },
   memo: { emoji: "🧠", color: "#10b981", department: "MEMORY_NOTES" },
   escapeitor: { emoji: "🔐", color: "#f59e0b", department: "ENTERTAINMENT" },
   alfred: { emoji: "🤖", color: "#6366f1", department: "INFRASTRUCTURE" },
@@ -36,6 +42,12 @@ export const HARDCODED_DEFAULTS: Record<string, AgentDefaults> = {
   extractor: { emoji: "📄", color: "#ef4444", department: "DATA_EXTRACTION" },
   code: { emoji: "💻", color: "#06b6d4", department: "DEVELOPMENT" },
   scout: { emoji: "🔍", color: "#f97316", department: "DATA_EXTRACTION" },
+  coder: { emoji: "👨‍💻", color: "#06b6d4", department: "DEVELOPMENT" },
+  security: { emoji: "🛡️", color: "#ef4444", department: "SECURITY" },
+  research: { emoji: "🔍", color: "#f97316", department: "RESEARCH" },
+  devops: { emoji: "🔧", color: "#6366f1", department: "INFRASTRUCTURE" },
+  "qa-tester": { emoji: "🧪", color: "#22c55e", department: "QA_TESTING" },
+  qa_tester: { emoji: "🧪", color: "#22c55e", department: "QA_TESTING" },
 };
 
 // Emoji suggestions based on keywords in agent name
@@ -106,16 +118,62 @@ export function suggestEmoji(name: string): string {
 export function detectDepartment(name: string): DepartmentId {
   const lowerName = name.toLowerCase();
   
-  // Development - code, programming, testing
+  // Security - security, auth, vuln, audit
+  if (
+    lowerName.includes("security") ||
+    lowerName.includes("auth") ||
+    lowerName.includes("vuln") ||
+    lowerName.includes("audit") ||
+    lowerName.includes("secure") ||
+    lowerName.includes("bot") && (lowerName.includes("shield") || lowerName.includes("protect"))
+  ) {
+    return "SECURITY";
+  }
+  
+  // Research - research, analysis, investigation
+  if (
+    lowerName.includes("research") ||
+    lowerName.includes("analy") ||
+    lowerName.includes("investigat") ||
+    lowerName.includes("scout") ||
+    lowerName.includes("search")
+  ) {
+    return "RESEARCH";
+  }
+  
+  // QA / Testing - test, qa, spec, quality
+  if (
+    lowerName.includes("qa") ||
+    lowerName.includes("test") ||
+    lowerName.includes("spec") ||
+    lowerName.includes("quality") ||
+    lowerName.includes("check")
+  ) {
+    return "QA_TESTING";
+  }
+  
+  // Development - code, programming, build
   if (
     lowerName.includes("code") ||
     lowerName.includes("dev") ||
     lowerName.includes("program") ||
-    lowerName.includes("test") ||
-    lowerName.includes("spec") ||
-    lowerName.includes("build")
+    lowerName.includes("build") ||
+    lowerName.includes("opencode")
   ) {
     return "DEVELOPMENT";
+  }
+  
+  // Infrastructure - system, admin, devops, infra
+  if (
+    lowerName.includes("system") ||
+    lowerName.includes("admin") ||
+    lowerName.includes("monitor") ||
+    lowerName.includes("manage") ||
+    lowerName.includes("super") ||
+    lowerName.includes("devops") ||
+    lowerName.includes("infra")
+  ) {
+    return "INFRASTRUCTURE";
   }
   
   // Data - extraction, parsing, scraping
@@ -147,17 +205,6 @@ export function detectDepartment(name: string): DepartmentId {
     lowerName.includes("discord")
   ) {
     return "COMMUNICATION";
-  }
-  
-  // Infrastructure - system, admin
-  if (
-    lowerName.includes("system") ||
-    lowerName.includes("admin") ||
-    lowerName.includes("monitor") ||
-    lowerName.includes("manage") ||
-    lowerName.includes("super")
-  ) {
-    return "INFRASTRUCTURE";
   }
   
   // Entertainment - games, puzzles

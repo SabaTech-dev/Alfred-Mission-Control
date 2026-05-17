@@ -80,6 +80,13 @@ export async function fetchOfficeAgents(): Promise<AgentWithDesk[]> {
       statusMap.set(s.id, s);
     }
 
+    // Sort agents: main first (for desk index 0), then alphabetical
+    agentsData.agents.sort((a, b) => {
+      if (a.id === "main") return -1;
+      if (b.id === "main") return 1;
+      return a.id.localeCompare(b.id);
+    });
+
     // Calculate grid dimensions
     const { cols } = getGridDimensions(agentsData.agents.length);
 
@@ -118,6 +125,14 @@ export async function fetchOfficeAgents(): Promise<AgentWithDesk[]> {
       if (configRes.ok) {
         const configData = await configRes.json();
         const agentsList = configData.agents || [];
+
+        // Sort: main first, then alphabetical
+        agentsList.sort((a: { id: string }, b: { id: string }) => {
+          if (a.id === "main") return -1;
+          if (b.id === "main") return 1;
+          return a.id.localeCompare(b.id);
+        });
+
         const { cols } = getGridDimensions(agentsList.length);
         
         return agentsList.map((agent: { id: string; name?: string; emoji?: string; color?: string }, index: number) => {
@@ -193,6 +208,7 @@ const DEFAULT_AGENT_ACCESSORIES: Record<string, AvatarAccessories> = {
   infra: { hat: "cap", hair: "spiky" },
   developer: { beard: true, hair: "long" },
   studio: { earrings: true, hair: "long" },
+  opencode: { glasses: true, hat: "beanie", hair: "short" },
 };
 
 const ACCESSORY_PRESETS: AvatarAccessories[] = [

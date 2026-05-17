@@ -26,9 +26,13 @@ interface AgentOrganigramaProps {
 // Department display order (sorted by importance)
 const DEPARTMENT_ORDER: DepartmentId[] = [
   "DEVELOPMENT",
+  "SECURITY",
+  "RESEARCH",
+  "QA_TESTING",
   "DATA_EXTRACTION",
   "MEMORY_NOTES",
   "COMMUNICATION",
+  "INFRASTRUCTURE",
   "ENTERTAINMENT",
   "GENERAL",
   "OTHER",
@@ -50,8 +54,11 @@ export function AgentOrganigrama({ agents }: AgentOrganigramaProps) {
   const hqRef = useRef<HTMLDivElement>(null);
   const deptRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
-  // Find the root agent (the one with subagents - HQ)
-  const rootAgent = agents.find((a) => a.allowAgents && a.allowAgents.length > 0);
+  // Find the root agent (CEO) — prefer 'main' explicitly, or the one with the most subagents
+  const rootAgent = agents.find((a) => a.id === "main") || 
+    agents.reduce((best, a) => 
+      ((a.allowAgents?.length || 0) > (best.allowAgents?.length || 0)) ? a : best, 
+      agents[0]);
   const rootAgentId = rootAgent?.id || null;
 
   // Override for main/alfred as CEO Agent
