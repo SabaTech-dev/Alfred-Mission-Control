@@ -21,11 +21,6 @@ const AGENT_ONLY_API_PREFIXES = [
   "/api/cron",
   "/api/collect-usage",
   "/api/terminal",
-];
-
-// API routes allowing agent credentials OR authenticated browser session
-const AGENT_OR_SESSION_API_PREFIXES = [
-  "/api/agents",
   "/api/system",
   "/api/gateway",
   "/api/subagents",
@@ -36,6 +31,11 @@ const AGENT_OR_SESSION_API_PREFIXES = [
   "/api/kanban",
   "/api/files",
   "/api/sessions",
+];
+
+// API routes allowing agent credentials OR authenticated browser session
+const AGENT_OR_SESSION_API_PREFIXES = [
+  "/api/agents",
   "/api/reports",
   "/api/wiki",
   "/api/skills",
