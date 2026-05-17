@@ -1,0 +1,15 @@
+
+> alfred-mission-control@1.0.0 dev
+> next dev -H 0.0.0.0
+
+▲ Next.js 16.1.6 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://0.0.0.0:3000
+- Environments: .env.local
+
+✓ Starting...
+✓ Ready in 666ms
+ GET /api/learning/tech-radar 200 in 397ms (compile: 366ms, render: 31ms)
+ GET /api/learning/tech-radar 200 in 10ms (compile: 4ms, render: 6ms)
+ GET /api/hindsight/stats?bank=alfred-coder::main 200 in 566ms (compile: 199ms, render: 367ms)
+ GET /api/hindsight/search?q=tech%20radar&bank=alfred-coder::main 200 in 2.4s (compile: 166ms, render: 2.2s)

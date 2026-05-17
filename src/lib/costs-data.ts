@@ -8,7 +8,7 @@ import {
 } from "@/lib/usage-queries";
 import path from "path";
 import fs from "fs";
-import Database from "better-sqlite3";
+import Database from "@/lib/sqlite-wrapper";
 
 const DB_PATH = path.join(process.cwd(), "data", "usage-tracking.db");
 const BUDGET_PATH = path.join(process.cwd(), "data", "budget-settings.json");
@@ -47,7 +47,7 @@ function getBudgetSettings(): BudgetSettings {
   return { budget: DEFAULT_BUDGET, alertThreshold: 80 };
 }
 
-function getLatestCollectionTimestamp(db: Database.Database): number | null {
+function getLatestCollectionTimestamp(db: Database): number | null {
   try {
     const result = db.prepare(`
       SELECT MAX(timestamp) as latest FROM usage_snapshots

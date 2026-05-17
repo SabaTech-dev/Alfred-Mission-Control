@@ -12,7 +12,7 @@ import { collectUsage } from "../src/lib/usage-collector";
 const DB_PATH = path.join(__dirname, "..", "data", "usage-tracking.db");
 
 async function main() {
-  console.log("🫙 SuperBotijo - Usage Collector");
+  console.log("🤖 Alfred Mission Control - Usage Collector");
   console.log(`Database: ${DB_PATH}`);
   console.log(`Timestamp: ${new Date().toISOString()}`);
   console.log();

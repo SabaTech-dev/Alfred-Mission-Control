@@ -1,0 +1,28 @@
+
+> alfred-mission-control@1.0.0 dev
+> next dev -H 0.0.0.0
+
+▲ Next.js 16.1.6 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://0.0.0.0:3000
+- Environments: .env.local
+
+✓ Starting...
+✓ Ready in 1248ms
+ GET /api/learning/tech-radar 200 in 861ms (compile: 828ms, render: 32ms)
+ GET /api/learning/tech-radar 200 in 11ms (compile: 5ms, render: 7ms)
+ GET /api/health 200 in 366ms (compile: 194ms, render: 171ms)
+ GET /api/health 200 in 190ms (compile: 5ms, render: 185ms)
+ GET /api/heartbeat/tasks?agentName=security 401 in 275ms (compile: 267ms, render: 8ms)
+ GET /api/heartbeat/tasks?agentName=devops 401 in 9ms (compile: 3ms, render: 6ms)
+ GET /api/kanban/agent/tasks 401 in 205ms (compile: 198ms, render: 6ms)
+ GET /api/kanban/tasks 401 in 572ms (compile: 566ms, render: 6ms)
+ GET /api/learning/tech-radar 200 in 87ms (compile: 72ms, render: 15ms)
+(node:1814639) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+○ Compiling / ...
+ GET / 200 in 8.4s (compile: 7.9s, render: 490ms)
+ GET /api/kanban?status=backlog&assignee=devops 404 in 626ms (compile: 565ms, render: 62ms)
+ GET /api/heartbeat/tasks?agentName=qa-tester 401 in 11ms (compile: 3ms, render: 7ms)
+ GET /kanban 200 in 6.7s (compile: 1150ms, render: 5.6s)
+ GET /api/learning/tech-radar 200 in 14ms (compile: 3ms, render: 11ms)

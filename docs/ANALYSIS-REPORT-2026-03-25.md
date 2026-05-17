@@ -2,13 +2,13 @@
 
 **Fecha:** 2026-03-25  
 **Autor:** Alfred  
-**Scope:** Análisis exhaustivo de docs, scripts y funcionalidades del fork SuperBotijo → Alfred Mission Control
+**Scope:** Análisis exhaustivo de docs, scripts y funcionalidades del fork upstream → Alfred Mission Control
 
 ---
 
 ## 🏗️ Resumen Ejecutivo
 
-El repositorio SuperBotijo (de Carlos Azaustre) es un **dashboard extremadamente completo** con ~100 componentes React, ~90+ endpoints API, 3 bases de datos SQLite, y un sistema de eventos en tiempo real. Tras el fork, hemos hecho branding, auth middleware y fixes puntuales, pero **hay funcionalidades significativas que no estamos explotando**.
+El repositorio original (de Carlos Azaustre) es un **dashboard extremadamente completo** con ~100 componentes React, ~90+ endpoints API, 3 bases de datos SQLite, y un sistema de eventos en tiempo real. Tras el fork, hemos hecho branding, auth middleware y fixes puntuales, pero **hay funcionalidades significativas que no estamos explotando**.
 
 ---
 
@@ -45,7 +45,7 @@ El repositorio SuperBotijo (de Carlos Azaustre) es un **dashboard extremadamente
 - **Existe:** `scripts/sync-openclaw-sessions.sh`, `data/activities.db`, `/api/activities/*`
 - **Problema:** DB tiene solo 97 registros (del 22-25 Mar). El script **NO está en cron**.
 - **Flujo esperado:** Cron cada 5 min → lee `~/.openclaw/agents/*/sessions/*.jsonl` → inserta en activities.db
-- **Script roto:** El script todavía referencia `/root/.openclaw` y `SUPERBOTIJO_DB` en vez de nuestras rutas
+- **Script roto:** El script todavía referencia `/root/.openclaw` y la base de datos vieja en vez de nuestras rutas
 - **Acción necesaria:**
   1. Fix rutas en `sync-openclaw-sessions.sh` (ya están parcialmente arregladas con sed, pero el shebang tiene paths hardcodeados)
   2. Añadir a system cron: `*/5 * * * * ubuntu /path/to/sync-openclaw-sessions.sh`
@@ -189,7 +189,7 @@ El repositorio SuperBotijo (de Carlos Azaustre) es un **dashboard extremadamente
 
 ## 🎯 Conclusión
 
-Tenemos un **tesoro funcional** debajo de la superficie. El repo SuperBotijo es mucho más que un dashboard — es un sistema de gestión completo con:
+Tenemos un **tesoro funcional** debajo de la superficie. El repo original es mucho más que un dashboard — es un sistema de gestión completo con:
 
 - **90+ API endpoints** (la mayoría sin usar)
 - **3 bases de datos** (kanban, activities, usage-tracking — solo 1 realmente activa)

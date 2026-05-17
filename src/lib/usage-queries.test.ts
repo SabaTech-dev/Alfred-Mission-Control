@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import Database from "better-sqlite3";
+import Database from "@/lib/sqlite-wrapper";
 import fs from "fs";
 import path from "path";
 import {
@@ -15,7 +15,7 @@ const TEST_DB_PATH = path.join(process.cwd(), "data", "test-usage.db");
 const DATA_DIR = path.join(process.cwd(), "data");
 
 // Helper to create test database with sample data
-function createTestDb(): Database.Database {
+function createTestDb(): Database {
   // Ensure data directory exists
   if (!fs.existsSync(DATA_DIR)) {
     fs.mkdirSync(DATA_DIR, { recursive: true });
@@ -43,7 +43,7 @@ function createTestDb(): Database.Database {
 }
 
 // Helper to insert test data
-function insertTestData(db: Database.Database) {
+function insertTestData(db: Database) {
   const now = new Date();
   const today = now.toISOString().split("T")[0];
 
@@ -76,7 +76,7 @@ function cleanup() {
 }
 
 describe("usage-queries", () => {
-  let db: Database.Database;
+  let db: Database;
 
   beforeEach(() => {
     cleanup();

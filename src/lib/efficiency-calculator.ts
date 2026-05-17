@@ -3,7 +3,7 @@
  * Calculates efficiency scores based on activity success rates and token usage
  */
 
-import Database from "better-sqlite3";
+import Database from "@/lib/sqlite-wrapper";
 import path from "path";
 import fs from "fs";
 
@@ -41,8 +41,8 @@ export interface EfficiencyHistory {
  */
 export function calculateEfficiencyScore(days: number = 7): EfficiencyScore {
   // Get activities database
-  let activitiesDb: Database.Database | null = null;
-  let usageDb: Database.Database | null = null;
+  let activitiesDb: Database | null = null;
+  let usageDb: Database | null = null;
 
   try {
     // Initialize activities data

@@ -17,6 +17,7 @@ import {
   ArrowRight,
   Trophy,
   XCircle,
+  Filter,
 } from "lucide-react";
 import {
   PIPELINE_STAGES,
@@ -26,6 +27,16 @@ import {
   type Opportunity,
   type PipelineKPIs,
 } from "@/lib/pipeline-types";
+
+type KanbanTaskStatus = "backlog" | "in_progress" | "review" | "done" | "blocked";
+
+const STATUS_COLORS: Record<KanbanTaskStatus, string> = {
+  backlog: "#6b7280",
+  in_progress: "#3b82f6",
+  review: "#f59e0b",
+  done: "#22c55e",
+  blocked: "#ef4444",
+};
 
 export default function PipelineClient() {
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
@@ -37,6 +48,34 @@ export default function PipelineClient() {
   const [formData, setFormData] = useState<any>({});
   const [expandedCard, setExpandedCard] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<"pipeline" | "list">("pipeline");
+  
+  // Pipeline-Kanban Bridge: Store Kanban tasks for opportunities
+  const [kanbanTasks, setKanbanTasks] = useState<Record<string, any[]>>({});
+  const [loadingTasks, setLoadingTasks] = useState<Record<string, boolean>>({});
+
+  // Filters
+  const [filterStage, setFilterStage] = useState<PipelineStage | "all">("all");
+  const [filterServiceType, setFilterServiceType] = useState<string>("all");
+  const [filterDateFrom, setFilterDateFrom] = useState<string>("");
+  const [filterDateTo, setFilterDateTo] = useState<string>("");
+  const [showFilters, setShowFilters] = useState(false);
+
+  const filteredOpportunities = opportunities.filter((o) => {
+    if (filterStage !== "all" && o.stage !== filterStage) return false;
+    if (filterServiceType !== "all" && o.service_type !== filterServiceType) return false;
+    if (filterDateFrom && o.created_at < filterDateFrom) return false;
+    if (filterDateTo && o.created_at > filterDateTo + "T23:59:59") return false;
+    return true;
+  });
+
+  const clearFilters = () => {
+    setFilterStage("all");
+    setFilterServiceType("all");
+    setFilterDateFrom("");
+    setFilterDateTo("");
+  };
+
+  const hasActiveFilters = filterStage !== "all" || filterServiceType !== "all" || filterDateFrom || filterDateTo;
 
   const fetchData = useCallback(async () => {
     try {
@@ -52,6 +91,35 @@ export default function PipelineClient() {
   }, []);
 
   useEffect(() => { fetchData(); }, [fetchData]);
+
+  // Pipeline-Kanban Bridge: Fetch Kanban tasks when card is expanded
+  const fetchKanbanTasks = async (oppId: string, company: string) => {
+    if (kanbanTasks[oppId] || loadingTasks[oppId]) return; // Already fetched or loading
+    
+    setLoadingTasks(prev => ({ ...prev, [oppId]: true }));
+    try {
+      const res = await fetch("/api/kanban/tasks");
+      const data = await res.json();
+      const allTasks = data.tasks || [];
+      // Filter tasks that mention this company
+      const oppTasks = allTasks.filter((task: any) => 
+        task.description?.includes(`[Opportunity: ${company}]`)
+      );
+      setKanbanTasks(prev => ({ ...prev, [oppId]: oppTasks }));
+    } catch (err) {
+      console.error(`Failed to fetch Kanban tasks for ${company}:`, err);
+    } finally {
+      setLoadingTasks(prev => ({ ...prev, [oppId]: false }));
+    }
+  };
+
+  const handleToggleCard = async (oppId: string, company: string) => {
+    const isExpanding = expandedCard !== oppId;
+    setExpandedCard(isExpanding ? oppId : null);
+    if (isExpanding) {
+      await fetchKanbanTasks(oppId, company);
+    }
+  };
 
   const activeStages = PIPELINE_STAGES.filter((s) => s !== "won" && s !== "lost");
   const wonLostStages: PipelineStage[] = ["won", "lost"];
@@ -179,6 +247,108 @@ export default function PipelineClient() {
         </div>
       </div>
 
+      {/* Filter Bar */}
+      <div style={{ marginBottom: "16px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            style={{
+              padding: "6px 12px",
+              borderRadius: "6px",
+              border: "1px solid var(--border)",
+              background: hasActiveFilters ? "var(--accent)" : "var(--surface)",
+              color: hasActiveFilters ? "#fff" : "var(--text-secondary)",
+              cursor: "pointer",
+              fontSize: "12px",
+              display: "flex",
+              alignItems: "center",
+              gap: "6px",
+            }}
+          >
+            <Filter size={14} /> Filtros {hasActiveFilters && `(activos: ${filteredOpportunities.length}/${opportunities.length})`}
+          </button>
+          {hasActiveFilters && (
+            <button
+              onClick={clearFilters}
+              style={{
+                padding: "6px 12px",
+                borderRadius: "6px",
+                border: "1px solid var(--border)",
+                background: "var(--surface)",
+                color: "var(--text-secondary)",
+                cursor: "pointer",
+                fontSize: "12px",
+              }}
+            >
+              <X size={12} /> Limpiar filtros
+            </button>
+          )}
+        </div>
+        {showFilters && (
+          <div
+            style={{
+              marginTop: "10px",
+              display: "flex",
+              gap: "12px",
+              flexWrap: "wrap",
+              padding: "12px",
+              background: "var(--surface-elevated)",
+              borderRadius: "10px",
+              border: "1px solid var(--border)",
+            }}
+          >
+            <div style={{ minWidth: "140px" }}>
+              <label style={{ fontSize: "11px", color: "var(--text-muted)", fontWeight: 500, display: "block", marginBottom: "4px" }}>Etapa</label>
+              <select
+                value={filterStage}
+                onChange={(e) => setFilterStage(e.target.value as PipelineStage | "all")}
+                style={{ width: "100%", padding: "6px 8px", borderRadius: "6px", border: "1px solid var(--border)", background: "var(--surface)", color: "var(--text-primary)", fontSize: "12px", boxSizing: "border-box" }}
+              >
+                <option value="all">Todas</option>
+                {PIPELINE_STAGES.map((s) => (
+                  <option key={s} value={s}>{STAGE_LABELS[s]}</option>
+                ))}
+              </select>
+            </div>
+            <div style={{ minWidth: "160px" }}>
+              <label style={{ fontSize: "11px", color: "var(--text-muted)", fontWeight: 500, display: "block", marginBottom: "4px" }}>Tipo Servicio</label>
+              <select
+                value={filterServiceType}
+                onChange={(e) => setFilterServiceType(e.target.value)}
+                style={{ width: "100%", padding: "6px 8px", borderRadius: "6px", border: "1px solid var(--border)", background: "var(--surface)", color: "var(--text-primary)", fontSize: "12px", boxSizing: "border-box" }}
+              >
+                <option value="all">Todos</option>
+                <option value="consultoria_audit">🔍 Audit</option>
+                <option value="consultoria_retainer">🔄 Retainer</option>
+                <option value="consultoria_managed">🛡️ Managed</option>
+                <option value="orquestacion_setup">⚙️ Setup</option>
+                <option value="orquestacion_advanced">🚀 Advanced</option>
+                <option value="orquestacion_managed">🤖 Managed Orch.</option>
+                <option value="other">📋 Otro</option>
+              </select>
+            </div>
+            <div style={{ minWidth: "140px" }}>
+              <label style={{ fontSize: "11px", color: "var(--text-muted)", fontWeight: 500, display: "block", marginBottom: "4px" }}>Desde</label>
+              <input
+                type="date"
+                value={filterDateFrom}
+                onChange={(e) => setFilterDateFrom(e.target.value)}
+                style={{ width: "100%", padding: "6px 8px", borderRadius: "6px", border: "1px solid var(--border)", background: "var(--surface)", color: "var(--text-primary)", fontSize: "12px", boxSizing: "border-box" }}
+              />
+            </div>
+            <div style={{ minWidth: "140px" }}>
+              <label style={{ fontSize: "11px", color: "var(--text-muted)", fontWeight: 500, display: "block", marginBottom: "4px" }}>Hasta</label>
+              <input
+                type="date"
+                value={filterDateTo}
+                onChange={(e) => setFilterDateTo(e.target.value)}
+                style={{ width: "100%", padding: "6px 8px", borderRadius: "6px", border: "1px solid var(--border)", background: "var(--surface)", color: "var(--text-primary)", fontSize: "12px", boxSizing: "border-box" }}
+              />
+            </div>
+          </div>
+        )}
+      </div>
+
       {/* KPI Cards */}
       {kpis && (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "12px", marginBottom: "24px" }}>
@@ -195,7 +365,7 @@ export default function PipelineClient() {
       {viewMode === "pipeline" ? (
         <div style={{ display: "flex", gap: "12px", overflowX: "auto", paddingBottom: "16px" }}>
           {activeStages.map((stage) => {
-            const stageOpps = opportunities.filter((o) => o.stage === stage);
+            const stageOpps = filteredOpportunities.filter((o) => o.stage === stage);
             const stageValue = stageOpps.reduce((s, o) => s + o.value, 0);
             return (
               <div
@@ -241,7 +411,7 @@ export default function PipelineClient() {
                       key={opp.id}
                       opp={opp}
                       expanded={expandedCard === opp.id}
-                      onToggle={() => setExpandedCard(expandedCard === opp.id ? null : opp.id)}
+                      onToggle={() => handleToggleCard(opp.id, opp.company)}
                       onStageChange={handleStageChange}
                       onEdit={handleEdit}
                       onDelete={handleDelete}
@@ -249,6 +419,8 @@ export default function PipelineClient() {
                       formatDate={formatDate}
                       serviceLabels={serviceLabels}
                       activeStages={activeStages}
+                      kanbanTasks={kanbanTasks[opp.id] || []}
+                      loadingTasks={loadingTasks[opp.id] || false}
                     />
                   ))}
                   {stageOpps.length === 0 && (
@@ -277,7 +449,7 @@ export default function PipelineClient() {
               </tr>
             </thead>
             <tbody>
-              {opportunities.map((opp) => (
+              {filteredOpportunities.map((opp) => (
                 <tr key={opp.id} style={{ borderBottom: "1px solid var(--border)" }}>
                   <td style={{ padding: "10px 12px", color: "var(--text-primary)", fontWeight: 500 }}>{opp.company}</td>
                   <td style={{ padding: "10px 12px", color: "var(--text-secondary)" }}>{opp.title}</td>
@@ -297,7 +469,7 @@ export default function PipelineClient() {
                   </td>
                 </tr>
               ))}
-              {opportunities.length === 0 && (
+              {filteredOpportunities.length === 0 && (
                 <tr>
                   <td colSpan={7} style={{ padding: "30px", textAlign: "center", color: "var(--text-muted)" }}>
                     No hay oportunidades. Crea la primera.
@@ -310,14 +482,14 @@ export default function PipelineClient() {
       )}
 
       {/* Won/Lost Section */}
-      {(opportunities.some((o) => o.stage === "won") || opportunities.some((o) => o.stage === "lost")) && (
+      {(filteredOpportunities.some((o) => o.stage === "won") || filteredOpportunities.some((o) => o.stage === "lost")) && (
         <div style={{ marginTop: "24px" }}>
           <h2 style={{ fontSize: "16px", fontWeight: 600, color: "var(--text-primary)", marginBottom: "12px" }}>
             Historial
           </h2>
           <div style={{ display: "flex", gap: "12px" }}>
             {wonLostStages.map((stage) => {
-              const stageOpps = opportunities.filter((o) => o.stage === stage);
+              const stageOpps = filteredOpportunities.filter((o) => o.stage === stage);
               if (stageOpps.length === 0) return null;
               return (
                 <div key={stage} style={{ flex: 1, background: "var(--surface-elevated)", borderRadius: "12px", border: "1px solid var(--border)" }}>
@@ -466,6 +638,8 @@ function OppCard({
   formatDate,
   serviceLabels,
   activeStages,
+  kanbanTasks,
+  loadingTasks,
 }: {
   opp: Opportunity;
   expanded: boolean;
@@ -477,6 +651,8 @@ function OppCard({
   formatDate: (d: string | null) => string;
   serviceLabels: Record<string, string>;
   activeStages: PipelineStage[];
+  kanbanTasks: any[];
+  loadingTasks: boolean;
 }) {
   const stageIdx = activeStages.indexOf(opp.stage as PipelineStage);
   const canAdvance = stageIdx < activeStages.length - 1;
@@ -554,6 +730,89 @@ function OppCard({
           <div style={{ fontSize: "10px", color: "var(--text-muted)", marginTop: "6px" }}>
             Creado: {formatDate(opp.created_at)}
           </div>
+          
+          {/* Pipeline-Kanban Bridge: Show associated Kanban tasks */}
+          {expanded && (
+            <div style={{ marginTop: "12px", paddingTop: "12px", borderTop: "1px solid var(--border)", borderTopStyle: "dashed" }}>
+              <div style={{ fontSize: "11px", fontWeight: 600, color: "var(--text-primary)", marginBottom: "6px", display: "flex", alignItems: "center", gap: "6px" }}>
+                <span style={{ background: "#8b5cf6", color: "#fff", padding: "2px 6px", borderRadius: "3px", fontSize: "10px" }}>KANBAN</span>
+                Tareas asociadas ({kanbanTasks.length})
+              </div>
+              
+              {loadingTasks ? (
+                <div style={{ fontSize: "11px", color: "var(--text-muted)", padding: "8px" }}>Cargando tareas...</div>
+              ) : kanbanTasks.length === 0 ? (
+                <div style={{ fontSize: "11px", color: "var(--text-muted)", padding: "8px" }}>Sin tareas asociadas</div>
+              ) : (
+                <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                  {kanbanTasks.map((task) => (
+                    <div
+                      key={task.id}
+                      style={{
+                        padding: "6px 8px",
+                        borderRadius: "4px",
+                        background: "var(--surface-elevated)",
+                        border: "1px solid var(--border)",
+                        fontSize: "11px",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                      }}
+                    >
+                      {/* Status badge */}
+                      <span
+                        style={{
+                          padding: "2px 6px",
+                          borderRadius: "3px",
+                          fontSize: "9px",
+                          fontWeight: 600,
+                          color: "#fff",
+                          background: STATUS_COLORS[task.status as KanbanTaskStatus] || "#6b7280",
+                        }}
+                      >
+                        {String(task.status)}
+                      </span>
+                      
+                      {/* Task title (truncated) */}
+                      <div style={{ flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                        {task.title}
+                      </div>
+                      
+                      {/* Assignee */}
+                      {task.assignee && (
+                        <span style={{ fontSize: "9px", color: "var(--text-muted)", background: "var(--surface)", padding: "2px 5px", borderRadius: "3px" }}>
+                          {task.assignee}
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+              
+              {/* Progress indicator */}
+              {kanbanTasks.length > 0 && (
+                <div style={{ marginTop: "8px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "10px", color: "var(--text-secondary)", marginBottom: "4px" }}>
+                    <span>Progreso:</span>
+                    <span style={{ fontWeight: 600, color: "var(--text-primary)" }}>
+                      {kanbanTasks.filter((t) => t.status === "done").length} / {kanbanTasks.length} tareas completadas
+                    </span>
+                  </div>
+                  {/* Progress bar */}
+                  <div style={{ height: "4px", background: "var(--border)", borderRadius: "2px", overflow: "hidden" }}>
+                    <div
+                      style={{
+                        height: "100%",
+                        background: STATUS_COLORS[kanbanTasks.filter((t) => t.status === "done").length === kanbanTasks.length ? "done" : "in_progress"],
+                        width: `${Math.round((kanbanTasks.filter((t) => t.status === "done").length / kanbanTasks.length) * 100)}%`,
+                        transition: "width 0.3s ease, background 0.3s ease",
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
     </div>

@@ -2,7 +2,7 @@
  * Opportunity Pipeline — SQLite Storage
  * Manages sales pipeline opportunities with stages and forecasting
  */
-import Database from "better-sqlite3";
+import Database from "@/lib/sqlite-wrapper";
 import path from "path";
 import { randomUUID } from "crypto";
 import fs from "fs";
@@ -14,6 +14,12 @@ import {
   type Opportunity,
   type PipelineKPIs,
 } from "@/lib/pipeline-types";
+import {
+  createTasksForWonOpportunity,
+  shouldCreateTasksForOpportunity,
+  calculateOpportunityProgress,
+  updateOpportunityProgress as updateProgress,
+} from "@/lib/pipeline-kanban-bridge";
 
 export type { PipelineStage, Opportunity, PipelineKPIs };
 export { PIPELINE_STAGES, STAGE_LABELS, STAGE_COLORS, STAGE_PROBABILITY } from "@/lib/pipeline-types";
@@ -52,6 +58,7 @@ export interface UpdateOpportunityInput {
   next_action?: string | null;
   next_action_date?: string | null;
   notes?: string | null;
+  progress?: number;
 }
 
 
@@ -60,9 +67,9 @@ const DB_PATH = process.env.NODE_ENV === "test"
   ? ":memory:"
   : path.join(process.cwd(), "data", "kanban.db");
 
-let _db: Database.Database | null = null;
+let _db: Database | null = null;
 
-function getDb(): Database.Database {
+function getDb(): Database {
   if (!_db) {
     const dir = path.dirname(DB_PATH);
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
@@ -73,7 +80,7 @@ function getDb(): Database.Database {
   return _db;
 }
 
-function initPipelineTable(db: Database.Database) {
+function initPipelineTable(db: Database) {
   db.exec(`
     CREATE TABLE IF NOT EXISTS opportunities (
       id TEXT PRIMARY KEY,
@@ -92,11 +99,22 @@ function initPipelineTable(db: Database.Database) {
       next_action TEXT,
       next_action_date TEXT,
       notes TEXT,
+      progress REAL NOT NULL DEFAULT 0,
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
       updated_at TEXT NOT NULL DEFAULT (datetime('now')),
       closed_at TEXT
     )
   `);
+
+  // Idempotent migration: Add progress column if it doesn't exist
+  const progressColumnExists = db
+    .prepare("SELECT 1 FROM pragma_table_info('opportunities') WHERE name = 'progress'")
+    .get() as { "1": number } | undefined;
+
+  if (!progressColumnExists) {
+    db.exec(`ALTER TABLE opportunities ADD COLUMN progress REAL NOT NULL DEFAULT 0`);
+    console.log("[pipeline-db] Added progress column to opportunities");
+  }
 }
 
 export function createOpportunity(input: CreateOpportunityInput): Opportunity {
@@ -121,18 +139,19 @@ export function createOpportunity(input: CreateOpportunityInput): Opportunity {
     next_action: input.next_action || null,
     next_action_date: input.next_action_date || null,
     notes: input.notes || null,
+    progress: 0,
     created_at: now,
     updated_at: now,
     closed_at: null,
   };
 
   db.prepare(`
-    INSERT INTO opportunities (id, company, contact_name, contact_email, contact_linkedin, title, description, stage, value, currency, service_type, probability, source, next_action, next_action_date, notes, created_at, updated_at, closed_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO opportunities (id, company, contact_name, contact_email, contact_linkedin, title, description, stage, value, currency, service_type, probability, source, next_action, next_action_date, notes, progress, created_at, updated_at, closed_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `).run(
     opp.id, opp.company, opp.contact_name, opp.contact_email, opp.contact_linkedin,
     opp.title, opp.description, opp.stage, opp.value, opp.currency, opp.service_type,
-    opp.probability, opp.source, opp.next_action, opp.next_action_date, opp.notes,
+    opp.probability, opp.source, opp.next_action, opp.next_action_date, opp.notes, opp.progress,
     opp.created_at, opp.updated_at, opp.closed_at
   );
 
@@ -167,6 +186,9 @@ export function updateOpportunity(id: string, input: UpdateOpportunityInput): Op
 
   if (updates.length === 0) return existing;
 
+  // Store previous stage for Pipeline-Kanban bridge
+  const previousStage = existing.stage;
+
   // Auto-set closed_at when stage changes to won/lost
   if (input.stage === "won" || input.stage === "lost") {
     updates.push("closed_at = ?");
@@ -181,8 +203,25 @@ export function updateOpportunity(id: string, input: UpdateOpportunityInput): Op
 
   db.prepare(`UPDATE opportunities SET ${updates.join(", ")} WHERE id = ?`).run(...values);
 
+  // Log activity
   logActivity("opportunity_updated", `Oportunidad actualizada: ${existing.company} — ${existing.title}`, "pipeline");
-  return getOpportunity(id);
+
+  // Fetch updated opportunity
+  const updated = getOpportunity(id);
+  if (!updated) return null;
+
+  // Pipeline-Kanban bridge: create tasks if opportunity is won
+  if (shouldCreateTasksForOpportunity(updated, previousStage)) {
+    const taskIds = createTasksForWonOpportunity(updated, previousStage);
+    console.log(`[Pipeline-Kanban Bridge] Created ${taskIds.length} tasks for won opportunity: ${updated.company}`);
+
+    // Calculate and save initial progress (0%) after task creation
+    const progress = calculateOpportunityProgress(updated);
+    db.prepare('UPDATE opportunities SET progress = ? WHERE id = ?').run(progress, updated.id);
+    console.log(`[Pipeline-Kanban Bridge] Initial progress for ${updated.company}: ${progress}%`);
+  }
+
+  return updated;
 }
 
 export function deleteOpportunity(id: string): boolean {

@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 
-import Database from "better-sqlite3";
+import Database from "@/lib/sqlite-wrapper";
 
 const DEFAULT_DB_PATH = path.join(process.cwd(), "data", "usage-tracking.db");
 
@@ -32,7 +32,7 @@ function getMonthBounds(baseDate: Date): { start: string; end: string; daysInMon
   };
 }
 
-function sumCostBetween(db: Database.Database, start: string, end: string): number {
+function sumCostBetween(db: Database, start: string, end: string): number {
   const result = db.prepare(`
     SELECT COALESCE(SUM(cost), 0) AS total
     FROM usage_snapshots
@@ -42,7 +42,7 @@ function sumCostBetween(db: Database.Database, start: string, end: string): numb
   return result.total ?? 0;
 }
 
-export function getDatabase(dbPath: string = DEFAULT_DB_PATH): Database.Database | null {
+export function getDatabase(dbPath: string = DEFAULT_DB_PATH): Database | null {
   if (!fs.existsSync(dbPath)) {
     return null;
   }
@@ -50,7 +50,7 @@ export function getDatabase(dbPath: string = DEFAULT_DB_PATH): Database.Database
   return new Database(dbPath, { readonly: true });
 }
 
-export function getCostSummary(db: Database.Database) {
+export function getCostSummary(db: Database) {
   const today = new Date();
   const todayDate = isoDate(today);
   const yesterdayDate = isoDate(shiftDays(today, -1));
@@ -76,7 +76,7 @@ export function getCostSummary(db: Database.Database) {
   };
 }
 
-export function getCostByAgent(db: Database.Database, days: number) {
+export function getCostByAgent(db: Database, days: number) {
   const startDate = isoDate(shiftDays(new Date(), -(Math.max(days, 1) - 1)));
   const rows = db.prepare(`
     SELECT
@@ -97,7 +97,7 @@ export function getCostByAgent(db: Database.Database, days: number) {
   }));
 }
 
-export function getCostByModel(db: Database.Database, days: number) {
+export function getCostByModel(db: Database, days: number) {
   const startDate = isoDate(shiftDays(new Date(), -(Math.max(days, 1) - 1)));
   const rows = db.prepare(`
     SELECT
@@ -118,7 +118,7 @@ export function getCostByModel(db: Database.Database, days: number) {
   }));
 }
 
-export function getDailyCost(db: Database.Database, days: number) {
+export function getDailyCost(db: Database, days: number) {
   const startDate = isoDate(shiftDays(new Date(), -(Math.max(days, 1) - 1)));
   const rows = db.prepare(`
     SELECT
@@ -138,7 +138,7 @@ export function getDailyCost(db: Database.Database, days: number) {
   }));
 }
 
-export function getHourlyCost(db: Database.Database) {
+export function getHourlyCost(db: Database) {
   return db.prepare(`
     SELECT
       printf('%02d:00', hour) AS hour,

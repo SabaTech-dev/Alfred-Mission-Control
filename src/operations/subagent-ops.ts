@@ -3,7 +3,7 @@
  * Server-side data fetching for subagents dashboard
  */
 import { safeExecFile } from "@/lib/safe-exec";
-import Database from "better-sqlite3";
+import Database from "@/lib/sqlite-wrapper";
 import path from "path";
 import fs from "fs";
 

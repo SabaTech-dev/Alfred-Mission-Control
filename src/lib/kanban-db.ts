@@ -21,12 +21,26 @@
  * requires careful coordination to avoid breaking DB initialization.
  *
  * See: Issue #132 - Technical Debt Reduction
+ *
+ * PIPELINE-KANBAN BRIDGE:
+ * - When task status changes, recalculate opportunity progress for associated opportunities
+ * - This implements bidirectional sync: Kanban task updates → Pipeline opportunity progress
  */
-import Database from "better-sqlite3";
+import Database from "@/lib/sqlite-wrapper";
 import path from "path";
 import fs from "fs";
 import { randomUUID } from "crypto";
 import { logActivity } from "@/lib/activities-db";
+import {
+  extractOpportunityCompany,
+  findWonOpportunitiesByCompany,
+  updateOpportunityProgress,
+} from "@/lib/pipeline-kanban-bridge";
+import {
+  getOpportunity,
+  listOpportunities,
+  updateOpportunity as updatePipelineOpp,
+} from "@/lib/pipeline-db";
 import type {
   Project,
   CreateProjectInput,
@@ -205,7 +219,7 @@ export interface ListTaskCommentsFilters {
 // Database Setup
 // ============================================================================
 
-let _db: Database.Database | null = null;
+let _db: Database | null = null;
 
 /**
  * Reset the database connection (for testing only)
@@ -222,7 +236,15 @@ export function resetDbForTesting(): void {
  * Get the database connection singleton
  * Creates tables and seeds default columns on first run
  */
-function getDb(): Database.Database {
+function getDb(): Database {
+  // Clean up stale WASM SQLite lock directory (node-sqlite3-wasm VFS artifact)
+  const lockDir = DB_PATH + '.lock';
+  try {
+    if (fs.existsSync(lockDir)) {
+      fs.rmSync(lockDir, { recursive: true, force: true });
+    }
+  } catch {}
+
   if (_db) return _db;
 
   // Ensure data directory exists
@@ -234,7 +256,12 @@ function getDb(): Database.Database {
   _db = new Database(DB_PATH);
 
   // WAL mode for better concurrency
-  _db.pragma("journal_mode = WAL");
+  try {
+    _db.pragma("journal_mode = WAL");
+  } catch {
+    // WASM SQLite doesn't support WAL mode; fall back to DELETE (default)
+    _db.pragma("journal_mode = DELETE");
+  }
   _db.pragma("synchronous = NORMAL");
 
   // Create tables
@@ -628,6 +655,9 @@ export function updateTask(id: string, updates: UpdateTaskInput): KanbanTask | n
   const fields: string[] = [];
   const values: unknown[] = [];
 
+  // Store previous status for Pipeline-Kanban bridge
+  const previousStatus = existing.status;
+
   if (updates.title !== undefined) {
     fields.push("title = ?");
     values.push(updates.title);
@@ -696,7 +726,27 @@ export function updateTask(id: string, updates: UpdateTaskInput): KanbanTask | n
 
   db.prepare(`UPDATE kanban_tasks SET ${fields.join(", ")} WHERE id = ?`).run(...values);
 
-  return getTask(id);
+  const updated = getTask(id);
+  if (!updated) return existing;
+
+  // Pipeline-Kanban bridge: Recalculate opportunity progress when task status changes
+  if (updates.status !== undefined && updates.status !== previousStatus) {
+    const company = extractOpportunityCompany(updated);
+    if (company) {
+      // Find all won opportunities associated with this company
+      const opps = findWonOpportunitiesByCompany(listOpportunities, company);
+      for (const opp of opps) {
+        const newProgress = updateOpportunityProgress(
+          getOpportunity,
+          updatePipelineOpp,
+          opp.id
+        );
+        console.log(`[Kanban-Pipeline Bridge] Task "${updated.title}" status changed: ${previousStatus} → ${updates.status}. Updated opportunity progress for ${company}: ${newProgress}%`);
+      }
+    }
+  }
+
+  return updated;
 }
 
 /**

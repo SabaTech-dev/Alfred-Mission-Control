@@ -15,11 +15,15 @@
  * @module session-store
  */
 
+import type { NextRequest } from "next/server";
+
 const DEFAULT_TTL_MS = 24 * 60 * 60 * 1000;
 
 interface SessionPayload {
   exp: number;
   jti: string;
+  role?: "user" | "admin";
+  username?: string;
 }
 
 const revokedTokens = new Set<string>();
@@ -136,6 +140,23 @@ class SessionStore {
   }
 
   /**
+   * Extract token from a NextRequest.
+   * Checks Authorization header first, then falls back to cookie.
+   *
+   * @param request - NextRequest object
+   * @returns Token string or null if not found
+   */
+  getTokenFromRequest(request: NextRequest): string | null {
+    // Check Authorization header first
+    const authHeader = request.headers.get("Authorization");
+    if (authHeader?.startsWith("Bearer ")) {
+      return authHeader.slice(7);
+    }
+    // Fall back to cookie (set by login API)
+    return request.cookies.get("auth_token")?.value ?? null;
+  }
+
+  /**
    * Validate a session token.
    * Checks: 1) valid format, 2) HMAC signature, 3) not expired, 4) not revoked
    *
@@ -181,10 +202,12 @@ class SessionStore {
    * @param ttlMs - Time to live in milliseconds
    * @returns Promise resolving to the signed token
    */
-  async generateToken(ttlMs: number = DEFAULT_TTL_MS): Promise<string> {
+  async generateToken(ttlMs: number = DEFAULT_TTL_MS, options?: { role?: SessionPayload["role"]; username?: string }): Promise<string> {
     const payload: SessionPayload = {
       exp: Date.now() + ttlMs,
       jti: generateJti(),
+      ...(options?.role && { role: options.role }),
+      ...(options?.username && { username: options.username }),
     };
     const payloadB64 = base64UrlEncode(JSON.stringify(payload));
     const secret = getAuthSecret();

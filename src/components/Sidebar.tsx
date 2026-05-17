@@ -32,10 +32,26 @@ import {
   BookMarked,
   BookOpen,
   Briefcase,
+  ShieldCheck,
+  ChevronDown,
+  ChevronRight,
 } from "lucide-react";
+import { useAdminRole } from "@/hooks/useAdminRole";
+
+interface NavItem {
+  href: string;
+  label: string;
+  icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>;
+  highlight?: boolean;
+}
+
+interface NavGroup {
+  title: string;
+  items: NavItem[];
+}
 import { getAgentDisplayName } from "@/config/branding";
 
-const navGroups = [
+const baseNavGroups: NavGroup[] = [
   {
     title: "Main",
     items: [
@@ -80,22 +96,36 @@ const navGroups = [
       { href: "/git", label: "Git", icon: GitFork },
     ],
   },
-  {
-    title: "System",
-    items: [
-      { href: "/system", label: "System", icon: Server },
-      { href: "/skills", label: "Skills", icon: Puzzle },
-      { href: "/cron", label: "Cron Jobs", icon: Zap },
-      { href: "/logs", label: "Logs", icon: Terminal },
-    ],
-  },
 ];
+
+const systemNavGroup: NavGroup = {
+  title: "System",
+  items: [
+    { href: "/system", label: "System", icon: Server },
+    { href: "/skills", label: "Skills", icon: Puzzle },
+    { href: "/cron", label: "Cron Jobs", icon: Zap },
+    { href: "/logs", label: "Logs", icon: Terminal },
+  ],
+};
+
+const adminNavGroup: NavGroup = {
+  title: "Admin",
+  items: [
+    { href: "/admin", label: "Admin Panel", icon: ShieldCheck },
+  ],
+};
 
 export function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [adminExpanded, setAdminExpanded] = useState(true);
+  const { isAdmin } = useAdminRole();
+
+  const navGroups = isAdmin
+    ? [...baseNavGroups, adminNavGroup, systemNavGroup]
+    : [...baseNavGroups, systemNavGroup];
 
   useEffect(() => {
     const checkMobile = () => {

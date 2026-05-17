@@ -5,8 +5,30 @@ import { OPENCLAW_WORKSPACE } from "@/lib/paths";
 
 export const dynamic = "force-dynamic";
 
-const WORKSPACE = OPENCLAW_WORKSPACE;
+const WORKSPACE = path.resolve(OPENCLAW_WORKSPACE);
 const MEMORY_DIR = "memory";
+
+/**
+ * Validates that a resolved path is within the workspace root.
+ * Prevents path traversal attacks.
+ */
+function isPathWithinWorkspace(inputPath: string): boolean {
+  const resolved = path.resolve(WORKSPACE, inputPath);
+  const rel = path.relative(WORKSPACE, resolved);
+  return !rel.startsWith("..") && !path.isAbsolute(rel);
+}
+
+/**
+ * Safe path join that validates the result is within workspace.
+ */
+function safePathJoin(...segments: string[]): string {
+  const joined = path.resolve(WORKSPACE, ...segments);
+  const rel = path.relative(WORKSPACE, joined);
+  if (rel.startsWith("..") || path.isAbsolute(rel)) {
+    throw new Error(`Path traversal detected: ${segments.join("/")}`);
+  }
+  return joined;
+}
 
 const REPORT_PATTERNS = [
   /^twitter-analysis-/,
@@ -40,18 +62,21 @@ export async function GET(request: NextRequest) {
 
   try {
     if (filePath) {
-      // Read specific file
-      const normalized = path.normalize(filePath);
-      if (normalized.startsWith("..") || path.isAbsolute(normalized) || !normalized.endsWith(".md")) {
+      // Read specific file from memory/ directory ONLY
+      if (!isPathWithinWorkspace(filePath)) {
         return NextResponse.json({ error: "Invalid path" }, { status: 400 });
       }
-      const fullPath = path.join(WORKSPACE, normalized);
+      // Ensure path is within memory/ directory
+      if (!filePath.startsWith(MEMORY_DIR) && !filePath.startsWith("/" + MEMORY_DIR)) {
+        return NextResponse.json({ error: "Access denied: only memory/ directory allowed" }, { status: 403 });
+      }
+      const fullPath = safePathJoin(filePath);
       const content = await fs.readFile(fullPath, "utf-8");
-      return NextResponse.json({ path: normalized, content });
+      return NextResponse.json({ path: filePath, content });
     }
 
-    // List report files
-    const memoryPath = path.join(WORKSPACE, MEMORY_DIR);
+    // List report files from memory/ directory ONLY
+    const memoryPath = safePathJoin(MEMORY_DIR);
     let files: string[] = [];
     try {
       files = await fs.readdir(memoryPath);
@@ -62,7 +87,7 @@ export async function GET(request: NextRequest) {
     const reports = [];
     for (const file of files) {
       if (!file.endsWith(".md") || !isReportFile(file)) continue;
-      const fullPath = path.join(memoryPath, file);
+      const fullPath = safePathJoin(MEMORY_DIR, file);
       const stat = await fs.stat(fullPath);
       const content = await fs.readFile(fullPath, "utf-8");
       reports.push({

@@ -2,7 +2,7 @@
  * SQLite-backed Activity Logger
  * Stores all agent activities with 30-day retention
  */
-import Database from 'better-sqlite3';
+import Database from '@/lib/sqlite-wrapper';
 import path from 'path';
 import fs from 'fs';
 import { randomUUID } from 'crypto';
@@ -42,9 +42,17 @@ export interface Activity {
   metadata: Record<string, unknown> | null;
 }
 
-let _db: Database.Database | null = null;
+let _db: Database | null = null;
 
-function getDb(): Database.Database {
+function getDb(): Database {
+  // Clean up stale WASM SQLite lock directory
+  const lockDir = DB_PATH + '.lock';
+  try {
+    if (fs.existsSync(lockDir)) {
+      fs.rmSync(lockDir, { recursive: true, force: true });
+    }
+  } catch {}
+
   if (_db) return _db;
 
   // Ensure data dir
@@ -55,8 +63,12 @@ function getDb(): Database.Database {
 
   _db = new Database(DB_PATH);
 
-  // WAL mode for better concurrency
-  _db.pragma('journal_mode = WAL');
+  // DELETE mode (WASM SQLite doesn't support WAL)
+  try {
+    _db.pragma('journal_mode = WAL');
+  } catch {
+    _db.pragma('journal_mode = DELETE');
+  }
   _db.pragma('synchronous = NORMAL');
 
   // Create table

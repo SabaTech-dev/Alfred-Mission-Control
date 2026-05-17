@@ -51,7 +51,7 @@ function createBackup(): BackupEntry {
   ensureBackupDir();
 
   // Backup kanban database
-  const kanbanPath = path.join(OPENCLAW_DIR, "workspace/mission-control-superbotijo/data/kanban.db");
+  const kanbanPath = path.join(OPENCLAW_DIR, "workspace/Alfred-Mission-Control/data/kanban.db");
   if (fs.existsSync(kanbanPath)) {
     const destPath = path.join(BACKUP_DIR, `${id}-kanban.db`);
     fs.copyFileSync(kanbanPath, destPath);

@@ -48,12 +48,12 @@ export async function GET() {
         workspace: 'security',
       },
       {
-        id: 'debug',
+        id: 'devops',
         name: 'Debug Specialist',
         emoji: '🐛',
         model: 'zai/glm-4.7',
         status: 'inactive',
-        workspace: 'debug',
+        workspace: 'devops',
       },
       {
         id: 'qa-tester',

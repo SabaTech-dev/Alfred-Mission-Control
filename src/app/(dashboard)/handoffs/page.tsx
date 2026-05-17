@@ -52,7 +52,7 @@ const AGENT_EMOJIS: Record<string, string> = {
   coder: "💻",
   research: "🔍",
   security: "🔒",
-  debug: "🐛",
+  devops: "🔧",
   "qa-tester": "🧪",
 };
 

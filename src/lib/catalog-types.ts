@@ -1,12 +1,12 @@
 /**
- * Service Catalog Types
+ * Service Catalog Types — Dynamic pricing & landing status
  */
 
 export type ServiceCategory = "consultoria" | "orquestacion" | "qa_framework";
 
 export interface PricingTier {
   name: string;
-  price: string;
+  price: number;
   priceDetail: string;
   description: string;
   features: string[];
@@ -21,10 +21,29 @@ export interface ServiceProduct {
   description: string;
   landingUrl: string | null;
   repoPath: string | null;
-  status: "live" | "staging" | "development" | "planned";
-  tiers: PricingTier[];
+  status: "live" | "staging" | "development" | "error";
   frameworks?: string[];
   targetMarket?: string;
+  tiers: PricingTier[];
+}
+
+export interface LandingConfig {
+  id: string;
+  url: string;
+  label: string;
+}
+
+export type LandingStatus = "live" | "staging" | "error" | "unknown";
+
+export interface LandingCheckResult {
+  id: string;
+  url: string;
+  label: string;
+  status: LandingStatus;
+  statusCode?: number;
+  responseTimeMs?: number;
+  checkedAt: string;
+  error?: string;
 }
 
 export interface CatalogKPIs {
@@ -52,12 +71,17 @@ export const STATUS_LABELS: Record<ServiceProduct["status"], string> = {
   live: "En vivo",
   staging: "Staging",
   development: "En desarrollo",
-  planned: "Planificado",
+  error: "Error",
 };
 
 export const STATUS_COLORS: Record<ServiceProduct["status"], string> = {
   live: "#10b981",
   staging: "#f59e0b",
   development: "#3b82f6",
-  planned: "#6b7280",
+  error: "#ef4444",
 };
+
+/** Format price number as EUR string */
+export function formatPrice(price: number): string {
+  return `€${price.toLocaleString("es-ES")}`;
+}

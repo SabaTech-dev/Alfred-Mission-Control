@@ -10,7 +10,7 @@ import {
 } from "@/lib/usage-queries";
 import path from "path";
 import fs from "fs";
-import Database from "better-sqlite3";
+import Database from "@/lib/sqlite-wrapper";
 
 export const dynamic = "force-dynamic";
 
@@ -44,7 +44,7 @@ function saveBudgetSettings(settings: BudgetSettings): void {
   fs.writeFileSync(BUDGET_PATH, JSON.stringify(settings, null, 2));
 }
 
-function getLatestCollectionTimestamp(db: Database.Database): number | null {
+function getLatestCollectionTimestamp(db: Database): number | null {
   try {
     const result = db.prepare(`
       SELECT MAX(timestamp) as latest FROM usage_snapshots

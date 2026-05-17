@@ -119,16 +119,29 @@
     "kanban": "Kanban",
     "chat": "Chat",
     "office": "Office",
+    "live": "Live",
+    "handoffs": "Handoffs",
+    "subagents": "Subagents",
+    "notifications": "Alerts",
     "memory": "Memory",
+    "learning": "Learning",
+    "reports": "Reports",
+    "morning": "Morning",
+    "performance": "Perf",
+    "pipeline": "Pipeline",
+    "catalog": "Catalog",
     "files": "Files",
-    "analytics": "Analytics",
+    "projects": "Projects",
+    "git": "Git",
     "terminal": "Terminal",
+    "skills": "Skills",
+    "logs": "Logs",
+    "analytics": "Analytics",
+    "costsAlerts": "Costs",
+    "calendar": "Calendar",
     "system": "System",
     "settings": "Settings",
-    "logout": "Logout",
-    "pipeline": "Pipeline",
-    "learning": "Learning Lab",
-    "catalog": "Catalog"
+    "logout": "Logout"
   },
   "help": {
     "dashboard": {
@@ -190,6 +203,58 @@
     "catalog": {
       "title": "Service Catalog",
       "description": "SabaTech services: pricing, landings and status"
+    },
+    "live": {
+      "title": "Live View",
+      "description": "Real-time view of agent activity and system events as they happen."
+    },
+    "handoffs": {
+      "title": "Agent Handoffs",
+      "description": "Track task handoffs between agents. See context, status, and transfer history."
+    },
+    "subagents": {
+      "title": "Subagent Monitor",
+      "description": "Monitor spawned subagents: status, runtime, logs, and resource usage."
+    },
+    "notifications": {
+      "title": "Notifications",
+      "description": "Agent alerts, system notifications, and important events requiring attention."
+    },
+    "reports": {
+      "title": "Reports Hub",
+      "description": "Browse and search all reports: weekly, monthly, cron-generated, and custom."
+    },
+    "morning": {
+      "title": "Morning Brief",
+      "description": "Daily morning summary: overnight activity, pending tasks, and priorities for the day."
+    },
+    "performance": {
+      "title": "Performance",
+      "description": "Agent performance metrics: efficiency scores, trends, and optimization insights."
+    },
+    "projects": {
+      "title": "Projects",
+      "description": "Manage active projects, track progress, and view project-level analytics."
+    },
+    "git": {
+      "title": "Git Status",
+      "description": "Repository overview: recent commits, branches, PRs, and deployment status."
+    },
+    "skills": {
+      "title": "Skills Management",
+      "description": "Browse, install, update, and manage agent skills and capabilities."
+    },
+    "logs": {
+      "title": "Gateway Logs",
+      "description": "Real-time log streaming from OpenClaw gateway and agent services."
+    },
+    "costsAlerts": {
+      "title": "Cost Alerts",
+      "description": "Budget tracking, cost anomalies, and spending alerts across models and agents."
+    },
+    "calendar": {
+      "title": "Calendar",
+      "description": "Scheduled tasks, cron jobs timeline, and upcoming events view."
     }
   },
   "topbar": {

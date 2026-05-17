@@ -13,7 +13,13 @@ import {
   ChevronRight,
   ChevronDown,
   AlertCircle,
+  Brain,
+  TrendingUp,
+  Calendar,
+  Share2,
 } from "lucide-react";
+import dynamic from "next/dynamic";
+const WikiGraphView = dynamic(() => import("@/components/WikiGraphView").then((m) => m.default), { ssr: false });
 import { MarkdownPreview } from "@/components/MarkdownPreview";
 import { useI18n } from "@/i18n/provider";
 
@@ -49,6 +55,35 @@ interface WikiStats {
   topLinked: string[];
 }
 
+interface HindsightStats {
+  total_nodes: number;
+  total_links: number;
+  total_documents: number;
+  nodes_by_fact_type: {
+    world: number;
+    experience: number;
+    observation: number;
+  };
+  links_by_link_type: {
+    temporal: number;
+    semantic: number;
+    caused_by: number;
+    entity: number;
+  };
+  last_recall?: string;
+  top_categories: string[];
+}
+
+interface HindsightMemory {
+  id: string;
+  text: string;
+  date: string;
+  fact_type: 'world' | 'experience' | 'observation';
+  entities: string;
+  tags: string[];
+  score?: number;
+}
+
 interface SyncStatus {
   status: "green" | "yellow" | "red";
   lastSync: string | null;
@@ -71,6 +106,17 @@ function formatSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function formatDateTime(isoString: string): string {
+  const date = new Date(isoString);
+  return date.toLocaleDateString("es-ES", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 }
 
 function formatDate(isoString: string): string {
@@ -128,6 +174,14 @@ export default function WikiClient() {
   const [stats, setStats] = useState<WikiStats | null>(null);
   const [isSyncing, setIsSyncing] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
+  
+  // Hindsight states
+  const [hindsightQuery, setHindsightQuery] = useState("");
+  const [hindsightResults, setHindsightResults] = useState<HindsightMemory[]>([]);
+  const [hindsightStats, setHindsightStats] = useState<HindsightStats | null>(null);
+  const [isHindsightLoading, setIsHindsightLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState<'wiki' | 'hindsight' | 'graph'>('wiki');
+  const [selectedMemory, setSelectedMemory] = useState<HindsightMemory | null>(null);
 
   const loadFileTree = useCallback(async () => {
     try {
@@ -228,6 +282,38 @@ export default function WikiClient() {
     }
   }, []);
 
+  const handleHindsightSearch = useCallback(async (query: string) => {
+    setHindsightQuery(query);
+
+    if (query.length < 2) {
+      setHindsightResults([]);
+      return;
+    }
+
+    try {
+      setIsHindsightLoading(true);
+      const res = await fetch(`/api/hindsight/search?q=${encodeURIComponent(query)}&bank=alfred-coder::main`);
+      if (!res.ok) throw new Error("Failed to search Hindsight");
+      const data = await res.json();
+      setHindsightResults(data.memories || []);
+    } catch (error) {
+      console.error("Failed to search Hindsight:", error);
+    } finally {
+      setIsHindsightLoading(false);
+    }
+  }, []);
+
+  const loadHindsightStats = useCallback(async () => {
+    try {
+      const res = await fetch("/api/hindsight/stats?bank=alfred-coder::main");
+      if (!res.ok) throw new Error("Failed to load Hindsight stats");
+      const data = await res.json();
+      setHindsightStats(data);
+    } catch (error) {
+      console.error("Failed to load Hindsight stats:", error);
+    }
+  }, []);
+
   const toggleFolder = useCallback((path: string) => {
     const toggle = (nodes: TreeFileNode[]): TreeFileNode[] => {
       return nodes.map((node) => {
@@ -255,7 +341,8 @@ export default function WikiClient() {
   useEffect(() => {
     loadFileTree();
     handleSyncStatus();
-  }, [loadFileTree, handleSyncStatus]);
+    loadHindsightStats();
+  }, [loadFileTree, handleSyncStatus, loadHindsightStats]);
 
   useEffect(() => {
     // Select index.md by default
@@ -306,6 +393,70 @@ export default function WikiClient() {
       <div style={{ padding: "24px 24px 16px 24px", flexShrink: 0 }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div>
+            {/* Tabs */}
+            <div style={{ display: "flex", gap: "4px", marginBottom: "12px" }}>
+              <button
+                onClick={() => setActiveTab('wiki')}
+                style={{
+                  padding: "6px 12px",
+                  borderRadius: "6px 6px 0 0",
+                  border: "none",
+                  backgroundColor: activeTab === 'wiki' ? 'var(--card)' : 'transparent',
+                  borderBottom: activeTab === 'wiki' ? '2px solid var(--accent)' : '1px solid var(--border)',
+                  cursor: 'pointer',
+                  fontSize: '12px',
+                  fontWeight: activeTab === 'wiki' ? 600 : 400,
+                  color: activeTab === 'wiki' ? 'var(--text-primary)' : 'var(--text-secondary)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                }}
+              >
+                <BookMarked size={14} />
+                Wiki Explorer
+              </button>
+              <button
+                onClick={() => setActiveTab('hindsight')}
+                style={{
+                  padding: "6px 12px",
+                  borderRadius: "6px 6px 0 0",
+                  border: "none",
+                  backgroundColor: activeTab === 'hindsight' ? 'var(--card)' : 'transparent',
+                  borderBottom: activeTab === 'hindsight' ? '2px solid var(--accent)' : '1px solid var(--border)',
+                  cursor: 'pointer',
+                  fontSize: '12px',
+                  fontWeight: activeTab === 'hindsight' ? 600 : 400,
+                  color: activeTab === 'hindsight' ? 'var(--text-primary)' : 'var(--text-secondary)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                }}
+              >
+                <Brain size={14} />
+                Hindsight Memory
+              </button>
+              <button
+                onClick={() => setActiveTab('graph')}
+                style={{
+                  padding: "6px 12px",
+                  borderRadius: "6px 6px 0 0",
+                  border: "none",
+                  backgroundColor: activeTab === 'graph' ? 'var(--card)' : 'transparent',
+                  borderBottom: activeTab === 'graph' ? '2px solid var(--accent)' : '1px solid var(--border)',
+                  cursor: 'pointer',
+                  fontSize: '12px',
+                  fontWeight: activeTab === 'graph' ? 600 : 400,
+                  color: activeTab === 'graph' ? 'var(--text-primary)' : 'var(--text-secondary)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                }}
+              >
+                <Share2 size={14} />
+                Graph
+              </button>
+            </div>
+            
             <h1
               style={{
                 fontFamily: "var(--font-heading)",
@@ -316,11 +467,13 @@ export default function WikiClient() {
                 marginBottom: "4px",
               }}
             >
-              <BookMarked style={{ width: "24px", height: "24px", color: "var(--accent)", marginRight: "8px", display: "inline", verticalAlign: "middle" }} />
-              Wiki Explorer
+              {activeTab === 'wiki' && <BookMarked style={{ width: "24px", height: "24px", color: "var(--accent)", marginRight: "8px", display: "inline", verticalAlign: "middle" }} />}
+              {activeTab === 'hindsight' && <Brain style={{ width: "24px", height: "24px", color: "var(--accent)", marginRight: "8px", display: "inline", verticalAlign: "middle" }} />}
+              {activeTab === 'graph' && <Share2 style={{ width: "24px", height: "24px", color: "var(--accent)", marginRight: "8px", display: "inline", verticalAlign: "middle" }} />}
+              {activeTab === 'wiki' ? 'Wiki Explorer' : activeTab === 'hindsight' ? 'Hindsight Memory' : 'Grafo de Conexiones'}
             </h1>
             <p style={{ fontFamily: "var(--font-body)", fontSize: "13px", color: "var(--text-secondary)" }}>
-              Segundo cerebro - Obsidian Vault
+              {activeTab === 'wiki' ? 'Segundo cerebro - Obsidian Vault' : activeTab === 'hindsight' ? 'Memoria semántica - Búsqueda vectorial y relaciones' : 'Visualización interactiva de backlinks entre notas'}
             </p>
           </div>
 
@@ -457,6 +610,8 @@ export default function WikiClient() {
       {/* Main Content */}
       <div style={{ flex: 1, minHeight: 0, borderTop: "1px solid var(--border)" }}>
         <div style={{ display: "flex", height: "100%" }}>
+          {/* Wiki Tab Content */}
+          {activeTab === 'wiki' && (<>
           {/* File Tree */}
           <div
             style={{
@@ -727,6 +882,222 @@ export default function WikiClient() {
               </div>
             )}
           </div>
+        </>)}
+        
+        {/* Hindsight Tab Content */}
+        {activeTab === 'hindsight' && (
+          <div style={{ flex: 1, display: "flex", flexDirection: "column", padding: "24px" }}>
+            {/* Stats Bar */}
+            {hindsightStats && (
+              <div style={{
+                display: "flex",
+                gap: "16px",
+                marginBottom: "24px",
+                padding: "16px",
+                backgroundColor: "var(--card)",
+                border: "1px solid var(--border)",
+                borderRadius: "8px",
+              }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  <Brain size={16} />
+                  <div>
+                    <div style={{ fontSize: "10px", color: "var(--text-muted)" }}>Memories</div>
+                    <div style={{ fontSize: "16px", fontWeight: 600, color: "var(--text-primary)" }}>{hindsightStats.total_nodes}</div>
+                  </div>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  <TrendingUp size={16} />
+                  <div>
+                    <div style={{ fontSize: "10px", color: "var(--text-muted)" }}>Relations</div>
+                    <div style={{ fontSize: "16px", fontWeight: 600, color: "var(--text-primary)" }}>{hindsightStats.total_links}</div>
+                  </div>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  <Calendar size={16} />
+                  <div>
+                    <div style={{ fontSize: "10px", color: "var(--text-muted)" }}>Last Recall</div>
+                    <div style={{ fontSize: "12px", fontWeight: 600, color: "var(--text-primary)" }}>
+                      {hindsightStats.last_recall ? formatDateTime(hindsightStats.last_recall) : 'Never'}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            {/* Search */}
+            <div style={{ position: "relative", marginBottom: "24px" }}>
+              <Search
+                style={{
+                  position: "absolute",
+                  left: "10px",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  color: "var(--text-muted)",
+                  width: "14px",
+                  height: "14px",
+                }}
+              />
+              <input
+                type="text"
+                placeholder="Buscar en memoria semántica..."
+                value={hindsightQuery}
+                onChange={(e) => handleHindsightSearch(e.target.value)}
+                style={{
+                  width: "100%",
+                  padding: "8px 10px 8px 32px",
+                  borderRadius: "8px",
+                  border: "1px solid var(--border)",
+                  backgroundColor: "var(--card)",
+                  color: "var(--text-primary)",
+                  fontSize: "13px",
+                  outline: "none",
+                }}
+              />
+            </div>
+            
+            {/* Results */}
+            {isHindsightLoading ? (
+              <div style={{ display: "flex", justifyContent: "center", padding: "48px", color: "var(--text-secondary)" }}>
+                Buscando en memoria semántica...
+              </div>
+            ) : hindsightResults.length > 0 ? (
+              <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                {hindsightResults.map((memory) => (
+                  <div
+                    key={memory.id}
+                    style={{
+                      padding: "16px",
+                      backgroundColor: "var(--card)",
+                      border: "1px solid var(--border)",
+                      borderRadius: "8px",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => setSelectedMemory(memory)}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "var(--surface-hover)"}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "var(--card)"}
+                  >
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", marginBottom: "8px" }}>
+                      <div style={{ fontSize: "12px", fontWeight: 600, color: "var(--text-primary)", flex: 1 }}>
+                        {memory.text.slice(0, 80)}{memory.text.length > 80 ? '...' : ''}
+                      </div>
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "10px", color: "var(--text-muted)" }}>
+                        <span style={{
+                          padding: "2px 6px",
+                          borderRadius: "10px",
+                          backgroundColor: "var(--accent-soft)",
+                          color: "var(--accent)",
+                          fontWeight: 500,
+                        }}>
+                          {memory.score || 0}%
+                        </span>
+                        <span style={{ backgroundColor: "var(--surface-soft)", padding: "2px 4px", borderRadius: "4px" }}>
+                          {memory.fact_type}
+                        </span>
+                      </div>
+                    </div>
+                    <div style={{ fontSize: "11px", color: "var(--text-secondary)", marginBottom: "4px" }}>
+                      {memory.text.slice(0, 200)}{memory.text.length > 200 ? '...' : ''}
+                    </div>
+                    <div style={{ fontSize: "10px", color: "var(--text-muted)" }}>
+                      {formatDateTime(memory.date)} | {memory.entities.split(",").slice(0, 3).join(", ")}{memory.entities.split(",").length > 3 ? '...' : ''}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : hindsightQuery.length >= 2 ? (
+              <div style={{ textAlign: "center", padding: "48px", color: "var(--text-secondary)" }}>
+                No se encontraron recuerdos para esta búsqueda
+              </div>
+            ) : (
+              <div style={{ textAlign: "center", padding: "48px", color: "var(--text-secondary)" }}>
+                <Brain style={{ width: "64px", height: "64px", margin: "0 auto 16px", opacity: 0.3 }} />
+                <p>Realiza una búsqueda semántica en la memoria de Alfred</p>
+                <p style={{ fontSize: "12px", marginTop: "8px" }}>Utiliza búsqueda vectorial para encontrar relaciones semánticas</p>
+              </div>
+            )}
+            
+            {/* Memory Detail Modal */}
+            {selectedMemory && (
+              <div
+                style={{
+                  position: "fixed",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  backgroundColor: "rgba(0,0,0,0.6)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  zIndex: 50,
+                }}
+                onClick={() => setSelectedMemory(null)}
+              >
+                <div
+                  style={{
+                    backgroundColor: "var(--card)",
+                    border: "1px solid var(--border)",
+                    borderRadius: "12px",
+                    maxWidth: "640px",
+                    width: "90%",
+                    maxHeight: "80vh",
+                    overflowY: "auto",
+                    padding: "24px",
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", marginBottom: "16px" }}>
+                    <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                      <span style={{
+                        padding: "2px 8px",
+                        borderRadius: "10px",
+                        backgroundColor: "var(--accent-soft)",
+                        color: "var(--accent)",
+                        fontWeight: 500,
+                        fontSize: "11px",
+                      }}>{selectedMemory.score}%</span>
+                      <span style={{ backgroundColor: "var(--surface-soft)", padding: "2px 8px", borderRadius: "4px", fontSize: "11px", color: "var(--text-secondary)" }}>
+                        {selectedMemory.fact_type}
+                      </span>
+                    </div>
+                    <button
+                      onClick={() => setSelectedMemory(null)}
+                      style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text-muted)", fontSize: "18px" }}
+                    >✕</button>
+                  </div>
+                  <div style={{ fontSize: "13px", color: "var(--text-primary)", lineHeight: 1.6, marginBottom: "16px" }}>
+                    {selectedMemory.text}
+                  </div>
+                  <div style={{ fontSize: "11px", color: "var(--text-muted)", borderTop: "1px solid var(--border)", paddingTop: "12px" }}>
+                    <div style={{ marginBottom: "4px" }}>
+                      <strong>Fecha:</strong> {formatDateTime(selectedMemory.date)}
+                    </div>
+                    {selectedMemory.entities && (
+                      <div style={{ marginBottom: "4px" }}>
+                        <strong>Entidades:</strong> {selectedMemory.entities}
+                      </div>
+                    )}
+                    {selectedMemory.tags && selectedMemory.tags.length > 0 && (
+                      <div>
+                        <strong>Tags:</strong> {selectedMemory.tags.join(', ')}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Graph Tab Content */}
+        {activeTab === 'graph' && (
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+            <WikiGraphView onNodeClick={(path) => {
+              setSelectedPath(path);
+              setActiveTab('wiki');
+            }} />
+          </div>
+        )}
         </div>
       </div>
 

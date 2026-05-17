@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import fs from "fs";
 import path from "path";
-import Database from "better-sqlite3";
+import Database from "@/lib/sqlite-wrapper";
 import {
   calculateEfficiencyScore,
   getEfficiencyHistory,
@@ -15,7 +15,7 @@ const USAGE_DB = path.join(process.cwd(), "data", "usage-tracking.db");
 const ACTIVITIES_BACKUP = path.join(process.cwd(), "data", "activities.db.test-backup");
 const USAGE_BACKUP = path.join(process.cwd(), "data", "usage-tracking.db.test-backup");
 
-function createActivitiesDb(): Database.Database {
+function createActivitiesDb(): Database {
   // Delete existing DB to start fresh
   if (fs.existsSync(ACTIVITIES_DB)) {
     fs.unlinkSync(ACTIVITIES_DB);
@@ -43,7 +43,7 @@ function createActivitiesDb(): Database.Database {
   return db;
 }
 
-function createUsageDb(): Database.Database {
+function createUsageDb(): Database {
   // Delete existing DB to start fresh
   if (fs.existsSync(USAGE_DB)) {
     fs.unlinkSync(USAGE_DB);
@@ -71,7 +71,7 @@ function createUsageDb(): Database.Database {
   return db;
 }
 
-function insertTestActivities(db: Database.Database) {
+function insertTestActivities(db: Database) {
   const now = new Date();
 
   const stmt = db.prepare(`
@@ -92,7 +92,7 @@ function insertTestActivities(db: Database.Database) {
   }
 }
 
-function insertTestUsage(db: Database.Database) {
+function insertTestUsage(db: Database) {
   const now = new Date();
   const dateStr = now.toISOString().split("T")[0];
 
@@ -139,8 +139,8 @@ function restore() {
 }
 
 describe("efficiency-calculator", () => {
-  let activitiesDb: Database.Database | null = null;
-  let usageDb: Database.Database | null = null;
+  let activitiesDb: Database | null = null;
+  let usageDb: Database | null = null;
 
   beforeEach(() => {
     backup();

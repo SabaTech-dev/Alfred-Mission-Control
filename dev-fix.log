@@ -1,0 +1,13 @@
+
+> alfred-mission-control@1.0.0 dev
+> next dev -H 0.0.0.0
+
+▲ Next.js 16.1.6 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://0.0.0.0:3000
+- Environments: .env.local
+
+✓ Starting...
+✓ Ready in 959ms
+ GET /api/learning/tech-radar 200 in 358ms (compile: 326ms, render: 32ms)
+[?25h

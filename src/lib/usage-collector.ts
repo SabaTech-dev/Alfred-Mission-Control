@@ -5,7 +5,7 @@
 import { exec } from "child_process";
 import { promisify } from "util";
 import { calculateCost, normalizeModelId } from "./pricing";
-import Database from "better-sqlite3";
+import Database from "@/lib/sqlite-wrapper";
 import path from "path";
 import fs from "fs";
 
@@ -241,7 +241,7 @@ export function calculateSnapshot(
 /**
  * Initialize SQLite database for usage tracking
  */
-export function initDatabase(dbPath: string): Database.Database {
+export function initDatabase(dbPath: string): Database {
   // Ensure directory exists
   const dir = path.dirname(dbPath);
   if (!fs.existsSync(dir)) {
@@ -279,7 +279,7 @@ export function initDatabase(dbPath: string): Database.Database {
  * Save snapshot to database
  */
 export function saveSnapshot(
-  db: Database.Database,
+  db: Database,
   snapshot: UsageSnapshot
 ): void {
   const stmt = db.prepare(`

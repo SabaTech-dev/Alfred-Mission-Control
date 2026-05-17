@@ -50,7 +50,7 @@ const SAMPLE_HANDOFFS: Handoff[] = [
   {
     id: "h4",
     from: "Alfred",
-    to: "debug",
+    to: "devops",
     task: "Diagnose session polling connection timeout",
     status: "failed",
     startedAt: new Date(Date.now() - 172800000).toISOString(),
@@ -88,7 +88,7 @@ export async function GET() {
           coder: "zai/glm-5.1",
           research: "zai/glm-5",
           security: "zai/glm-5",
-          debug: "zai/glm-4.7",
+          devops: "zai/glm-4.7",
           "qa-tester": "zai/glm-4.7",
         };
         for (const match of rowMatches) {

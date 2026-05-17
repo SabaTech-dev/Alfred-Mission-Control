@@ -13,11 +13,11 @@ test.describe("Dashboard", () => {
     expect(bodyText?.length).toBeGreaterThan(100);
   });
 
-  test("should show SuperBotijo branding", async ({ page }) => {
+  test("should show Alfred Mission Control branding", async ({ page }) => {
     await login(page);
 
-    // Look for SuperBotijo heading specifically
-    const heading = page.locator('h1:has-text("SuperBotijo")').first();
+    // Look for Alfred Mission Control heading specifically
+    const heading = page.locator('h1:has-text("Alfred")').first();
     await heading.waitFor({ timeout: 10000 });
 
     expect(await heading.isVisible()).toBe(true);

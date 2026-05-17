@@ -89,7 +89,7 @@ function parseSessionKey(key: string): {
 export async function getSessionsList(): Promise<SessionListItem[]> {
   try {
     const result = safeExecFile("openclaw", ["sessions", "--json"], {
-      timeout: 10000,
+      timeout: 5000,
     });
 
     if (result.status !== 0 || !result.stdout) {

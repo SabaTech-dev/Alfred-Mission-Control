@@ -80,7 +80,7 @@ const AGENT_NAME_MAPPINGS: Record<string, string> = {
   coder: "Coder",
   security: "Security",
   research: "Research",
-  debug: "Debug",
+  devops: "DevOps",
   qa_tester: "QA Tester",
   "qa-tester": "QA Tester",
 };
@@ -93,7 +93,7 @@ const AGENT_SKILL_MAPPINGS: Record<string, string[]> = {
   qa_tester: ["coder-brainstorming", "coder-writing-plans", "coder-plan-reviewer"],
   "qa-tester": ["coder-brainstorming", "coder-writing-plans", "coder-plan-reviewer"],
   research: [],
-  debug: [],
+  devops: ["devops", "ci-cd", "pre-flight-check", "config-validator", "tmux", "n8n-workflow-automation"],
 };
 
 export interface AgentMood {

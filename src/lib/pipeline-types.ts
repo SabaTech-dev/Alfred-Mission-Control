@@ -68,6 +68,7 @@ export interface Opportunity {
   next_action: string | null;
   next_action_date: string | null;
   notes: string | null;
+  progress: number;
   created_at: string;
   updated_at: string;
   closed_at: string | null;

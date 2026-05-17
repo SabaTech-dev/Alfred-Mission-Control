@@ -4,7 +4,7 @@
  * Returns last activity and usage stats for an integration
  */
 import { NextResponse } from 'next/server';
-import Database from 'better-sqlite3';
+import Database from '@/lib/sqlite-wrapper';
 import path from 'path';
 import fs from 'fs';
 

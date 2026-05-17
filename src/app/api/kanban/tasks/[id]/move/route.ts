@@ -2,6 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 import { moveTask, getTask } from "@/lib/kanban-db";
 import { emitKanbanTaskMoved } from "@/lib/runtime-events";
 import { requireAuth } from "@/lib/auth-helpers";
+import { 
+  getOpportunity, 
+  updateOpportunity,
+  listOpportunities 
+} from "@/lib/pipeline-db";
+import { 
+  extractOpportunityCompany,
+  calculateOpportunityProgress,
+  findWonOpportunitiesByCompany
+} from "@/lib/pipeline-kanban-bridge";
 
 export const dynamic = "force-dynamic";
 
@@ -68,6 +78,19 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     // Emit real-time event if column actually changed
     if (fromColumn && fromColumn !== body.targetColumnId) {
       emitKanbanTaskMoved(id, taskTitle, fromColumn, body.targetColumnId);
+    }
+
+    // Pipeline-Kanban Bridge: Update opportunity progress if task is associated
+    if (task.description) {
+      const company = extractOpportunityCompany(task);
+      if (company) {
+        const wonOpps = findWonOpportunitiesByCompany(listOpportunities, company);
+        for (const opp of wonOpps) {
+          const progress = calculateOpportunityProgress(opp);
+          updateOpportunity(opp.id, { progress });
+          console.log(`[Pipeline-Kanban Bridge] Updated progress for opportunity ${opp.company}: ${progress}% (task moved: ${task.title})`);
+        }
+      }
     }
 
     return NextResponse.json({ task });

@@ -3,7 +3,7 @@
 [![English](https://img.shields.io/badge/lang-English-blue)](README.md)
 [![Español](https://img.shields.io/badge/lang-Español-red)](README.es.md)
 
-> **Fork of [SuperBotijo](https://github.com/boticlaw/SuperBotijo)** by [Carlos Azaustre](https://github.com/carlosazaustre)
+> A [SabaTech](https://sabatech.dev) product — originally inspired by [Carlos Azaustre](https://github.com/carlosazaustre)'s work
 
 A real-time dashboard and control center for [OpenClaw](https://openclaw.ai) AI agent instances. Built with Next.js 16, React 19, and Tailwind CSS v4.
 
@@ -714,7 +714,7 @@ MIT — see [LICENSE](./LICENSE)
 
 ## Links
 
-- [SuperBotijo](https://github.com/boticlaw/SuperBotijo) — Original project
+- Built by [SabaTech](https://sabatech.dev)
 - [OpenClaw](https://openclaw.ai) — AI agent runtime
 - [OpenClaw Docs](https://docs.openclaw.ai)
 - [Discord Community](https://discord.com/invite/clawd)

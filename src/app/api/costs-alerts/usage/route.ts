@@ -63,7 +63,7 @@ export async function GET() {
       { agent: "coder", tokensIn: 98000, tokensOut: 52000, cost: 1.05, percentage: 30 },
       { agent: "research", tokensIn: 65000, tokensOut: 28000, cost: 0.65, percentage: 18 },
       { agent: "security", tokensIn: 42000, tokensOut: 18000, cost: 0.42, percentage: 12 },
-      { agent: "debug", tokensIn: 18000, tokensOut: 8000, cost: 0.18, percentage: 5 },
+      { agent: "devops", tokensIn: 18000, tokensOut: 8000, cost: 0.18, percentage: 5 },
     ];
 
     const totalCost = agentUsage.reduce((sum, a) => sum + a.cost, 0);

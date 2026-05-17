@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
     clearAttempts(ip);
 
     const ttlMs = 24 * 60 * 60 * 1000;
-    const token = await sessionStore.generateToken(ttlMs);
+    const token = await sessionStore.generateToken(ttlMs, { role: "admin" });
 
     const response = NextResponse.json({
       success: true,

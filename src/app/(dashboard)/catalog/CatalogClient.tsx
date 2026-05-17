@@ -1,66 +1,109 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   Package,
   ExternalLink,
   Globe,
-  FlaskConical,
   ChevronDown,
   ChevronUp,
   Sparkles,
   Check,
   TrendingUp,
-  DollarSign,
   Layers,
-  CircleDot,
+  RefreshCw,
+  Wifi,
+  WifiOff,
+  Clock,
 } from "lucide-react";
 import {
   CATEGORY_LABELS,
   CATEGORY_COLORS,
   STATUS_LABELS,
   STATUS_COLORS,
+  formatPrice,
   type ServiceProduct,
   type CatalogKPIs,
   type ServiceCategory,
+  type LandingCheckResult,
 } from "@/lib/catalog-types";
 
 interface CatalogData {
   services: ServiceProduct[];
   kpis: CatalogKPIs;
+  landingStatus: LandingCheckResult[];
+  _meta: { source: string; lastChecked: string | null };
 }
+
+const REFRESH_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
 
 export default function CatalogClient() {
   const [data, setData] = useState<CatalogData | null>(null);
   const [expanded, setExpanded] = useState<string | null>(null);
-  const [filterCategory, setFilterCategory] = useState<ServiceCategory | "all">("all");
+  const [filterCategory, setFilterCategory] = useState<
+    ServiceCategory | "all"
+  >("all");
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [lastRefresh, setLastRefresh] = useState<Date | null>(null);
 
-  useEffect(() => {
-    fetch("/api/catalog")
-      .then((r) => r.json())
-      .then((d) => setData(d))
-      .catch(console.error)
-      .finally(() => setLoading(false));
+  const fetchData = useCallback(async (showSpinner = false) => {
+    if (showSpinner) setRefreshing(true);
+    try {
+      const res = await fetch("/api/catalog");
+      const d = await res.json();
+      setData(d);
+      setLastRefresh(new Date());
+    } catch (err) {
+      console.error("Error loading catalog:", err);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
   }, []);
+
+  // Initial load
+  useEffect(() => {
+    fetchData(true);
+  }, [fetchData]);
+
+  // Auto-refresh every 5 min
+  useEffect(() => {
+    const interval = setInterval(() => fetchData(false), REFRESH_INTERVAL_MS);
+    return () => clearInterval(interval);
+  }, [fetchData]);
 
   if (loading) {
     return (
-      <div style={{ display: "flex", justifyContent: "center", padding: "60px" }}>
-        <div style={{ color: "var(--text-secondary)" }}>Cargando catálogo...</div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          padding: "60px",
+        }}
+      >
+        <div style={{ color: "var(--text-secondary)" }}>
+          Cargando catálogo...
+        </div>
       </div>
     );
   }
 
   if (!data) {
     return (
-      <div style={{ display: "flex", justifyContent: "center", padding: "60px" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          padding: "60px",
+        }}
+      >
         <div style={{ color: "var(--error)" }}>Error cargando catálogo</div>
       </div>
     );
   }
 
-  const { services, kpis } = data;
+  const { services, kpis, landingStatus } = data;
   const filtered =
     filterCategory === "all"
       ? services
@@ -93,6 +136,19 @@ export default function CatalogClient() {
     },
   ];
 
+  const statusIcon = (status: string) => {
+    switch (status) {
+      case "live":
+        return <Wifi style={{ width: 14, height: 14, color: "#10b981" }} />;
+      case "error":
+        return <WifiOff style={{ width: 14, height: 14, color: "#ef4444" }} />;
+      default:
+        return (
+          <Clock style={{ width: 14, height: 14, color: "#3b82f6" }} />
+        );
+    }
+  };
+
   return (
     <div>
       {/* Header */}
@@ -105,15 +161,115 @@ export default function CatalogClient() {
         }}
       >
         <div>
-          <h1 style={{ fontSize: "24px", fontWeight: 700, color: "var(--text-primary)", margin: 0 }}>
-            <Package style={{ display: "inline", marginRight: "8px", verticalAlign: "middle" }} />
+          <h1
+            style={{
+              fontSize: "24px",
+              fontWeight: 700,
+              color: "var(--text-primary)",
+              margin: 0,
+            }}
+          >
+            <Package
+              style={{
+                display: "inline",
+                marginRight: "8px",
+                verticalAlign: "middle",
+              }}
+            />
             Catálogo de Servicios
           </h1>
-          <p style={{ fontSize: "14px", color: "var(--text-secondary)", marginTop: "4px" }}>
-            Servicios SabaTech — Pricing, landings y estado
+          <p
+            style={{
+              fontSize: "14px",
+              color: "var(--text-secondary)",
+              marginTop: "4px",
+            }}
+          >
+            Servicios SabaTech — Pricing dinámico, landings y estado
           </p>
         </div>
+        <button
+          onClick={() => fetchData(true)}
+          disabled={refreshing}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "6px",
+            padding: "8px 14px",
+            borderRadius: "8px",
+            border: "1px solid var(--border)",
+            backgroundColor: "var(--surface-elevated)",
+            color: "var(--text-secondary)",
+            cursor: refreshing ? "wait" : "pointer",
+            fontSize: "13px",
+          }}
+        >
+          <RefreshCw
+            style={{
+              width: "14px",
+              height: "14px",
+              animation: refreshing ? "spin 1s linear infinite" : "none",
+            }}
+          />
+          {refreshing ? "Actualizando..." : "Refrescar"}
+        </button>
       </div>
+
+      {/* Landing Status Bar */}
+      {landingStatus && landingStatus.length > 0 && (
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: `repeat(auto-fit, minmax(180px, 1fr))`,
+            gap: "10px",
+            marginBottom: "20px",
+          }}
+        >
+          {landingStatus.map((ls) => (
+            <div
+              key={ls.id}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                padding: "10px 14px",
+                borderRadius: "8px",
+                border: "1px solid var(--border)",
+                backgroundColor: "var(--surface-elevated)",
+                fontSize: "13px",
+              }}
+            >
+              {statusIcon(ls.status)}
+              <span style={{ color: "var(--text-primary)", fontWeight: 500 }}>
+                {ls.label}
+              </span>
+              {ls.responseTimeMs != null && (
+                <span
+                  style={{
+                    marginLeft: "auto",
+                    fontSize: "11px",
+                    color: "var(--text-muted)",
+                  }}
+                >
+                  {ls.responseTimeMs}ms
+                </span>
+              )}
+              {ls.error && (
+                <span
+                  style={{
+                    fontSize: "10px",
+                    color: "#ef4444",
+                    marginLeft: "4px",
+                  }}
+                  title={ls.error}
+                >
+                  ✗
+                </span>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* KPIs */}
       <div
@@ -134,19 +290,63 @@ export default function CatalogClient() {
               padding: "16px",
             }}
           >
-            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
-              <kpi.icon style={{ width: "16px", height: "16px", color: kpi.color }} />
-              <span style={{ fontSize: "12px", color: "var(--text-secondary)" }}>{kpi.label}</span>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                marginBottom: "8px",
+              }}
+            >
+              <kpi.icon
+                style={{ width: "16px", height: "16px", color: kpi.color }}
+              />
+              <span
+                style={{ fontSize: "12px", color: "var(--text-secondary)" }}
+              >
+                {kpi.label}
+              </span>
             </div>
-            <div style={{ fontSize: "24px", fontWeight: 700, color: "var(--text-primary)" }}>
+            <div
+              style={{
+                fontSize: "24px",
+                fontWeight: 700,
+                color: "var(--text-primary)",
+              }}
+            >
               {kpi.value}
             </div>
           </div>
         ))}
       </div>
 
+      {/* Auto-refresh indicator */}
+      {lastRefresh && (
+        <div
+          style={{
+            fontSize: "11px",
+            color: "var(--text-muted)",
+            marginBottom: "12px",
+          }}
+        >
+          Última actualización:{" "}
+          {lastRefresh.toLocaleTimeString("es-ES", {
+            hour: "2-digit",
+            minute: "2-digit",
+          })}{" "}
+          · Auto-refresh cada 5 min
+        </div>
+      )}
+
       {/* Filter */}
-      <div style={{ display: "flex", gap: "8px", marginBottom: "20px", flexWrap: "wrap" }}>
+      <div
+        style={{
+          display: "flex",
+          gap: "8px",
+          marginBottom: "20px",
+          flexWrap: "wrap",
+        }}
+      >
         <button
           onClick={() => setFilterCategory("all")}
           style={{
@@ -155,9 +355,16 @@ export default function CatalogClient() {
             fontSize: "13px",
             fontWeight: filterCategory === "all" ? 600 : 400,
             border: "1px solid",
-            borderColor: filterCategory === "all" ? "var(--accent)" : "var(--border)",
-            backgroundColor: filterCategory === "all" ? "var(--accent-soft)" : "transparent",
-            color: filterCategory === "all" ? "var(--accent)" : "var(--text-secondary)",
+            borderColor:
+              filterCategory === "all" ? "var(--accent)" : "var(--border)",
+            backgroundColor:
+              filterCategory === "all"
+                ? "var(--accent-soft)"
+                : "transparent",
+            color:
+              filterCategory === "all"
+                ? "var(--accent)"
+                : "var(--text-secondary)",
             cursor: "pointer",
           }}
         >
@@ -173,10 +380,18 @@ export default function CatalogClient() {
               fontSize: "13px",
               fontWeight: filterCategory === cat ? 600 : 400,
               border: "1px solid",
-              borderColor: filterCategory === cat ? CATEGORY_COLORS[cat] : "var(--border)",
+              borderColor:
+                filterCategory === cat
+                  ? CATEGORY_COLORS[cat]
+                  : "var(--border)",
               backgroundColor:
-                filterCategory === cat ? `${CATEGORY_COLORS[cat]}20` : "transparent",
-              color: filterCategory === cat ? CATEGORY_COLORS[cat] : "var(--text-secondary)",
+                filterCategory === cat
+                  ? `${CATEGORY_COLORS[cat]}20`
+                  : "transparent",
+              color:
+                filterCategory === cat
+                  ? CATEGORY_COLORS[cat]
+                  : "var(--text-secondary)",
               cursor: "pointer",
             }}
           >
@@ -206,10 +421,19 @@ export default function CatalogClient() {
                 alignItems: "flex-start",
                 cursor: "pointer",
               }}
-              onClick={() => setExpanded(expanded === service.id ? null : service.id)}
+              onClick={() =>
+                setExpanded(expanded === service.id ? null : service.id)
+              }
             >
               <div style={{ flex: 1 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "6px" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "10px",
+                    marginBottom: "6px",
+                  }}
+                >
                   <div
                     style={{
                       width: "10px",
@@ -252,11 +476,24 @@ export default function CatalogClient() {
                 >
                   {service.name}
                 </h2>
-                <p style={{ fontSize: "14px", color: "var(--text-secondary)", margin: 0 }}>
+                <p
+                  style={{
+                    fontSize: "14px",
+                    color: "var(--text-secondary)",
+                    margin: 0,
+                  }}
+                >
                   {service.tagline}
                 </p>
                 {/* Tier pills */}
-                <div style={{ display: "flex", gap: "8px", marginTop: "10px", flexWrap: "wrap" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    gap: "8px",
+                    marginTop: "10px",
+                    flexWrap: "wrap",
+                  }}
+                >
                   {service.tiers.map((tier) => (
                     <span
                       key={tier.name}
@@ -267,17 +504,30 @@ export default function CatalogClient() {
                         backgroundColor: tier.highlight
                           ? "var(--accent-soft)"
                           : "var(--surface)",
-                        color: tier.highlight ? "var(--accent)" : "var(--text-secondary)",
+                        color: tier.highlight
+                          ? "var(--accent)"
+                          : "var(--text-secondary)",
                         fontWeight: tier.highlight ? 600 : 400,
-                        border: tier.highlight ? "1px solid var(--accent)" : "1px solid var(--border)",
+                        border: tier.highlight
+                          ? "1px solid var(--accent)"
+                          : "1px solid var(--border)",
                       }}
                     >
-                      {tier.name} — {tier.price}{tier.priceDetail !== "pago único" ? tier.priceDetail : ""}
+                      {tier.name} — {formatPrice(tier.price)}
+                      {tier.priceDetail !== "pago único"
+                        ? tier.priceDetail
+                        : ""}
                     </span>
                   ))}
                 </div>
               </div>
-              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                }}
+              >
                 {service.landingUrl && (
                   <a
                     href={service.landingUrl}
@@ -296,14 +546,28 @@ export default function CatalogClient() {
                       backgroundColor: "var(--accent-soft)",
                     }}
                   >
-                    <Globe style={{ width: "14px", height: "14px" }} />
+                    <Globe
+                      style={{ width: "14px", height: "14px" }}
+                    />
                     Landing
                   </a>
                 )}
                 {expanded === service.id ? (
-                  <ChevronUp style={{ width: "20px", height: "20px", color: "var(--text-muted)" }} />
+                  <ChevronUp
+                    style={{
+                      width: "20px",
+                      height: "20px",
+                      color: "var(--text-muted)",
+                    }}
+                  />
                 ) : (
-                  <ChevronDown style={{ width: "20px", height: "20px", color: "var(--text-muted)" }} />
+                  <ChevronDown
+                    style={{
+                      width: "20px",
+                      height: "20px",
+                      color: "var(--text-muted)",
+                    }}
+                  />
                 )}
               </div>
             </div>
@@ -327,8 +591,15 @@ export default function CatalogClient() {
                   {service.description}
                 </p>
 
-                {service.frameworks && (
-                  <div style={{ display: "flex", gap: "6px", marginBottom: "16px", flexWrap: "wrap" }}>
+                {service.frameworks && service.frameworks.length > 0 && (
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: "6px",
+                      marginBottom: "16px",
+                      flexWrap: "wrap",
+                    }}
+                  >
                     {service.frameworks.map((fw) => (
                       <span
                         key={fw}
@@ -348,7 +619,13 @@ export default function CatalogClient() {
                 )}
 
                 {service.targetMarket && (
-                  <p style={{ fontSize: "12px", color: "var(--text-muted)", marginBottom: "16px" }}>
+                  <p
+                    style={{
+                      fontSize: "12px",
+                      color: "var(--text-muted)",
+                      marginBottom: "16px",
+                    }}
+                  >
                     🎯 Target: {service.targetMarket}
                   </p>
                 )}
@@ -357,7 +634,8 @@ export default function CatalogClient() {
                 <div
                   style={{
                     display: "grid",
-                    gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+                    gridTemplateColumns:
+                      "repeat(auto-fit, minmax(240px, 1fr))",
                     gap: "12px",
                   }}
                 >
@@ -370,7 +648,9 @@ export default function CatalogClient() {
                         border: tier.highlight
                           ? "2px solid var(--accent)"
                           : "1px solid var(--border)",
-                        backgroundColor: tier.highlight ? "var(--accent-soft)" : "var(--surface)",
+                        backgroundColor: tier.highlight
+                          ? "var(--accent-soft)"
+                          : "var(--surface)",
                       }}
                     >
                       <div
@@ -411,7 +691,7 @@ export default function CatalogClient() {
                             color: "var(--text-primary)",
                           }}
                         >
-                          {tier.price}
+                          {formatPrice(tier.price)}
                         </span>
                         <span
                           style={{
@@ -432,7 +712,13 @@ export default function CatalogClient() {
                       >
                         {tier.description}
                       </p>
-                      <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+                      <ul
+                        style={{
+                          listStyle: "none",
+                          padding: 0,
+                          margin: 0,
+                        }}
+                      >
                         {tier.features.map((f) => (
                           <li
                             key={f}
@@ -466,6 +752,14 @@ export default function CatalogClient() {
           </div>
         ))}
       </div>
+
+      {/* CSS for spinner animation */}
+      <style>{`
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   );
 }

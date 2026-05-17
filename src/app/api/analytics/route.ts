@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { format, subDays } from "date-fns";
-import Database from "better-sqlite3";
+import Database from "@/lib/sqlite-wrapper";
 import path from "path";
 import { promises as fs } from "fs";
 

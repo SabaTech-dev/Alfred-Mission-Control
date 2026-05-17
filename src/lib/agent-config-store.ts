@@ -4,7 +4,7 @@
  */
 import "server-only";
 
-import Database from "better-sqlite3";
+import Database from "@/lib/sqlite-wrapper";
 import path from "path";
 import fs from "fs";
 
@@ -42,9 +42,9 @@ export const DEFAULT_CONFIG: Omit<AgentConfig, "agentId" | "updatedAt"> = {
   skills: [],
 };
 
-let _db: Database.Database | null = null;
+let _db: Database | null = null;
 
-function getDb(): Database.Database {
+function getDb(): Database {
   if (_db) return _db;
 
   const dataDir = path.dirname(DB_PATH);

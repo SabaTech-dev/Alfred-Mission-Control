@@ -18,6 +18,23 @@ import {
   MessagesSquare,
   Briefcase,
   Package,
+  GraduationCap,
+  FileBarChart,
+  Sun,
+  ScrollText,
+  AlertTriangle,
+  Wrench,
+  Gauge,
+  Bell,
+  ArrowLeftRight,
+  Bot,
+  Radio,
+  GitBranch,
+  FolderKanban,
+  CalendarDays,
+  Clock,
+  BookOpen,
+  FileText,
 } from "lucide-react";
 
 interface DockItem {
@@ -27,21 +44,75 @@ interface DockItem {
   icon: typeof Home;
 }
 
-function DockItems(): DockItem[] {
+interface DockSection {
+  key: string;
+  items: DockItem[];
+}
+
+function DockSections(): DockSection[] {
   return [
-    { href: "/", labelKey: "dock.dashboard", helpKey: "help.dashboard", icon: Home },
-    { href: "/agents", labelKey: "dock.agents", helpKey: "help.agents", icon: Users },
-    { href: "/office", labelKey: "dock.office", helpKey: "help.office", icon: Box },
-    { href: "/kanban", labelKey: "dock.kanban", helpKey: "help.kanban", icon: LayoutGrid },
-    { href: "/chat", labelKey: "dock.chat", helpKey: "help.chat", icon: MessagesSquare },
-    { href: "/memory", labelKey: "dock.memory", helpKey: "help.memory", icon: Brain },
-    { href: "/files", labelKey: "dock.files", helpKey: "help.files", icon: FolderOpen },
-    { href: "/pipeline", labelKey: "dock.pipeline", helpKey: "help.pipeline", icon: Briefcase },
-    { href: "/catalog", labelKey: "dock.catalog", helpKey: "help.catalog", icon: Package },
-    { href: "/analytics", labelKey: "dock.analytics", helpKey: "help.analytics", icon: DollarSign },
-    { href: "/terminal", labelKey: "dock.terminal", helpKey: "help.terminal", icon: SquareTerminal },
-    { href: "/system", labelKey: "dock.system", helpKey: "help.system", icon: Server },
-    { href: "/settings", labelKey: "dock.settings", helpKey: "help.settings", icon: Settings },
+    {
+      key: "core",
+      items: [
+        { href: "/", labelKey: "dock.dashboard", helpKey: "help.dashboard", icon: Home },
+        { href: "/agents", labelKey: "dock.agents", helpKey: "help.agents", icon: Users },
+        { href: "/kanban", labelKey: "dock.kanban", helpKey: "help.kanban", icon: LayoutGrid },
+        { href: "/chat", labelKey: "dock.chat", helpKey: "help.chat", icon: MessagesSquare },
+      ],
+    },
+    {
+      key: "operations",
+      items: [
+        { href: "/activity", labelKey: "dock.activity", helpKey: "help.activity", icon: Box },
+        { href: "/cron", labelKey: "dock.cron", helpKey: "help.cron", icon: Clock },
+        { href: "/journal", labelKey: "dock.journal", helpKey: "help.journal", icon: BookOpen },
+        { href: "/notepad", labelKey: "dock.notepad", helpKey: "help.notepad", icon: FileText },
+        { href: "/sessions", labelKey: "dock.sessions", helpKey: "help.sessions", icon: Users },
+        { href: "/wiki", labelKey: "dock.wiki", helpKey: "help.wiki", icon: BookOpen },
+        { href: "/workflows", labelKey: "dock.workflows", helpKey: "help.workflows", icon: LayoutGrid },
+      ],
+    },
+    {
+      key: "intelligence",
+      items: [
+        { href: "/memory", labelKey: "dock.memory", helpKey: "help.memory", icon: Brain },
+        { href: "/learning", labelKey: "dock.learning", helpKey: "help.learning", icon: GraduationCap },
+        { href: "/reports", labelKey: "dock.reports", helpKey: "help.reports", icon: FileBarChart },
+        { href: "/morning", labelKey: "dock.morning", helpKey: "help.morning", icon: Sun },
+        { href: "/pipeline", labelKey: "dock.pipeline", helpKey: "help.pipeline", icon: Briefcase },
+        { href: "/catalog", labelKey: "dock.catalog", helpKey: "help.catalog", icon: Package },
+      ],
+    },
+    {
+      key: "system",
+      items: [
+        { href: "/logs", labelKey: "dock.logs", helpKey: "help.logs", icon: ScrollText },
+        { href: "/performance", labelKey: "dock.performance", helpKey: "help.performance", icon: Gauge },
+        { href: "/notifications", labelKey: "dock.notifications", helpKey: "help.notifications", icon: Bell },
+        { href: "/skills", labelKey: "dock.skills", helpKey: "help.skills", icon: Wrench },
+        { href: "/analytics", labelKey: "dock.analytics", helpKey: "help.analytics", icon: DollarSign },
+        { href: "/costs-alerts", labelKey: "dock.costsAlerts", helpKey: "help.costsAlerts", icon: AlertTriangle },
+        { href: "/calendar", labelKey: "dock.calendar", helpKey: "help.calendar", icon: CalendarDays },
+        { href: "/system", labelKey: "dock.system", helpKey: "help.system", icon: Server },
+        { href: "/settings", labelKey: "dock.settings", helpKey: "help.settings", icon: Settings },
+      ],
+    },
+    {
+      key: "agents",
+      items: [
+        { href: "/live", labelKey: "dock.live", helpKey: "help.live", icon: Radio },
+        { href: "/subagents", labelKey: "dock.subagents", helpKey: "help.subagents", icon: Bot },
+        { href: "/git", labelKey: "dock.git", helpKey: "help.git", icon: GitBranch },
+      ],
+    },
+    {
+      key: "personal",
+      items: [
+        { href: "/office", labelKey: "dock.office", helpKey: "help.office", icon: Briefcase },
+        { href: "/calendar", labelKey: "dock.calendar", helpKey: "help.calendar", icon: CalendarDays },
+        { href: "/costs-alerts", labelKey: "dock.costsAlerts", helpKey: "help.costsAlerts", icon: AlertTriangle },
+      ],
+    },
   ];
 }
 
@@ -133,7 +204,7 @@ export function Dock() {
   const pathname = usePathname();
   const router = useRouter();
   const { t } = useI18n();
-  const dockItems = DockItems();
+  const sections = DockSections();
 
   const handleLogout = async () => {
     await fetch("/api/auth/logout", { method: "POST" });
@@ -156,81 +227,98 @@ export function Dock() {
         flexDirection: "column",
         alignItems: "center",
         padding: "12px 6px",
-        gap: "4px",
+        gap: "2px",
         zIndex: 50,
         overflowY: "auto",
+        overflowX: "hidden",
       }}
     >
-      {dockItems.map((item) => {
-        const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
-        const Icon = item.icon;
-        const title = t(`${item.helpKey}.title`);
-        const description = t(`${item.helpKey}.description`);
-
-        return (
-          <Link
-            key={item.href}
-            href={item.href}
-            className="dock-item group relative"
-            style={{
-              width: "56px",
-              height: "56px",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "4px",
-              borderRadius: "8px",
-              backgroundColor: isActive ? "var(--accent-soft)" : "transparent",
-              transition: "all 150ms ease",
-              position: "relative",
-              textDecoration: "none",
-              flexShrink: 0,
-            }}
-            onMouseEnter={(e) => {
-              if (!isActive) {
-                e.currentTarget.style.backgroundColor = "var(--surface-hover)";
-              }
-              const tooltip = e.currentTarget.querySelector(".dock-tooltip") as HTMLElement;
-              if (tooltip) tooltip.style.opacity = "1";
-            }}
-            onMouseLeave={(e) => {
-              if (!isActive) {
-                e.currentTarget.style.backgroundColor = "transparent";
-              }
-              const tooltip = e.currentTarget.querySelector(".dock-tooltip") as HTMLElement;
-              if (tooltip) tooltip.style.opacity = "0";
-            }}
-          >
-            <Icon
+      {sections.map((section, sectionIdx) => (
+        <div key={section.key} style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center", gap: "2px" }}>
+          {sectionIdx > 0 && (
+            <div
               style={{
-                width: "22px",
-                height: "22px",
-                color: isActive ? "var(--accent)" : "var(--text-secondary)",
-                strokeWidth: isActive ? 2.5 : 2,
+                width: "32px",
+                height: "1px",
+                backgroundColor: "var(--border)",
+                margin: "4px 0",
+                flexShrink: 0,
               }}
             />
+          )}
+          {section.items.map((item) => {
+            const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
+            const Icon = item.icon;
+            const title = t(`${item.helpKey}.title`);
+            const description = t(`${item.helpKey}.description`);
 
-            <span
-              style={{
-                fontFamily: "var(--font-body)",
-                fontSize: "9px",
-                fontWeight: isActive ? 600 : 500,
-                color: isActive ? "var(--accent)" : "var(--text-muted)",
-                textAlign: "center",
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                maxWidth: "52px",
-              }}
-            >
-              {t(item.labelKey).split(" ")[0]}
-            </span>
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="dock-item group relative"
+                style={{
+                  width: "56px",
+                  height: "48px",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "2px",
+                  borderRadius: "8px",
+                  backgroundColor: isActive ? "var(--accent-soft)" : "transparent",
+                  transition: "all 150ms ease",
+                  position: "relative",
+                  textDecoration: "none",
+                  flexShrink: 0,
+                }}
+                onMouseEnter={(e) => {
+                  if (!isActive) {
+                    e.currentTarget.style.backgroundColor = "var(--surface-hover)";
+                  }
+                  const tooltip = e.currentTarget.querySelector(".dock-tooltip") as HTMLElement;
+                  if (tooltip) tooltip.style.opacity = "1";
+                }}
+                onMouseLeave={(e) => {
+                  if (!isActive) {
+                    e.currentTarget.style.backgroundColor = "transparent";
+                  }
+                  const tooltip = e.currentTarget.querySelector(".dock-tooltip") as HTMLElement;
+                  if (tooltip) tooltip.style.opacity = "0";
+                }}
+              >
+                <Icon
+                  style={{
+                    width: "20px",
+                    height: "20px",
+                    color: isActive ? "var(--accent)" : "var(--text-secondary)",
+                    strokeWidth: isActive ? 2.5 : 2,
+                  }}
+                />
 
-            <DockItemTooltip title={title} description={description} isActive={isActive} />
-          </Link>
-        );
-      })}
+                <span
+                  style={{
+                    fontFamily: "var(--font-body)",
+                    fontSize: "8px",
+                    fontWeight: isActive ? 600 : 500,
+                    color: isActive ? "var(--accent)" : "var(--text-muted)",
+                    textAlign: "center",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    maxWidth: "52px",
+                    lineHeight: "1",
+                  }}
+                >
+                  {t(item.labelKey).split(" ")[0]}
+                </span>
+
+                <DockItemTooltip title={title} description={description} isActive={isActive} />
+              </Link>
+            );
+          })}
+        </div>
+      ))}
 
       <button
         type="button"
@@ -242,7 +330,7 @@ export function Dock() {
         style={{
           marginTop: "auto",
           width: "56px",
-          height: "56px",
+          height: "48px",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -261,7 +349,7 @@ export function Dock() {
           e.currentTarget.style.color = "var(--text-secondary)";
         }}
       >
-        <LogOut style={{ width: "22px", height: "22px" }} />
+        <LogOut style={{ width: "20px", height: "20px" }} />
         <span
           className="absolute left-[72px] top-1/2 -translate-y-1/2 px-3 py-2 rounded-lg text-sm whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50"
           style={{

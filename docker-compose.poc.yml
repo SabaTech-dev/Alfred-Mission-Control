@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./data:/app/data
+      - ./alfred-mission-control.db:/app/alfred-mission-control.db
+      - ./kanban.db:/app/kanban.db
+    restart: unless-stopped
+    networks:
+      - coolify
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.middlewares.gzip.compress=true"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      - "traefik.http.routers.amc-http.entryPoints=http"
+      - "traefik.http.routers.amc-http.middlewares=redirect-to-https"
+      - "traefik.http.routers.amc-http.rule=Host(`orquestacion.sabatech.dev`)"
+      - "traefik.http.routers.amc-http.service=amc-http"
+      - "traefik.http.routers.amc-https.entryPoints=https"
+      - "traefik.http.routers.amc-https.middlewares=gzip"
+      - "traefik.http.routers.amc-https.rule=Host(`orquestacion.sabatech.dev`)"
+      - "traefik.http.routers.amc-https.service=amc-https"
+      - "traefik.http.routers.amc-https.tls=true"
+      - "traefik.http.routers.amc-https.tls.certresolver=letsencrypt"
+      - "traefik.http.services.amc-http.loadbalancer.server.port=3001"
+      - "traefik.http.services.amc-https.loadbalancer.server.port=3001"
+      - "coolify.managed=true"
+
+networks:
+  coolify:
+    external: true

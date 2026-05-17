@@ -1,11 +1,33 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { FileBarChart, FileText, RefreshCw, Clock, HardDrive, Download, Share2, Plus, Loader2 } from "lucide-react";
+import {
+  FileBarChart, FileText, RefreshCw, Clock, HardDrive, Download, Share2, Plus,
+  Loader2, Search, Filter, FolderOpen, Folder, Calendar, CalendarDays, Newspaper
+} from "lucide-react";
 import { MarkdownPreview } from "@/components/MarkdownPreview";
 import { useToast } from "@/components/Toast";
 import { useI18n } from "@/i18n/provider";
-import type { ReportItem } from "@/operations/reports-ops";
+import CierreDelDiaView from "./CierreDelDiaView";
+import AiSocialDigestView from "./AiSocialDigestView";
+
+interface ReportFile {
+  name: string;
+  path: string;
+  title: string;
+  category: string;
+  sub: string;
+  type: string;
+  size: number;
+  modified: string;
+  created: string;
+}
+
+interface ReportStats {
+  total: number;
+  byCategory: { central: number; cron: number };
+  byType: Record<string, number>;
+}
 
 function formatSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
@@ -16,160 +38,182 @@ function formatSize(bytes: number): string {
 function formatDate(iso: string): string {
   const d = new Date(iso);
   return d.toLocaleDateString(undefined, {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
+    day: "numeric", month: "short", year: "numeric",
+    hour: "2-digit", minute: "2-digit",
   });
 }
 
-export default function ReportsClient({ initialReports }: { initialReports: ReportItem[] }) {
-  const [reports, setReports] = useState<ReportItem[]>(initialReports);
+const TYPE_LABELS: Record<string, string> = {
+  "active": "Active",
+  "archive": "Archive",
+  "ai-digest": "AI Digest",
+  "daily-close": "Daily Close",
+  "evening-agenda": "Evening Agenda",
+  "log-rotation": "Log Rotation",
+  "nocturnal": "Nocturnal",
+  "morning-summary": "Morning Summary",
+  "learning": "Learning",
+  "self-improvement": "Self-Improvement",
+  "pdca": "PDCA",
+  "security": "Security",
+  "performance": "Performance",
+  "report": "Report",
+};
+
+const CATEGORY_ICONS: Record<string, typeof FolderOpen> = {
+  central: FolderOpen,
+  cron: Calendar,
+};
+
+export default function ReportsClient() {
+  const [activeTab, setActiveTab] = useState<"all" | "cierre" | "ai-social">("all");
+  const [reports, setReports] = useState<ReportFile[]>([]);
+  const [stats, setStats] = useState<ReportStats | null>(null);
   const [selectedPath, setSelectedPath] = useState<string | null>(null);
   const [content, setContent] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingContent, setIsLoadingContent] = useState(false);
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [sharingId, setSharingId] = useState<string | null>(null);
-  const shareControllerRef = useRef<AbortController | null>(null);
-  const reportsControllerRef = useRef<AbortController | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterCategory, setFilterCategory] = useState<string>("all");
+  const [filterType, setFilterType] = useState<string>("all");
+  const [showFilters, setShowFilters] = useState(false);
   const contentControllerRef = useRef<AbortController | null>(null);
   const { t } = useI18n();
-  const { showSuccess, showError } = useToast();
+  const { showError, showSuccess } = useToast();
 
   const loadReports = useCallback(async () => {
-    reportsControllerRef.current?.abort();
-    const controller = new AbortController();
-    reportsControllerRef.current = controller;
     try {
       setIsLoading(true);
-      const res = await fetch("/api/reports", { signal: controller.signal });
-      if (!res.ok) throw new Error(t("reports.page.errors.loadReports"));
+      const params = new URLSearchParams();
+      if (filterCategory !== "all") params.set("category", filterCategory);
+      if (filterType !== "all") params.set("type", filterType);
+      if (searchQuery) params.set("search", searchQuery);
+      const res = await fetch(`/api/reports/files?${params}`);
+      if (!res.ok) throw new Error("Failed to load");
       const data = await res.json();
-      setReports(data);
+      setReports(data.reports);
+      setStats(data.stats);
     } catch (err) {
-      if (err instanceof Error && err.name === "AbortError") return;
       console.error(err);
-      showError(t("reports.page.errors.loadReports"));
+      showError("Failed to load reports");
     } finally {
       setIsLoading(false);
-      if (reportsControllerRef.current === controller) {
-        reportsControllerRef.current = null;
-      }
     }
-  }, [showError, t]);
+  }, [filterCategory, filterType, searchQuery, showError]);
 
-  const loadContent = useCallback(async (path: string) => {
+  const loadContent = useCallback(async (filePath: string) => {
     contentControllerRef.current?.abort();
     const controller = new AbortController();
     contentControllerRef.current = controller;
     try {
       setIsLoadingContent(true);
-      const res = await fetch(`/api/reports?path=${encodeURIComponent(path)}`, { signal: controller.signal });
-      if (!res.ok) throw new Error(t("reports.page.errors.loadReport"));
+      const res = await fetch(
+        `/api/reports/files?path=${encodeURIComponent(filePath)}`,
+        { signal: controller.signal }
+      );
+      if (!res.ok) throw new Error("Failed to load content");
       const data = await res.json();
       setContent(data.content);
     } catch (err) {
       if (err instanceof Error && err.name === "AbortError") return;
       console.error(err);
-      setContent(`# ${t("reports.page.preview.errorTitle")}\n\n${t("reports.page.errors.loadReportContent")}`);
+      setContent("# Error\n\nFailed to load report content.");
     } finally {
       setIsLoadingContent(false);
-      if (contentControllerRef.current === controller) {
-        contentControllerRef.current = null;
-      }
     }
-  }, [t]);
+  }, []);
 
   const handleSelect = useCallback(
-    (report: ReportItem) => {
+    (report: ReportFile) => {
       setSelectedPath(report.path);
       loadContent(report.path);
     },
     [loadContent]
   );
 
-  const handleGenerate = useCallback(
-    async (type: "weekly" | "monthly") => {
-      setIsGenerating(true);
-      try {
-        const now = new Date();
-        const name = `${type}-report-${now.toISOString().split("T")[0]}`;
-        const res = await fetch("/api/reports/generated", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name, type, period: type }),
-        });
-        if (res.ok) {
-          showSuccess(t("reports.page.toast.generated", { type: t(`reports.page.period.${type}`) }));
-          loadReports();
-        } else {
-          showError(t("reports.page.errors.generate"));
-        }
-      } catch (err) {
-        console.error(err);
-        showError(t("reports.page.errors.generate"));
-      } finally {
-        setIsGenerating(false);
-      }
-    },
-    [loadReports, showError, showSuccess, t]
-  );
+  const handleDownload = useCallback((report: ReportFile) => {
+    const blob = new Blob([content], { type: "text/markdown" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = report.name;
+    a.click();
+    URL.revokeObjectURL(url);
+  }, [content]);
 
-  const handleExport = useCallback((reportPath: string) => {
-    const id = reportPath.split("/").pop()?.replace(".md", "") || reportPath;
-    window.open(`/api/reports/${id}/pdf`, "_blank");
-  }, []);
-
-  const handleShare = useCallback(
-    async (reportPath: string) => {
-      const id = reportPath.split("/").pop()?.replace(".md", "") || reportPath;
-      setSharingId(id);
-      shareControllerRef.current?.abort();
-      const controller = new AbortController();
-      shareControllerRef.current = controller;
-      try {
-        const res = await fetch(`/api/reports/${id}/share`, { method: "POST", signal: controller.signal });
-        if (res.ok) {
-          const data = await res.json();
-          await navigator.clipboard.writeText(data.shareUrl);
-          showSuccess(t("reports.page.toast.linkCopied"));
-        } else {
-          showError(t("reports.page.errors.share"));
-        }
-      } catch (err) {
-        if (err instanceof Error && err.name === "AbortError") return;
-        console.error(err);
-        showError(t("reports.page.errors.share"));
-      } finally {
-        if (shareControllerRef.current === controller) {
-          shareControllerRef.current = null;
-        }
-        setSharingId(null);
-      }
-    },
-    [showError, showSuccess, t]
-  );
+  useEffect(() => {
+    loadReports();
+  }, [loadReports]);
 
   useEffect(() => {
     return () => {
-      reportsControllerRef.current?.abort();
       contentControllerRef.current?.abort();
-      shareControllerRef.current?.abort();
     };
   }, []);
 
-  useEffect(() => {
-    if (reports.length > 0 && !selectedPath) {
-      handleSelect(reports[0]);
-    }
-  }, [reports, selectedPath, handleSelect]);
+  const selectedReport = reports.find((r) => r.path === selectedPath);
+  const availableTypes = stats?.byType ? Object.keys(stats.byType) : [];
+
+  const tabs = [
+    { key: "all" as const, label: "All Reports", icon: FileBarChart },
+    { key: "cierre" as const, label: "Cierre & Agenda", icon: CalendarDays },
+    { key: "ai-social" as const, label: "AI & Social Digest", icon: Newspaper },
+  ];
+
+  const tabBar = (
+    <div
+      className="flex items-center gap-1 px-3 pt-2 flex-shrink-0"
+      style={{ backgroundColor: "var(--card)", borderBottom: "1px solid var(--border)" }}
+    >
+      {tabs.map((tab) => {
+        const isActive = activeTab === tab.key;
+        return (
+          <button
+            key={tab.key}
+            onClick={() => setActiveTab(tab.key)}
+            className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium transition-all"
+            style={{
+              color: isActive ? "var(--accent)" : "var(--text-secondary)",
+              borderBottom: isActive ? "2px solid var(--accent)" : "2px solid transparent",
+            }}
+          >
+            <tab.icon className="w-4 h-4" />
+            {tab.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+
+  // If a dedicated view tab is active
+  if (activeTab === "cierre") {
+    return (
+      <div className="h-screen flex flex-col">
+        {tabBar}
+        <div className="flex-1 min-h-0">
+          <CierreDelDiaView />
+        </div>
+      </div>
+    );
+  }
+
+  if (activeTab === "ai-social") {
+    return (
+      <div className="h-screen flex flex-col">
+        {tabBar}
+        <div className="flex-1 min-h-0">
+          <AiSocialDigestView />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-screen flex flex-col">
+      {tabBar}
+      {/* Header */}
       <div
-        className="flex items-center justify-between p-3 md:p-4"
+        className="flex items-center justify-between p-3 md:p-4 flex-shrink-0"
         style={{
           backgroundColor: "var(--card)",
           borderBottom: "1px solid var(--border)",
@@ -180,63 +224,102 @@ export default function ReportsClient({ initialReports }: { initialReports: Repo
           <div>
             <h1
               className="text-lg md:text-xl font-bold"
-              style={{
-                color: "var(--text-primary)",
-                fontFamily: "var(--font-heading)",
-              }}
+              style={{ color: "var(--text-primary)", fontFamily: "var(--font-heading)" }}
             >
               {t("reports.page.title")}
             </h1>
             <p className="text-xs md:text-sm hidden sm:block" style={{ color: "var(--text-secondary)" }}>
-              {t("reports.page.subtitle")}
+              {stats
+                ? `${stats.total} reports · ${stats.byCategory.central} central · ${stats.byCategory.cron} cron`
+                : t("common.loading")}
             </p>
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <div className="hidden sm:flex items-center gap-2">
-            <button
-              onClick={() => handleGenerate("weekly")}
-              disabled={isGenerating}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all"
-              style={{
-                backgroundColor: "var(--accent)",
-                color: "white",
-                opacity: isGenerating ? 0.5 : 1,
-              }}
-            >
-              {isGenerating ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                <Plus className="w-4 h-4" />
-              )}
-              {t("reports.page.period.weekly")}
-            </button>
-            <button
-              onClick={() => handleGenerate("monthly")}
-              disabled={isGenerating}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all"
-              style={{
-                backgroundColor: "var(--card-elevated)",
-                border: "1px solid var(--border)",
-                color: "var(--text-primary)",
-              }}
-            >
-              {t("reports.page.period.monthly")}
-            </button>
-          </div>
           <button
-            onClick={loadReports}
+            onClick={() => setShowFilters(!showFilters)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all"
+            style={{
+              backgroundColor: showFilters ? "var(--accent)" : "var(--card-elevated)",
+              border: "1px solid var(--border)",
+              color: showFilters ? "white" : "var(--text-primary)",
+            }}
+          >
+            <Filter className="w-4 h-4" />
+            <span className="hidden sm:inline">Filters</span>
+          </button>
+          <button
+            onClick={() => { setSearchQuery(""); setFilterCategory("all"); setFilterType("all"); }}
             className="p-2 rounded-lg transition-colors hover:opacity-80"
             style={{ color: "var(--text-secondary)" }}
-            title={t("reports.page.actions.refresh")}
-            aria-label={t("reports.page.actions.refresh")}
+            title="Reset filters"
           >
-            <RefreshCw className="w-5 h-5" />
+            <RefreshCw className="w-4 h-4" />
           </button>
         </div>
       </div>
 
+      {/* Filters bar */}
+      {showFilters && (
+        <div
+          className="flex flex-wrap items-center gap-2 p-3 flex-shrink-0"
+          style={{ backgroundColor: "var(--card)", borderBottom: "1px solid var(--border)" }}
+        >
+          {/* Search */}
+          <div className="relative flex-1 min-w-[200px]">
+            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "var(--text-muted)" }} />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search reports..."
+              className="w-full pl-8 pr-3 py-1.5 rounded-lg text-sm"
+              style={{
+                backgroundColor: "var(--background)",
+                border: "1px solid var(--border)",
+                color: "var(--text-primary)",
+              }}
+            />
+          </div>
+          {/* Category filter */}
+          <select
+            value={filterCategory}
+            onChange={(e) => setFilterCategory(e.target.value)}
+            className="px-3 py-1.5 rounded-lg text-sm"
+            style={{
+              backgroundColor: "var(--background)",
+              border: "1px solid var(--border)",
+              color: "var(--text-primary)",
+            }}
+          >
+            <option value="all">All Categories</option>
+            <option value="central">Central</option>
+            <option value="cron">Cron</option>
+          </select>
+          {/* Type filter */}
+          <select
+            value={filterType}
+            onChange={(e) => setFilterType(e.target.value)}
+            className="px-3 py-1.5 rounded-lg text-sm"
+            style={{
+              backgroundColor: "var(--background)",
+              border: "1px solid var(--border)",
+              color: "var(--text-primary)",
+            }}
+          >
+            <option value="all">All Types</option>
+            {availableTypes.map((type) => (
+              <option key={type} value={type}>
+                {TYPE_LABELS[type] || type} ({stats?.byType[type] || 0})
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+
+      {/* Main content */}
       <div className="flex-1 flex flex-col md:flex-row min-h-0">
+        {/* Report list */}
         <div
           className="w-full md:w-80 lg:w-96 overflow-y-auto flex-shrink-0"
           style={{
@@ -246,68 +329,55 @@ export default function ReportsClient({ initialReports }: { initialReports: Repo
           }}
         >
           <div className="p-3" style={{ borderBottom: "1px solid var(--border)" }}>
-            <h2
-              className="text-sm font-semibold uppercase tracking-wide"
-              style={{ color: "var(--text-secondary)" }}
-            >
-              {isLoading ? t("common.loading") : t("reports.page.count", { count: reports.length })}
+            <h2 className="text-sm font-semibold uppercase tracking-wide" style={{ color: "var(--text-secondary)" }}>
+              {isLoading ? t("common.loading") : `${reports.length} Reports`}
             </h2>
           </div>
 
           {!isLoading && reports.length === 0 && (
             <div className="p-6 text-center" style={{ color: "var(--text-muted)" }}>
               <FileBarChart className="w-12 h-12 mx-auto mb-3 opacity-30" />
-              <p>{t("reports.page.empty.title")}</p>
-              <p className="text-xs mt-1">{t("reports.page.empty.hint")}</p>
+              <p>No reports found</p>
+              <p className="text-xs mt-1">Try adjusting your filters</p>
             </div>
           )}
 
-          <div className="p-2 space-y-2">
-            {reports.map((report) => (
-              <div key={report.path} className="relative">
+          <div className="p-2 space-y-1">
+            {reports.map((report) => {
+              const isSelected = selectedPath === report.path;
+              const CatIcon = CATEGORY_ICONS[report.category] || Folder;
+              return (
                 <button
+                  key={report.path}
                   onClick={() => handleSelect(report)}
                   className="w-full text-left rounded-lg p-3 transition-all"
                   style={{
-                    backgroundColor:
-                      selectedPath === report.path ? "var(--accent)" : "var(--card-elevated, var(--background))",
-                    border: `1px solid ${selectedPath === report.path ? "var(--accent)" : "var(--border)"}`,
+                    backgroundColor: isSelected ? "var(--accent)" : "transparent",
+                    border: `1px solid ${isSelected ? "var(--accent)" : "transparent"}`,
                     cursor: "pointer",
-                    paddingRight: "70px",
                   }}
                   onMouseEnter={(e) => {
-                    if (selectedPath !== report.path) {
-                      e.currentTarget.style.borderColor = "var(--accent)";
-                    }
+                    if (!isSelected) e.currentTarget.style.backgroundColor = "var(--card-elevated, var(--background))";
                   }}
                   onMouseLeave={(e) => {
-                    if (selectedPath !== report.path) {
-                      e.currentTarget.style.borderColor = "var(--border)";
-                    }
+                    if (!isSelected) e.currentTarget.style.backgroundColor = "transparent";
                   }}
                 >
-                  <div className="flex items-start gap-3">
-                    <FileText
-                      className="w-5 h-5 mt-0.5 flex-shrink-0"
-                      style={{
-                        color: selectedPath === report.path ? "var(--text-primary)" : "var(--accent)",
-                      }}
+                  <div className="flex items-start gap-2">
+                    <CatIcon
+                      className="w-4 h-4 mt-0.5 flex-shrink-0"
+                      style={{ color: isSelected ? "white" : "var(--accent)" }}
                     />
                     <div className="min-w-0 flex-1">
                       <p
                         className="font-medium text-sm truncate"
-                        style={{
-                          color: "var(--text-primary)",
-                        }}
+                        style={{ color: "var(--text-primary)" }}
                       >
                         {report.title}
                       </p>
                       <div
-                        className="flex items-center gap-3 mt-1 text-xs"
-                        style={{
-                          color: selectedPath === report.path ? "var(--text-primary)" : "var(--text-muted)",
-                          opacity: selectedPath === report.path ? 0.8 : 1,
-                        }}
+                        className="flex items-center gap-2 mt-1 text-xs"
+                        style={{ color: isSelected ? "rgba(255,255,255,0.8)" : "var(--text-muted)" }}
                       >
                         <span className="flex items-center gap-1">
                           <Clock className="w-3 h-3" />
@@ -318,98 +388,87 @@ export default function ReportsClient({ initialReports }: { initialReports: Repo
                           {formatSize(report.size)}
                         </span>
                       </div>
-                      <span
-                        className="inline-block mt-1.5 text-xs px-2 py-0.5 rounded-full"
-                        style={{
-                          backgroundColor:
-                            selectedPath === report.path ? "rgba(255,255,255,0.15)" : "var(--background)",
-                          color:
-                            selectedPath === report.path ? "var(--text-primary)" : "var(--text-secondary)",
-                        }}
-                      >
-                        {report.type}
-                      </span>
+                      <div className="flex items-center gap-1.5 mt-1.5">
+                        <span
+                          className="text-xs px-1.5 py-0.5 rounded-full"
+                          style={{
+                            backgroundColor: isSelected ? "rgba(255,255,255,0.15)" : "var(--background)",
+                            color: isSelected ? "white" : "var(--text-secondary)",
+                          }}
+                        >
+                          {report.category}
+                        </span>
+                        <span
+                          className="text-xs px-1.5 py-0.5 rounded-full"
+                          style={{
+                            backgroundColor: isSelected ? "rgba(255,255,255,0.15)" : "var(--background)",
+                            color: isSelected ? "white" : "var(--text-secondary)",
+                          }}
+                        >
+                          {TYPE_LABELS[report.type] || report.type}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </button>
-                <div className="absolute top-3 right-2 flex items-center gap-1" style={{ opacity: 0.7 }}>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleExport(report.path);
-                    }}
-                    className="p-1.5 rounded transition-all hover:opacity-100"
-                    style={{
-                      color: selectedPath === report.path ? "var(--text-primary)" : "var(--text-muted)",
-                    }}
-                    title={t("reports.page.actions.export")}
-                    aria-label={t("reports.page.actions.export")}
-                  >
-                    <Download className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleShare(report.path);
-                    }}
-                    disabled={sharingId === report.path.split("/").pop()?.replace(".md", "")}
-                    className="p-1.5 rounded transition-all hover:opacity-100"
-                    style={{
-                      color: selectedPath === report.path ? "var(--text-primary)" : "var(--text-muted)",
-                    }}
-                    title={t("reports.page.actions.share")}
-                    aria-label={t("reports.page.actions.share")}
-                  >
-                    {sharingId === report.path.split("/").pop()?.replace(".md", "") ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    ) : (
-                      <Share2 className="w-4 h-4" />
-                    )}
-                  </button>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
-        <div className="flex-1 min-w-0 min-h-0" style={{ backgroundColor: "var(--background)" }}>
+        {/* Preview panel */}
+        <div className="flex-1 min-w-0 min-h-0 flex flex-col" style={{ backgroundColor: "var(--background)" }}>
           {selectedPath ? (
-            isLoadingContent ? (
+            <>
+              {/* Preview header */}
               <div
-                className="flex items-center justify-center h-full"
-                style={{ color: "var(--text-secondary)" }}
+                className="flex items-center justify-between px-4 py-2 flex-shrink-0"
+                style={{ borderBottom: "1px solid var(--border)", backgroundColor: "var(--card)" }}
               >
-                {t("reports.page.preview.loading")}
+                <div className="flex items-center gap-2 min-w-0">
+                  <FileText className="w-4 h-4 flex-shrink-0" style={{ color: "var(--accent)" }} />
+                  <span className="text-sm font-medium truncate" style={{ color: "var(--text-primary)" }}>
+                    {selectedReport?.name || selectedPath.split("/").pop()}
+                  </span>
+                </div>
+                <button
+                  onClick={() => selectedReport && handleDownload(selectedReport)}
+                  disabled={!content}
+                  className="flex items-center gap-1 px-2 py-1 rounded text-xs font-medium transition-colors"
+                  style={{
+                    backgroundColor: "var(--card-elevated)",
+                    border: "1px solid var(--border)",
+                    color: "var(--text-primary)",
+                    opacity: content ? 1 : 0.5,
+                  }}
+                >
+                  <Download className="w-3 h-3" />
+                  Download
+                </button>
               </div>
-            ) : (
-              <MarkdownPreview content={content} />
-            )
+              {/* Content */}
+              <div className="flex-1 min-h-0 overflow-auto">
+                {isLoadingContent ? (
+                  <div className="flex items-center justify-center h-full" style={{ color: "var(--text-secondary)" }}>
+                    <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                    Loading...
+                  </div>
+                ) : (
+                  <MarkdownPreview content={content} />
+                )}
+              </div>
+            </>
           ) : (
-            <div
-              className="flex items-center justify-center h-full"
-              style={{ color: "var(--text-muted)" }}
-            >
+            <div className="flex items-center justify-center h-full" style={{ color: "var(--text-muted)" }}>
               <div className="text-center">
                 <FileBarChart className="w-16 h-16 mx-auto mb-4 opacity-30" />
-                <p className="text-lg">{t("reports.page.preview.select")}</p>
+                <p className="text-lg">Select a report to preview</p>
+                <p className="text-sm mt-1">Browse reports from central and cron directories</p>
               </div>
             </div>
           )}
         </div>
       </div>
-
-      <style jsx global>{`
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-            transform: translateY(-10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
     </div>
   );
 }

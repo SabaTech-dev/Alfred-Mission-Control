@@ -119,16 +119,29 @@
     "kanban": "Kanban",
     "chat": "Chat",
     "office": "Oficina",
+    "live": "En Vivo",
+    "handoffs": "Handoffs",
+    "subagents": "Subagentes",
+    "notifications": "Alertas",
     "memory": "Memoria",
+    "learning": "Learning",
+    "reports": "Reportes",
+    "morning": "Morning",
+    "performance": "Rendim.",
+    "pipeline": "Pipeline",
+    "catalog": "Catálogo",
     "files": "Archivos",
-    "analytics": "Analíticas",
+    "projects": "Proyectos",
+    "git": "Git",
     "terminal": "Terminal",
+    "skills": "Skills",
+    "logs": "Logs",
+    "analytics": "Analíticas",
+    "costsAlerts": "Costes",
+    "calendar": "Calendario",
     "system": "Sistema",
     "settings": "Config",
-    "logout": "Salir",
-    "pipeline": "Pipeline",
-    "learning": "Learning Lab",
-    "catalog": "Catálogo"
+    "logout": "Salir"
   },
   "help": {
     "dashboard": {
@@ -190,6 +203,58 @@
     "catalog": {
       "title": "Catálogo de Servicios",
       "description": "Servicios SabaTech: pricing, landings y estado"
+    },
+    "live": {
+      "title": "Vista en Vivo",
+      "description": "Actividad de agentes y eventos del sistema en tiempo real."
+    },
+    "handoffs": {
+      "title": "Handoffs de Agentes",
+      "description": "Transferencias de tareas entre agentes: contexto, estado e historial."
+    },
+    "subagents": {
+      "title": "Monitor de Subagentes",
+      "description": "Subagentes activos: estado, runtime, logs y uso de recursos."
+    },
+    "notifications": {
+      "title": "Notificaciones",
+      "description": "Alertas de agentes, notificaciones del sistema y eventos importantes."
+    },
+    "reports": {
+      "title": "Centro de Reportes",
+      "description": "Explorar y buscar reportes: semanales, mensuales, cron y personalizados."
+    },
+    "morning": {
+      "title": "Morning Brief",
+      "description": "Resumen matutino: actividad nocturna, tareas pendientes y prioridades del día."
+    },
+    "performance": {
+      "title": "Rendimiento",
+      "description": "Métricas de rendimiento: puntuación de eficiencia, tendencias y optimizaciones."
+    },
+    "projects": {
+      "title": "Proyectos",
+      "description": "Gestionar proyectos activos, seguimiento de progreso y analíticas."
+    },
+    "git": {
+      "title": "Estado Git",
+      "description": "Repositorios: commits recientes, ramas, PRs y estado de deploys."
+    },
+    "skills": {
+      "title": "Gestión de Skills",
+      "description": "Explorar, instalar, actualizar y gestionar skills y capabilities de agentes."
+    },
+    "logs": {
+      "title": "Logs del Gateway",
+      "description": "Streaming de logs en tiempo real del gateway OpenClaw y servicios."
+    },
+    "costsAlerts": {
+      "title": "Alertas de Costes",
+      "description": "Seguimiento de presupuesto, anomalías y alertas de gasto por modelo y agente."
+    },
+    "calendar": {
+      "title": "Calendario",
+      "description": "Tareas programadas, timeline de cron jobs y próximos eventos."
     }
   },
   "topbar": {

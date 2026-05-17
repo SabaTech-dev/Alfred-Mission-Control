@@ -253,7 +253,7 @@ export function AgentInspectPanel({ agentId, isOpen, onClose, onAction }: AgentI
     switch (level) {
       case 'error': return 'text-error';
       case 'warn': return 'text-warning';
-      case 'debug': return 'text-neutral-400';
+      case 'devops': return 'text-blue-400';
       default: return 'text-neutral-600 dark:text-neutral-400';
     }
   };

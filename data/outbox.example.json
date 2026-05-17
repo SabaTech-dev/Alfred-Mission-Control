@@ -4,7 +4,7 @@
     "timestamp": "2026-02-27T10:30:00.000Z",
     "channel": "telegram",
     "type": "notification",
-    "recipient": "@superbotijo_updates",
+    "recipient": "@alfred_mission_control",
     "subject": "Cron Job Completed",
     "content": "The scheduled backup job has completed successfully. 156 files backed up to /backup/2026-02-27/",
     "status": "delivered",
@@ -34,7 +34,7 @@
     "type": "report",
     "recipient": "admin@example.com",
     "subject": "Weekly Activity Report",
-    "content": "Weekly Activity Report for SuperBotijo\n\nTotal Activities: 1,247\nSuccessful: 1,198 (96%)\nFailed: 49 (4%)\n\nTop Activity Types:\n- File Operations: 456\n- API Calls: 312\n- Cron Jobs: 234\n\nToken Usage: 2.4M tokens\nEstimated Cost: $12.45",
+    "content": "Weekly Activity Report for Alfred Mission Control\n\nTotal Activities: 1,247\nSuccessful: 1,198 (96%)\nFailed: 49 (4%)\n\nTop Activity Types:\n- File Operations: 456\n- API Calls: 312\n- Cron Jobs: 234\n\nToken Usage: 2.4M tokens\nEstimated Cost: $12.45",
     "status": "sent",
     "metadata": {
       "messageId": "email_abc123",
@@ -87,7 +87,7 @@
     "type": "alert",
     "recipient": "@admin_alerts",
     "subject": "System Restart",
-    "content": "SuperBotijo has been restarted. All services are operational.",
+    "content": "Alfred Mission Control has been restarted. All services are operational.",
     "status": "delivered",
     "metadata": {
       "messageId": "tg_123456793",

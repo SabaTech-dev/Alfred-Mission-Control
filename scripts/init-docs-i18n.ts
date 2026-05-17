@@ -49,7 +49,7 @@ function main() {
   // Check for schema
   if (!fs.existsSync(SCHEMA_PATH)) {
     console.log("⚠️  docs-i18n.schema.json not found - skipping schema validation");
-    console.log("   To add schema validation, copy the schema file from the SuperBotijo repo");
+    console.log("   To add schema validation, copy the schema file from the Alfred Mission Control repo");
   }
 
   console.log("\n📚 Configuration:");
