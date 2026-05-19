@@ -1,42 +1,16 @@
 "use client";
 
-export interface ResearchItem {
-  id: string;
-  title: string;
-  source: "report" | "pdca" | "feature_request" | "kanban_task";
-  phase: "investigacion" | "propuesta" | "desarrollo" | "testing" | "deploy";
-  status: string;
-  agent: string | null;
-  priority: "low" | "medium" | "high";
-  date: string;
-  description: string;
-  filePath: string | null;
-}
-
-const RESEARCH_PHASES: { key: ResearchItem["phase"]; label: string; color: string; icon: string }[] = [
-  { key: "investigacion", label: "Investigación", color: "#6366f1", icon: "🔍" },
-  { key: "propuesta", label: "Propuesta", color: "#8b5cf6", icon: "📝" },
-  { key: "desarrollo", label: "Desarrollo", color: "#3b82f6", icon: "⚙️" },
-  { key: "testing", label: "Testing", color: "#f59e0b", icon: "🧪" },
-  { key: "deploy", label: "Deploy", color: "#10b981", icon: "🚀" },
-];
-
-const SOURCE_LABELS: Record<ResearchItem["source"], { label: string; color: string }> = {
-  report: { label: "Report", color: "#3b82f6" },
-  pdca: { label: "PDCA", color: "#8b5cf6" },
-  feature_request: { label: "Feature Req", color: "#f59e0b" },
-  kanban_task: { label: "Kanban", color: "#10b981" },
-};
+import { SOURCE_LABELS, RESEARCH_PHASES, type ResearchItem } from "./PipelineTypes";
 
 interface ResearchPipelineProps {
-  items: ResearchItem[];
-  loading: boolean;
-  visible: boolean;
+  researchItems: ResearchItem[];
+  researchLoading: boolean;
+  showResearch: boolean;
   onToggle: () => void;
 }
 
-export function ResearchPipeline({ items, loading, visible, onToggle }: ResearchPipelineProps) {
-  if (!visible) {
+export function ResearchPipeline({ researchItems, researchLoading, showResearch, onToggle }: ResearchPipelineProps) {
+  if (!showResearch) {
     return (
       <button
         onClick={onToggle}
@@ -55,7 +29,7 @@ export function ResearchPipeline({ items, loading, visible, onToggle }: Research
             🔬 Pipeline de Investigaciones & Reportes
           </h2>
           <p style={{ fontSize: "12px", color: "var(--text-secondary)", margin: "2px 0 0" }}>
-            {loading ? "Cargando..." : `${items.length} items desde reports, PDCA, feature requests y Kanban`}
+            {researchLoading ? "Cargando..." : `${researchItems.length} items desde reports, PDCA, feature requests y Kanban`}
           </p>
         </div>
         <button
@@ -66,10 +40,10 @@ export function ResearchPipeline({ items, loading, visible, onToggle }: Research
         </button>
       </div>
 
-      {!loading && (
+      {!researchLoading && (
         <div style={{ display: "flex", gap: "10px", overflowX: "auto", paddingBottom: "8px" }}>
           {RESEARCH_PHASES.map((phase) => {
-            const phaseItems = items.filter((i) => i.phase === phase.key);
+            const phaseItems = researchItems.filter((i) => i.phase === phase.key);
             return (
               <div
                 key={phase.key}
@@ -96,7 +70,51 @@ export function ResearchPipeline({ items, loading, visible, onToggle }: Research
                     <div style={{ padding: "16px", textAlign: "center", color: "var(--text-muted)", fontSize: "11px" }}>Sin items</div>
                   ) : (
                     phaseItems.map((item) => (
-                      <ResearchItemCard key={item.id} item={item} />
+                      <div
+                        key={item.id}
+                        style={{
+                          padding: "8px 10px",
+                          borderRadius: "6px",
+                          border: "1px solid var(--border)",
+                          background: "var(--surface)",
+                          fontSize: "11px",
+                        }}
+                      >
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", gap: "6px" }}>
+                          <div style={{ flex: 1, fontWeight: 500, color: "var(--text-primary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                            {item.title}
+                          </div>
+                          <span
+                            style={{
+                              padding: "1px 5px",
+                              borderRadius: "3px",
+                              fontSize: "9px",
+                              fontWeight: 600,
+                              color: "#fff",
+                              background: SOURCE_LABELS[item.source].color,
+                              whiteSpace: "nowrap",
+                            }}
+                          >
+                            {SOURCE_LABELS[item.source].label}
+                          </span>
+                        </div>
+                        {item.description && (
+                          <div style={{ color: "var(--text-muted)", marginTop: "3px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                            {item.description}
+                          </div>
+                        )}
+                        <div style={{ display: "flex", gap: "6px", marginTop: "4px", alignItems: "center", flexWrap: "wrap" }}>
+                          {item.agent && (
+                            <span style={{ fontSize: "9px", color: "var(--text-muted)", background: "var(--surface-elevated)", padding: "1px 4px", borderRadius: "2px" }}>
+                              👤 {item.agent}
+                            </span>
+                          )}
+                          <span style={{ fontSize: "9px", color: item.priority === "high" ? "#ef4444" : item.priority === "medium" ? "#f59e0b" : "#6b7280" }}>
+                            {item.priority.toUpperCase()}
+                          </span>
+                          <span style={{ fontSize: "9px", color: "var(--text-muted)" }}>{item.date}</span>
+                        </div>
+                      </div>
                     ))
                   )}
                 </div>
@@ -105,55 +123,6 @@ export function ResearchPipeline({ items, loading, visible, onToggle }: Research
           })}
         </div>
       )}
-    </div>
-  );
-}
-
-function ResearchItemCard({ item }: { item: ResearchItem }) {
-  return (
-    <div
-      style={{
-        padding: "8px 10px",
-        borderRadius: "6px",
-        border: "1px solid var(--border)",
-        background: "var(--surface)",
-        fontSize: "11px",
-      }}
-    >
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", gap: "6px" }}>
-        <div style={{ flex: 1, fontWeight: 500, color: "var(--text-primary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-          {item.title}
-        </div>
-        <span
-          style={{
-            padding: "1px 5px",
-            borderRadius: "3px",
-            fontSize: "9px",
-            fontWeight: 600,
-            color: "#fff",
-            background: SOURCE_LABELS[item.source].color,
-            whiteSpace: "nowrap",
-          }}
-        >
-          {SOURCE_LABELS[item.source].label}
-        </span>
-      </div>
-      {item.description && (
-        <div style={{ color: "var(--text-muted)", marginTop: "3px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-          {item.description}
-        </div>
-      )}
-      <div style={{ display: "flex", gap: "6px", marginTop: "4px", alignItems: "center", flexWrap: "wrap" }}>
-        {item.agent && (
-          <span style={{ fontSize: "9px", color: "var(--text-muted)", background: "var(--surface-elevated)", padding: "1px 4px", borderRadius: "2px" }}>
-            👤 {item.agent}
-          </span>
-        )}
-        <span style={{ fontSize: "9px", color: item.priority === "high" ? "#ef4444" : item.priority === "medium" ? "#f59e0b" : "#6b7280" }}>
-          {item.priority.toUpperCase()}
-        </span>
-        <span style={{ fontSize: "9px", color: "var(--text-muted)" }}>{item.date}</span>
-      </div>
     </div>
   );
 }
