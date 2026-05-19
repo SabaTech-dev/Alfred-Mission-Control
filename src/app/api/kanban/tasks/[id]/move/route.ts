@@ -10,7 +10,8 @@ import {
 import { 
   extractOpportunityCompany,
   calculateOpportunityProgress,
-  findWonOpportunitiesByCompany
+  findActiveOpportunitiesByCompany,
+  checkStageAdvancement
 } from "@/lib/pipeline-kanban-bridge";
 
 export const dynamic = "force-dynamic";
@@ -84,11 +85,19 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     if (task.description) {
       const company = extractOpportunityCompany(task);
       if (company) {
-        const wonOpps = findWonOpportunitiesByCompany(listOpportunities, company);
-        for (const opp of wonOpps) {
+        const activeOpps = findActiveOpportunitiesByCompany(listOpportunities, company);
+        for (const opp of activeOpps) {
           const progress = calculateOpportunityProgress(opp);
           updateOpportunity(opp.id, { progress });
           console.log(`[Pipeline-Kanban Bridge] Updated progress for opportunity ${opp.company}: ${progress}% (task moved: ${task.title})`);
+        }
+
+        // Reverse sync: check if all tasks are done → advance opportunity stage
+        if (body.targetColumnId === "done") {
+          const advanced = checkStageAdvancement(company, listOpportunities, updateOpportunity);
+          if (advanced.length > 0) {
+            console.log(`[Pipeline-Kanban Bridge] Auto-advanced ${advanced.length} opportunity stage(s) for ${company}`);
+          }
         }
       }
     }

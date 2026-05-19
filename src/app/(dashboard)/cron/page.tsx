@@ -2,7 +2,7 @@ import { getOpenClawCronJobs } from "@/operations/openclaw-cron-ops";
 import { getSystemCronJobs } from "@/operations/system-cron-ops";
 import { getHeartbeatStatus } from "@/operations/heartbeat-ops";
 
-import CronClient from "./CronClient";
+import { CronClient } from "./CronClient";
 
 export const dynamic = "force-dynamic";
 

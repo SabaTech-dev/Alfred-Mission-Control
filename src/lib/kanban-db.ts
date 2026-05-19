@@ -33,8 +33,10 @@ import { randomUUID } from "crypto";
 import { logActivity } from "@/lib/activities-db";
 import {
   extractOpportunityCompany,
+  findActiveOpportunitiesByCompany,
   findWonOpportunitiesByCompany,
   updateOpportunityProgress,
+  checkStageAdvancement,
 } from "@/lib/pipeline-kanban-bridge";
 import {
   getOpportunity,
@@ -236,7 +238,7 @@ export function resetDbForTesting(): void {
  * Get the database connection singleton
  * Creates tables and seeds default columns on first run
  */
-function getDb(): Database {
+export function getDb(): Database {
   // Clean up stale WASM SQLite lock directory (node-sqlite3-wasm VFS artifact)
   const lockDir = DB_PATH + '.lock';
   try {
@@ -733,8 +735,8 @@ export function updateTask(id: string, updates: UpdateTaskInput): KanbanTask | n
   if (updates.status !== undefined && updates.status !== previousStatus) {
     const company = extractOpportunityCompany(updated);
     if (company) {
-      // Find all won opportunities associated with this company
-      const opps = findWonOpportunitiesByCompany(listOpportunities, company);
+      // Update progress for all active opportunities associated with this company
+      const opps = findActiveOpportunitiesByCompany(listOpportunities, company);
       for (const opp of opps) {
         const newProgress = updateOpportunityProgress(
           getOpportunity,
@@ -742,6 +744,18 @@ export function updateTask(id: string, updates: UpdateTaskInput): KanbanTask | n
           opp.id
         );
         console.log(`[Kanban-Pipeline Bridge] Task "${updated.title}" status changed: ${previousStatus} → ${updates.status}. Updated opportunity progress for ${company}: ${newProgress}%`);
+      }
+
+      // Reverse sync: check if all tasks are done → advance opportunity stage
+      if (updates.status === "done") {
+        const advanced = checkStageAdvancement(
+          company,
+          listOpportunities,
+          updatePipelineOpp
+        );
+        if (advanced.length > 0) {
+          console.log(`[Kanban-Pipeline Bridge] Auto-advanced ${advanced.length} opportunity stage(s) for ${company}`);
+        }
       }
     }
   }

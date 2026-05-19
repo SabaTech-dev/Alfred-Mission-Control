@@ -16,10 +16,13 @@ import {
 } from "@/lib/pipeline-types";
 import {
   createTasksForWonOpportunity,
+  createTasksForProposalStage,
+  shouldCreateProposalTasks,
   shouldCreateTasksForOpportunity,
+  syncStageToTaskStatuses,
   calculateOpportunityProgress,
-  updateOpportunityProgress as updateProgress,
 } from "@/lib/pipeline-kanban-bridge";
+import { updateTask as updateKanbanTask } from "@/lib/kanban-db";
 
 export type { PipelineStage, Opportunity, PipelineKPIs };
 export { PIPELINE_STAGES, STAGE_LABELS, STAGE_COLORS, STAGE_PROBABILITY } from "@/lib/pipeline-types";
@@ -210,15 +213,30 @@ export function updateOpportunity(id: string, input: UpdateOpportunityInput): Op
   const updated = getOpportunity(id);
   if (!updated) return null;
 
-  // Pipeline-Kanban bridge: create tasks if opportunity is won
+  // Pipeline-Kanban bridge: create tasks if opportunity enters proposal stage
+  if (shouldCreateProposalTasks(updated, previousStage)) {
+    const taskIds = createTasksForProposalStage(updated, previousStage);
+    console.log(`[Pipeline-Kanban Bridge] Created ${taskIds.length} proposal tasks for: ${updated.company}`);
+
+    const progress = calculateOpportunityProgress(updated);
+    db.prepare('UPDATE opportunities SET progress = ? WHERE id = ?').run(progress, updated.id);
+  }
+
+  // Pipeline-Kanban bridge: create tasks if opportunity is won (only if no existing tasks)
   if (shouldCreateTasksForOpportunity(updated, previousStage)) {
     const taskIds = createTasksForWonOpportunity(updated, previousStage);
     console.log(`[Pipeline-Kanban Bridge] Created ${taskIds.length} tasks for won opportunity: ${updated.company}`);
 
-    // Calculate and save initial progress (0%) after task creation
     const progress = calculateOpportunityProgress(updated);
     db.prepare('UPDATE opportunities SET progress = ? WHERE id = ?').run(progress, updated.id);
-    console.log(`[Pipeline-Kanban Bridge] Initial progress for ${updated.company}: ${progress}%`);
+  }
+
+  // Pipeline-Kanban bridge: sync stage change to linked Kanban task statuses
+  if (updated.stage !== previousStage) {
+    const syncedCount = syncStageToTaskStatuses(updated, previousStage, updateKanbanTask);
+    if (syncedCount > 0) {
+      console.log(`[Pipeline-Kanban Bridge] Synced ${syncedCount} task statuses for stage change: ${previousStage} → ${updated.stage}`);
+    }
   }
 
   return updated;
@@ -228,6 +246,51 @@ export function deleteOpportunity(id: string): boolean {
   const db = getDb();
   const result = db.prepare("DELETE FROM opportunities WHERE id = ?").run(id);
   return result.changes > 0;
+}
+
+/**
+ * Find an opportunity by company and title (case-insensitive, whitespace-trimmed).
+ * Used for exact deduplication during report sync.
+ */
+export function findOpportunityByCompanyTitle(
+  company: string,
+  title: string
+): Opportunity | null {
+  const db = getDb();
+  return (
+    (db
+      .prepare(
+        "SELECT * FROM opportunities WHERE LOWER(TRIM(company)) = LOWER(TRIM(?)) AND LOWER(TRIM(title)) = LOWER(TRIM(?)) LIMIT 1"
+      )
+      .get(company.trim(), title.trim()) as Opportunity | null) ?? null
+  );
+}
+
+/**
+ * Find an opportunity by company alone (case-insensitive, whitespace-trimmed).
+ * Used for broad deduplication: same company = same deal, regardless of title.
+ */
+export function findOpportunityByCompany(company: string): Opportunity | null {
+  const db = getDb();
+  return (
+    (db
+      .prepare(
+        "SELECT * FROM opportunities WHERE LOWER(TRIM(company)) = LOWER(TRIM(?)) LIMIT 1"
+      )
+      .get(company.trim()) as Opportunity | null) ?? null
+  );
+}
+
+/**
+ * Clear all pipeline data — ONLY for testing.
+ * Resets the in-memory DB so tests start clean.
+ */
+export function clearAllPipelineDataForTesting(): void {
+  if (process.env.NODE_ENV !== "test") {
+    throw new Error("clearAllPipelineDataForTesting is only for tests");
+  }
+  // Reset the DB singleton so next getDb() creates a fresh in-memory DB
+  _db = null;
 }
 
 export function getPipelineKPIs(): PipelineKPIs {

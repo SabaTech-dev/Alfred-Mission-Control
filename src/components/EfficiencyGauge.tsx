@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { TrendingUp, TrendingDown, Minus, Info, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import {
   LineChart,
   Line,
@@ -12,58 +12,13 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { useI18n } from "@/i18n/provider";
-
-interface EfficiencyData {
-  score: number;
-  grade: string;
-  components: {
-    successRate: number;
-    taskCompletion: number;
-    tokenEfficiency: number;
-  };
-  breakdown: {
-    totalActivities: number;
-    successfulActivities: number;
-    failedActivities: number;
-    totalTokens: number;
-    usefulTokens: number;
-  };
-  trend: "up" | "down" | "stable";
-  trendPercent: number;
-  history: Array<{
-    date: string;
-    score: number;
-    activities: number;
-    successRate: number;
-  }>;
-  period: string;
-  timestamp: string;
-}
-
-function getGradeColor(grade: string): string {
-  switch (grade) {
-    case "A":
-      return "var(--success)";
-    case "B":
-      return "#84cc16";
-    case "C":
-      return "var(--warning)";
-    case "D":
-      return "#f97316";
-    case "F":
-      return "var(--error)";
-    default:
-      return "var(--text-muted)";
-  }
-}
-
-function getScoreColor(score: number): string {
-  if (score >= 90) return "var(--success)";
-  if (score >= 80) return "#84cc16";
-  if (score >= 70) return "var(--warning)";
-  if (score >= 60) return "#f97316";
-  return "var(--error)";
-}
+import {
+  type EfficiencyData,
+  getScoreColor,
+  GaugeArc,
+  TrendIndicator,
+  ScoreComponentBar,
+} from "@/components/EfficiencyGaugeSVG";
 
 type PeriodType = "7" | "14" | "30";
 
@@ -192,72 +147,13 @@ export function EfficiencyGauge() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
         {/* Gauge */}
         <div className="flex flex-col items-center justify-center">
-          <div className="relative w-48 h-48">
-            {/* Background circle */}
-            <svg className="w-full h-full transform -rotate-90">
-              <circle
-                cx="96"
-                cy="96"
-                r="88"
-                fill="none"
-                stroke="var(--card-elevated)"
-                strokeWidth="12"
-              />
-              {/* Progress arc */}
-              <circle
-                cx="96"
-                cy="96"
-                r="88"
-                fill="none"
-                stroke={getScoreColor(data.score)}
-                strokeWidth="12"
-                strokeLinecap="round"
-                strokeDasharray={`${(data.score / 100) * 553} 553`}
-                style={{ transition: "stroke-dasharray 0.5s ease" }}
-              />
-            </svg>
-            {/* Score text */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <div
-                className="text-5xl font-bold"
-                style={{ color: getScoreColor(data.score) }}
-              >
-                {data.score.toFixed(0)}
-              </div>
-              <div
-                className="text-2xl font-bold mt-1"
-                style={{ color: getGradeColor(data.grade) }}
-              >
-                {data.grade}
-              </div>
-            </div>
-          </div>
-
-          {/* Trend */}
-          <div className="flex items-center gap-2 mt-4">
-            {data.trend === "up" && (
-              <>
-                <TrendingUp className="w-4 h-4" style={{ color: "var(--success)" }} />
-                <span style={{ color: "var(--success)" }}>
-                  {t("efficiency.vsPrevious", { percent: data.trendPercent })}
-                </span>
-              </>
-            )}
-            {data.trend === "down" && (
-              <>
-                <TrendingDown className="w-4 h-4" style={{ color: "var(--error)" }} />
-                <span style={{ color: "var(--error)" }}>
-                  {t("efficiency.vsPrevious", { percent: data.trendPercent })}
-                </span>
-              </>
-            )}
-            {data.trend === "stable" && (
-              <>
-                <Minus className="w-4 h-4" style={{ color: "var(--text-muted)" }} />
-                <span style={{ color: "var(--text-muted)" }}>{t("efficiency.stable")}</span>
-              </>
-            )}
-          </div>
+          <GaugeArc score={data.score} grade={data.grade} />
+          <TrendIndicator
+            trend={data.trend}
+            trendPercent={data.trendPercent}
+            vsPreviousLabel={t("efficiency.vsPrevious", { percent: data.trendPercent })}
+            stableLabel={t("efficiency.stable")}
+          />
         </div>
 
         {/* Components */}
@@ -269,152 +165,32 @@ export function EfficiencyGauge() {
             {t("efficiency.scoreComponents")}
           </h4>
 
-          {/* Success Rate */}
-          <div
-            className="relative"
-            onMouseEnter={() => setShowTooltip("successRate")}
-            onMouseLeave={() => setShowTooltip(null)}
-          >
-            <div className="flex items-center justify-between mb-1">
-              <div className="flex items-center gap-2">
-                <span style={{ color: "var(--text-primary)" }}>
-                  {t("efficiency.successRate")}
-                </span>
-                <Info
-                  className="w-3 h-3 cursor-help"
-                  style={{ color: "var(--text-muted)" }}
-                />
-              </div>
-              <span
-                className="font-semibold"
-                style={{ color: getScoreColor(data.components.successRate) }}
-              >
-                {data.components.successRate.toFixed(1)}%
-              </span>
-            </div>
-            <div
-              className="h-2 rounded-full overflow-hidden"
-              style={{ backgroundColor: "var(--card-elevated)" }}
-            >
-              <div
-                className="h-full transition-all duration-500"
-                style={{
-                  width: `${data.components.successRate}%`,
-                  backgroundColor: getScoreColor(data.components.successRate),
-                }}
-              />
-            </div>
-            {showTooltip === "successRate" && (
-              <div
-                className="absolute z-10 p-2 rounded text-xs mt-1"
-                style={{
-                  backgroundColor: "var(--card-elevated)",
-                  border: "1px solid var(--border)",
-                  color: "var(--text-secondary)",
-                }}
-              >
-                {t("efficiency.successRateTooltip")}
-              </div>
-            )}
-          </div>
+          <ScoreComponentBar
+            label={t("efficiency.successRate")}
+            value={data.components.successRate}
+            tooltipKey="successRate"
+            tooltipText={t("efficiency.successRateTooltip")}
+            showTooltip={showTooltip}
+            onTooltipChange={setShowTooltip}
+          />
 
-          {/* Task Completion */}
-          <div
-            className="relative"
-            onMouseEnter={() => setShowTooltip("taskCompletion")}
-            onMouseLeave={() => setShowTooltip(null)}
-          >
-            <div className="flex items-center justify-between mb-1">
-              <div className="flex items-center gap-2">
-                <span style={{ color: "var(--text-primary)" }}>
-                  {t("efficiency.taskCompletion")}
-                </span>
-                <Info
-                  className="w-3 h-3 cursor-help"
-                  style={{ color: "var(--text-muted)" }}
-                />
-              </div>
-              <span
-                className="font-semibold"
-                style={{ color: getScoreColor(data.components.taskCompletion) }}
-              >
-                {data.components.taskCompletion.toFixed(1)}%
-              </span>
-            </div>
-            <div
-              className="h-2 rounded-full overflow-hidden"
-              style={{ backgroundColor: "var(--card-elevated)" }}
-            >
-              <div
-                className="h-full transition-all duration-500"
-                style={{
-                  width: `${data.components.taskCompletion}%`,
-                  backgroundColor: getScoreColor(data.components.taskCompletion),
-                }}
-              />
-            </div>
-            {showTooltip === "taskCompletion" && (
-              <div
-                className="absolute z-10 p-2 rounded text-xs mt-1"
-                style={{
-                  backgroundColor: "var(--card-elevated)",
-                  border: "1px solid var(--border)",
-                  color: "var(--text-secondary)",
-                }}
-              >
-                {t("efficiency.taskCompletionTooltip")}
-              </div>
-            )}
-          </div>
+          <ScoreComponentBar
+            label={t("efficiency.taskCompletion")}
+            value={data.components.taskCompletion}
+            tooltipKey="taskCompletion"
+            tooltipText={t("efficiency.taskCompletionTooltip")}
+            showTooltip={showTooltip}
+            onTooltipChange={setShowTooltip}
+          />
 
-          {/* Token Efficiency */}
-          <div
-            className="relative"
-            onMouseEnter={() => setShowTooltip("tokenEfficiency")}
-            onMouseLeave={() => setShowTooltip(null)}
-          >
-            <div className="flex items-center justify-between mb-1">
-              <div className="flex items-center gap-2">
-                <span style={{ color: "var(--text-primary)" }}>
-                  {t("efficiency.tokenEfficiency")}
-                </span>
-                <Info
-                  className="w-3 h-3 cursor-help"
-                  style={{ color: "var(--text-muted)" }}
-                />
-              </div>
-              <span
-                className="font-semibold"
-                style={{ color: getScoreColor(data.components.tokenEfficiency) }}
-              >
-                {data.components.tokenEfficiency.toFixed(1)}%
-              </span>
-            </div>
-            <div
-              className="h-2 rounded-full overflow-hidden"
-              style={{ backgroundColor: "var(--card-elevated)" }}
-            >
-              <div
-                className="h-full transition-all duration-500"
-                style={{
-                  width: `${data.components.tokenEfficiency}%`,
-                  backgroundColor: getScoreColor(data.components.tokenEfficiency),
-                }}
-              />
-            </div>
-            {showTooltip === "tokenEfficiency" && (
-              <div
-                className="absolute z-10 p-2 rounded text-xs mt-1"
-                style={{
-                  backgroundColor: "var(--card-elevated)",
-                  border: "1px solid var(--border)",
-                  color: "var(--text-secondary)",
-                }}
-              >
-                {t("efficiency.tokenEfficiencyTooltip")}
-              </div>
-            )}
-          </div>
+          <ScoreComponentBar
+            label={t("efficiency.tokenEfficiency")}
+            value={data.components.tokenEfficiency}
+            tooltipKey="tokenEfficiency"
+            tooltipText={t("efficiency.tokenEfficiencyTooltip")}
+            showTooltip={showTooltip}
+            onTooltipChange={setShowTooltip}
+          />
 
           {/* Breakdown */}
           <div className="mt-4 pt-4 grid grid-cols-2 gap-4" style={{ borderTop: "1px solid var(--border)" }}>

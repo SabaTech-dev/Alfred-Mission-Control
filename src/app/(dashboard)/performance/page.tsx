@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import PerformanceClient from "@/components/PerformanceClient";
+import { PerformanceClient } from "@/components/PerformanceClient";
 
 export default function PerformancePage() {
   return (
