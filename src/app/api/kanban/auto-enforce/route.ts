@@ -11,7 +11,7 @@
  * 2. Tasks in 'in_progress' > 2h → ping specialist
  * 3. Tasks in 'in_progress' > 4h → escalate to Alfred (main)
  *
- * This endpoint is designed to be called by a cron job every 15 minutes.
+ * This endpoint is designed to be called by a cron job every 40 minutes.
  */
 
 import { NextRequest, NextResponse } from "next/server";

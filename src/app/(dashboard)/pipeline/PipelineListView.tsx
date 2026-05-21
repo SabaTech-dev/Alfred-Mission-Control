@@ -2,7 +2,8 @@
 
 import { Edit3, Trash2 } from "lucide-react";
 import { PipelineStage, type Opportunity } from "@/lib/pipeline-types";
-import { STAGE_LABELS, STAGE_COLORS, formatCurrency, serviceLabels } from "./PipelineTypes";
+import { STAGE_LABELS, STAGE_COLORS } from "@/lib/pipeline-types";
+import { formatCurrency, serviceLabels } from "./PipelineTypes";
 
 interface PipelineListViewProps {
   opportunities: Opportunity[];

@@ -140,3 +140,60 @@ export const MoveTaskSchema = z.object({
 export const ClaimTaskSchema = z.object({
   agentName: z.string().min(1, "Agent name is required"),
 });
+
+// Pipeline validation schemas (SQLi & input validation fixes)
+const PipelineStageSchema = z.enum([
+  "lead",
+  "contacted",
+  "qualifying",
+  "proposal",
+  "negotiation",
+  "won",
+  "lost",
+]);
+
+const ServiceTypeSchema = z.enum([
+  "consultoria_audit",
+  "consultoria_retainer",
+  "consultoria_managed",
+  "orquestacion_setup",
+  "orquestacion_advanced",
+  "orquestacion_managed",
+  "other",
+]);
+
+export const CreateOpportunitySchema = z.object({
+  company: z.string().min(1, "Company name is required"),
+  contact_name: z.string().optional(),
+  contact_email: z.string().email("Invalid email address").optional(),
+  contact_linkedin: z.string().url("Invalid LinkedIn URL").optional(),
+  title: z.string().min(1, "Title is required"),
+  description: z.string().optional(),
+  stage: PipelineStageSchema.optional(),
+  value: z.number().min(0, "Value must be non-negative"),
+  currency: z.string().default("EUR"),
+  service_type: ServiceTypeSchema.optional(),
+  probability: z.number().min(0).max(100).optional(),
+  source: z.string().optional(),
+  next_action: z.string().optional(),
+  next_action_date: z.string().optional(),
+  notes: z.string().optional(),
+});
+
+export const UpdateOpportunitySchema = z.object({
+  company: z.string().min(1).optional(),
+  contact_name: z.string().nullable().optional(),
+  contact_email: z.string().email().nullable().optional(),
+  contact_linkedin: z.string().url().nullable().optional(),
+  title: z.string().min(1).optional(),
+  description: z.string().nullable().optional(),
+  stage: PipelineStageSchema.optional(),
+  value: z.number().min(0).optional(),
+  currency: z.string().optional(),
+  service_type: ServiceTypeSchema.optional(),
+  probability: z.number().min(0).max(100).nullable().optional(),
+  source: z.string().nullable().optional(),
+  next_action: z.string().nullable().optional(),
+  next_action_date: z.string().nullable().optional(),
+  notes: z.string().nullable().optional(),
+});

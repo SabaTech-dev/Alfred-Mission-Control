@@ -1,61 +1,21 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Plus } from "lucide-react";
 import {
   PIPELINE_STAGES,
-  STAGE_LABELS,
-  STAGE_COLORS,
   type PipelineStage,
   type Opportunity,
   type PipelineKPIs,
 } from "@/lib/pipeline-types";
-import { PipelineFunnelChart } from "./PipelineFunnelChart";
 import * as PipelineTypes from "./PipelineTypes";
 import { PipelineFilters } from "./PipelineFilters";
 import { PipelineKpiCards } from "./PipelineKpiCards";
 import { PipelineModal } from "./PipelineModal";
-import { PipelineOppCard } from "./PipelineOppCard";
-import { ResearchPipeline } from "./ResearchPipeline";
 import { PipelineListView } from "./PipelineListView";
-
-// Filter-aware KPI hook — computes metrics from a given opportunities array
-function useFilteredKPIs(opps: Opportunity[]): PipelineTypes.FilteredKPIs {
-  return useMemo(() => {
-    const active = opps.filter((o) => o.stage !== "won" && o.stage !== "lost");
-    const won = opps.filter((o) => o.stage === "won");
-    const lost = opps.filter((o) => o.stage === "lost");
-
-    const totalPipelineValue = active.reduce((s, o) => s + o.value, 0);
-    const wonValue = won.reduce((s, o) => s + o.value, 0);
-
-    // Avg cycle time: mean days from created_at to closed_at for won deals
-    let avgCycleTimeDays = 0;
-    const closedWithDates = won.filter((o) => o.closed_at && o.created_at);
-    if (closedWithDates.length > 0) {
-      const totalDays = closedWithDates.reduce((s, o) => {
-        const created = new Date(o.created_at).getTime();
-        const closed = new Date(o.closed_at!).getTime();
-        return s + (closed - created) / (1000 * 60 * 60 * 24);
-      }, 0);
-      avgCycleTimeDays = Math.round(totalDays / closedWithDates.length);
-    }
-
-    const wonCount = won.length;
-    const lostCount = lost.length;
-    const winRate = wonCount + lostCount > 0 ? wonCount / (wonCount + lostCount) : 0;
-
-    return {
-      totalOpportunities: opps.length,
-      totalPipelineValue,
-      avgCycleTimeDays,
-      wonCount,
-      wonValue,
-      lostCount,
-      winRate,
-    };
-  }, [opps]);
-}
+import { ResearchPipeline } from "./ResearchPipeline";
+import { PipelineStageColumn } from "./PipelineStageColumn";
+import { PipelineWonLost } from "./PipelineWonLost";
 
 export default function PipelineClient() {
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
@@ -70,8 +30,9 @@ export default function PipelineClient() {
   const [formData, setFormData] = useState<any>({});
   const [expandedCard, setExpandedCard] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<"pipeline" | "list">("pipeline");
-  
+
   // Pipeline-Kanban Bridge: Store Kanban tasks for opportunities
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [kanbanTasks, setKanbanTasks] = useState<Record<string, any[]>>({});
   const [loadingTasks, setLoadingTasks] = useState<Record<string, boolean>>({});
 
@@ -97,11 +58,7 @@ export default function PipelineClient() {
     setFilterDateTo("");
   };
 
-  const hasActiveFilters = filterStage !== "all" || filterServiceType !== "all" || filterDateFrom || filterDateTo;
-
-  // Filter-aware KPIs — respond to date range, service type, and stage filters
-  const filteredKPIs = useFilteredKPIs(filteredOpportunities);
-
+  const hasActiveFilters = Boolean(filterStage !== "all" || filterServiceType !== "all" || filterDateFrom || filterDateTo);
   const fetchData = useCallback(async () => {
     try {
       const res = await fetch("/api/pipeline");
@@ -131,16 +88,18 @@ export default function PipelineClient() {
   useEffect(() => { fetchResearchData(); }, [fetchResearchData]);
 
   // Pipeline-Kanban Bridge: Fetch Kanban tasks when card is expanded
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const fetchKanbanTasks = async (oppId: string, company: string) => {
-    if (kanbanTasks[oppId] || loadingTasks[oppId]) return; // Already fetched or loading
-    
+    if (kanbanTasks[oppId] || loadingTasks[oppId]) return;
+
     setLoadingTasks(prev => ({ ...prev, [oppId]: true }));
     try {
       const res = await fetch("/api/kanban/tasks");
       const data = await res.json();
       const allTasks = data.tasks || [];
       // Filter tasks that mention this company
-      const oppTasks = allTasks.filter((task: any) => 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const oppTasks = allTasks.filter((task: any) =>
         task.description?.includes(`[Opportunity: ${company}]`)
       );
       setKanbanTasks(prev => ({ ...prev, [oppId]: oppTasks }));
@@ -296,71 +255,21 @@ export default function PipelineClient() {
       {/* Pipeline View */}
       {viewMode === "pipeline" ? (
         <div style={{ display: "flex", gap: "12px", overflowX: "auto", paddingBottom: "16px" }}>
-          {activeStages.map((stage) => {
-            const stageOpps = filteredOpportunities.filter((o) => o.stage === stage);
-            const stageValue = stageOpps.reduce((s, o) => s + o.value, 0);
-            return (
-              <div
-                key={stage}
-                style={{
-                  minWidth: "240px",
-                  flex: "1 0 240px",
-                  background: "var(--surface-elevated)",
-                  borderRadius: "12px",
-                  border: "1px solid var(--border)",
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-              >
-                {/* Stage Header */}
-                <div
-                  style={{
-                    padding: "12px 14px",
-                    borderBottom: "1px solid var(--border)",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                    <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: STAGE_COLORS[stage] }} />
-                    <span style={{ fontSize: "13px", fontWeight: 600, color: "var(--text-primary)" }}>
-                      {STAGE_LABELS[stage]}
-                    </span>
-                    <span style={{ fontSize: "11px", color: "var(--text-muted)", background: "var(--surface)", padding: "2px 6px", borderRadius: "4px" }}>
-                      {stageOpps.length}
-                    </span>
-                  </div>
-                  <span style={{ fontSize: "11px", color: "var(--text-muted)" }}>
-                    {PipelineTypes.formatCurrency(stageValue)}
-                  </span>
-                </div>
-
-                {/* Cards */}
-                <div style={{ padding: "8px", flex: 1, display: "flex", flexDirection: "column", gap: "6px" }}>
-                  {stageOpps.map((opp) => (
-                    <PipelineOppCard
-                      key={opp.id}
-                      opp={opp}
-                      expanded={expandedCard === opp.id}
-                      onToggle={() => handleToggleCard(opp.id, opp.company)}
-                      onStageChange={handleStageChange}
-                      onEdit={handleEdit}
-                      onDelete={handleDelete}
-                      activeStages={activeStages}
-                      kanbanTasks={kanbanTasks[opp.id] || []}
-                      loadingTasks={loadingTasks[opp.id] || false}
-                    />
-                  ))}
-                  {stageOpps.length === 0 && (
-                    <div style={{ padding: "20px", textAlign: "center", color: "var(--text-muted)", fontSize: "12px" }}>
-                      Sin oportunidades
-                    </div>
-                  )}
-                </div>
-              </div>
-            );
-          })}
+          {activeStages.map((stage) => (
+            <PipelineStageColumn
+              key={stage}
+              stage={stage}
+              opportunities={filteredOpportunities}
+              expandedCard={expandedCard}
+              onToggleCard={handleToggleCard}
+              onStageChange={handleStageChange}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+              activeStages={activeStages}
+              kanbanTasks={kanbanTasks}
+              loadingTasks={loadingTasks}
+            />
+          ))}
         </div>
       ) : (
         /* List View */
@@ -372,39 +281,10 @@ export default function PipelineClient() {
       )}
 
       {/* Won/Lost Section */}
-      {(filteredOpportunities.some((o) => o.stage === "won") || filteredOpportunities.some((o) => o.stage === "lost")) && (
-        <div style={{ marginTop: "24px" }}>
-          <h2 style={{ fontSize: "16px", fontWeight: 600, color: "var(--text-primary)", marginBottom: "12px" }}>
-            Historial
-          </h2>
-          <div style={{ display: "flex", gap: "12px" }}>
-            {wonLostStages.map((stage) => {
-              const stageOpps = filteredOpportunities.filter((o) => o.stage === stage);
-              if (stageOpps.length === 0) return null;
-              return (
-                <div key={stage} style={{ flex: 1, background: "var(--surface-elevated)", borderRadius: "12px", border: "1px solid var(--border)" }}>
-                  <div style={{ padding: "10px 14px", borderBottom: "1px solid var(--border)", display: "flex", alignItems: "center", gap: "8px" }}>
-                    {stage === "won" ? <span style={{ color: "#10b981" }}>🏆</span> : <span style={{ color: "#ef4444" }}>✖</span>}
-                    <span style={{ fontSize: "13px", fontWeight: 600, color: STAGE_COLORS[stage] }}>{STAGE_LABELS[stage]}</span>
-                    <span style={{ fontSize: "11px", color: "var(--text-muted)" }}>({stageOpps.length})</span>
-                  </div>
-                  <div style={{ padding: "8px" }}>
-                    {stageOpps.map((opp) => (
-                      <div key={opp.id} style={{ padding: "8px 10px", display: "flex", justifyContent: "space-between", borderBottom: "1px solid var(--border)" }}>
-                        <div>
-                          <div style={{ fontSize: "13px", color: "var(--text-primary)", fontWeight: 500 }}>{opp.company}</div>
-                          <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>{opp.title}</div>
-                        </div>
-                        <span style={{ fontSize: "13px", fontWeight: 600, color: STAGE_COLORS[stage] }}>{PipelineTypes.formatCurrency(opp.value)}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
+      <PipelineWonLost
+        opportunities={filteredOpportunities}
+        wonLostStages={wonLostStages}
+      />
 
       {/* Modal Form */}
       <PipelineModal

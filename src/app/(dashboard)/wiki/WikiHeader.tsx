@@ -12,6 +12,7 @@ export function WikiHeader({
   searchQuery,
   setSearchQuery,
   searchResults,
+  setSearchResults,
   handleSearch,
   handleSelectFile,
   stats,
@@ -25,6 +26,7 @@ export function WikiHeader({
   searchQuery: string;
   setSearchQuery: (query: string) => void;
   searchResults: SearchResult[];
+  setSearchResults: (results: SearchResult[]) => void;
   handleSearch: (query: string) => void;
   handleSelectFile: (path: string) => void;
   stats: WikiStats | null;

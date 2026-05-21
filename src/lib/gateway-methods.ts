@@ -1,7 +1,5 @@
 import { randomUUID } from "crypto";
 
-import type { ChatGatewayStatus } from "@/lib/openclaw-chat-types";
-
 import {
   readGatewayConfig,
   buildConnectParams,
@@ -214,42 +212,6 @@ async function openGatewaySocket(timeoutMs = 4_000): Promise<WebSocket> {
   }
 
   throw new Error(errors.length > 0 ? errors.join(" | ") : "Gateway unavailable");
-}
-
-export async function checkGatewayStatus(): Promise<ChatGatewayStatus> {
-  const start = Date.now();
-  try {
-    // Use lightweight HTTP health check instead of WebSocket
-    // WebSocket requires device pairing which may not be configured
-    const config = readGatewayConfig();
-    const hosts = config.url ? [config.url] : [
-      `http://${config.host}:${config.port}`,
-      `http://127.0.0.1:${config.port}`,
-      `http://localhost:${config.port}`,
-    ];
-
-    for (const base of hosts) {
-      try {
-        const url = base.replace(/^ws/i, "http");
-        const res = await fetch(`${url}/health`, {
-          signal: AbortSignal.timeout(2_000),
-        });
-        if (res.ok) {
-          return { available: true, latencyMs: Date.now() - start, error: null };
-        }
-      } catch {
-        // try next host
-      }
-    }
-
-    return { available: false, latencyMs: null, error: "Gateway HTTP health check failed" };
-  } catch (error) {
-    return {
-      available: false,
-      latencyMs: null,
-      error: error instanceof Error ? error.message : "Gateway unavailable",
-    };
-  }
 }
 
 export async function startGatewayChat(params: {

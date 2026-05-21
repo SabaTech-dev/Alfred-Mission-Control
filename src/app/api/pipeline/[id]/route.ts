@@ -4,6 +4,7 @@ import {
   updateOpportunity,
   deleteOpportunity,
 } from "@/lib/pipeline-db";
+import { validateBody, UpdateOpportunitySchema } from "@/lib/api-validation";
 
 export const dynamic = "force-dynamic";
 
@@ -23,7 +24,11 @@ export async function PATCH(
 ) {
   const { id } = await params;
   const body = await request.json();
-  const opp = updateOpportunity(id, body);
+  const validated = validateBody(UpdateOpportunitySchema, body);
+  if (!validated.success) {
+    return validated.error;
+  }
+  const opp = updateOpportunity(id, validated.data);
   if (!opp) return NextResponse.json({ error: "Not found" }, { status: 404 });
   return NextResponse.json(opp);
 }

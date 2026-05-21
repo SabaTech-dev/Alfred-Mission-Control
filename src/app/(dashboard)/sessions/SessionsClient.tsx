@@ -1,16 +1,17 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { formatDistanceToNow } from "date-fns";
-import { MessageSquare, Hash, Clock, Bot, RefreshCw, Search, AlertTriangle } from "lucide-react";
-import { ModelDropdown } from "@/components/ModelDropdown";
+import { MessageSquare, RefreshCw, Search, AlertTriangle } from "lucide-react";
+
 import { useI18n } from "@/i18n/provider";
-import { SessionListItem, SessionMessage } from "@/operations/sessions-list-ops";
+import { SessionListItem } from "@/operations/sessions-list-ops";
+
 import { FilterType } from "./SessionsTypes";
-import { MessageBubble } from "./MessageBubble";
 import { SessionDetail } from "./SessionDetail";
 import { SessionRow } from "./SessionRow";
 import { SessionsFilterTabs } from "./SessionsFilterTabs";
+import { SessionsStats } from "./SessionsStats";
+import { SessionsTableHeader } from "./SessionsTableHeader";
 
 export default function SessionsClient({ initialSessions }: { initialSessions: SessionListItem[] }) {
   const { t } = useI18n();
@@ -58,9 +59,6 @@ export default function SessionsClient({ initialSessions }: { initialSessions: S
     return acc;
   }, {});
 
-  const totalTokens = sessions.reduce((sum, s) => sum + s.totalTokens, 0);
-  const uniqueModels = [...new Set(sessions.map((s) => s.model))];
-
   return (
     <>
       <div style={{ padding: "1.5rem 2rem", minHeight: "100vh" }}>
@@ -80,82 +78,7 @@ export default function SessionsClient({ initialSessions }: { initialSessions: S
           <p style={{ color: "var(--text-secondary)", fontSize: "0.875rem" }}>{t("sessions.subtitle")}</p>
         </div>
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(4, 1fr)",
-            gap: "0.75rem",
-            marginBottom: "1.5rem",
-          }}
-        >
-          {[
-            {
-              labelKey: "sessions.totalSessions",
-              value: sessions.length,
-              icon: MessageSquare,
-              color: "var(--accent)",
-            },
-            {
-              labelKey: "sessions.totalTokens",
-              value: totalTokens >= 1_000_000 ? `${(totalTokens / 1_000_000).toFixed(1)}M` : totalTokens >= 1_000 ? `${(totalTokens / 1_000).toFixed(0)}k` : String(totalTokens),
-              icon: Hash,
-              color: "#60a5fa",
-            },
-            {
-              labelKey: "sessions.cronRuns",
-              value: counts.cron || 0,
-              icon: Clock,
-              color: "#a78bfa",
-            },
-            {
-              labelKey: "sessions.modelsUsed",
-              value: uniqueModels.length,
-              icon: Bot,
-              color: "#4ade80",
-            },
-          ].map(({ labelKey, value, icon: Icon, color }) => (
-            <div
-              key={labelKey}
-              style={{
-                padding: "1rem",
-                borderRadius: "0.75rem",
-                backgroundColor: "var(--card)",
-                border: "1px solid var(--border)",
-                display: "flex",
-                alignItems: "center",
-                gap: "0.75rem",
-              }}
-            >
-              <div
-                style={{
-                  width: "36px",
-                  height: "36px",
-                  borderRadius: "0.5rem",
-                  backgroundColor: `color-mix(in srgb, ${color} 15%, transparent)`,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0,
-                }}
-              >
-                <Icon style={{ width: "18px", height: "18px", color }} />
-              </div>
-              <div>
-                <div
-                  style={{
-                    fontSize: "1.25rem",
-                    fontWeight: 700,
-                    color: "var(--text-primary)",
-                    lineHeight: 1.2,
-                  }}
-                >
-                  {value}
-                </div>
-                <div style={{ fontSize: "0.72rem", color: "var(--text-muted)" }}>{t(labelKey)}</div>
-              </div>
-            </div>
-          ))}
-        </div>
+        <SessionsStats sessions={sessions} counts={counts} />
 
         <div
           style={{
@@ -227,57 +150,7 @@ export default function SessionsClient({ initialSessions }: { initialSessions: S
             </div>
           </div>
 
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "0.75rem",
-              padding: "0.5rem 1rem",
-              borderBottom: "1px solid var(--border)",
-              backgroundColor: "var(--card-elevated)",
-            }}
-          >
-            <div style={{ width: "32px", flexShrink: 0 }} />
-            <div
-              style={{
-                flex: 1,
-                fontSize: "0.7rem",
-                fontWeight: 700,
-                color: "var(--text-muted)",
-                textTransform: "uppercase",
-                letterSpacing: "0.05em",
-              }}
-            >
-              Session
-            </div>
-            <div
-              style={{
-                minWidth: "100px",
-                textAlign: "right",
-                fontSize: "0.7rem",
-                fontWeight: 700,
-                color: "var(--text-muted)",
-                textTransform: "uppercase",
-                letterSpacing: "0.05em",
-              }}
-            >
-              Tokens / ctx
-            </div>
-            <div
-              style={{
-                minWidth: "80px",
-                textAlign: "right",
-                fontSize: "0.7rem",
-                fontWeight: 700,
-                color: "var(--text-muted)",
-                textTransform: "uppercase",
-                letterSpacing: "0.05em",
-              }}
-            >
-              Updated
-            </div>
-            <div style={{ width: "14px", flexShrink: 0 }} />
-          </div>
+          <SessionsTableHeader />
 
           {loading && (
             <div

@@ -172,6 +172,25 @@ export function getOpportunity(id: string): Opportunity | null {
   return db.prepare("SELECT * FROM opportunities WHERE id = ?").get(id) as Opportunity | null;
 }
 
+// Whitelist de columnas permitidas para SQL injection prevention
+const ALLOWED_UPDATE_COLUMNS = [
+  "company",
+  "contact_name",
+  "contact_email",
+  "contact_linkedin",
+  "title",
+  "description",
+  "stage",
+  "value",
+  "currency",
+  "service_type",
+  "probability",
+  "source",
+  "next_action",
+  "next_action_date",
+  "notes",
+] as const;
+
 export function updateOpportunity(id: string, input: UpdateOpportunityInput): Opportunity | null {
   const db = getDb();
   const existing = getOpportunity(id);
@@ -181,7 +200,8 @@ export function updateOpportunity(id: string, input: UpdateOpportunityInput): Op
   const values: unknown[] = [];
 
   for (const [key, val] of Object.entries(input)) {
-    if (val !== undefined) {
+    // SQL injection prevention: solo columnas whitelist pueden actualizarse
+    if (val !== undefined && ALLOWED_UPDATE_COLUMNS.includes(key as any)) {
       updates.push(`${key} = ?`);
       values.push(val);
     }

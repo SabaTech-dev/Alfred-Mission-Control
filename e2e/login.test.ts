@@ -11,7 +11,7 @@ test.describe("Login Flow", () => {
 
     // Fill password and submit
     await page.fill('input[type="password"]', getAdminPassword());
-    await page.click('button:has-text("Entrar")');
+    await page.click('button:has-text("Iniciar sesión"), button:has-text("Sign In")');
 
     // Wait for navigation (check URL changed from /login)
     await page.waitForFunction(
@@ -29,10 +29,11 @@ test.describe("Login Flow", () => {
 
     // Fill wrong password
     await page.fill('input[type="password"]', "wrong-password");
-    await page.click('button:has-text("Entrar")');
+    await page.click('button:has-text("Iniciar sesión"), button:has-text("Sign In")');
 
     // Wait for error message
-    await page.waitForSelector("text=Contraseña incorrecta", { timeout: 10000 });
+    // Wait for error message (ES: "Contraseña incorrecta", EN: "Incorrect password")
+    await page.waitForSelector("text=/incorrecta|incorrect/i", { timeout: 10000 });
 
     // Should still be on login page
     expect(page.url()).toContain("/login");

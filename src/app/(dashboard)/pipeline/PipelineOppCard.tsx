@@ -2,7 +2,9 @@
 
 import { ArrowRight, Edit3, Trash2 } from "lucide-react";
 import { PipelineStage, type Opportunity } from "@/lib/pipeline-types";
-import { STAGE_COLORS, formatDate, formatCurrency, serviceLabels, STATUS_COLORS, KanbanTaskStatus } from "./PipelineTypes";
+import { STAGE_COLORS, STAGE_LABELS } from "@/lib/pipeline-types";
+import { formatDate, formatCurrency, serviceLabels, STATUS_COLORS } from "./PipelineTypes";
+import type { KanbanTaskStatus } from "./PipelineTypes";
 
 interface OppCardProps {
   opp: Opportunity;
@@ -191,3 +193,5 @@ export function OppCard({
     </div>
   );
 }
+
+export { OppCard as PipelineOppCard };

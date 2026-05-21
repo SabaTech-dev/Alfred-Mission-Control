@@ -4,6 +4,7 @@ import {
   createOpportunity,
   getPipelineKPIs,
 } from "@/lib/pipeline-db";
+import { validateBody, CreateOpportunitySchema } from "@/lib/api-validation";
 
 export const dynamic = "force-dynamic";
 
@@ -20,7 +21,11 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const opp = createOpportunity(body);
+    const validated = validateBody(CreateOpportunitySchema, body);
+    if (!validated.success) {
+      return validated.error;
+    }
+    const opp = createOpportunity(validated.data);
     return NextResponse.json(opp, { status: 201 });
   } catch (error) {
     console.error("Pipeline POST error:", error);

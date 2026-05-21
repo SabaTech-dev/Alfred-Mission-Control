@@ -60,9 +60,6 @@ export const formatCurrency = (val: number) =>
 export const formatPercent = (val: number) =>
   new Intl.NumberFormat("es-ES", { style: "percent", minimumFractionDigits: 1 }).format(val);
 
-export const formatPercent = (val: number) =>
-  new Intl.NumberFormat("es-ES", { style: "percent", minimumFractionDigits: 1 }).format(val);
-
 export const formatDate = (d: string | null) => {
   if (!d) return "—";
   return new Date(d).toLocaleDateString("es-ES", { day: "numeric", month: "short" });

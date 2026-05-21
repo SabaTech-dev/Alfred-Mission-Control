@@ -25,7 +25,7 @@ test.describe("Kanban Board", () => {
     
     // Check for default column names
     const backlogColumn = page.locator("text=Backlog").first();
-    const inProgressColumn = page.locator("text=In Progress").first();
+    const inProgressColumn = page.locator("text=In Progress, text=En progreso").first();
     const reviewColumn = page.locator("text=Review").first();
     const doneColumn = page.locator("text=Done").first();
     

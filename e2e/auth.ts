@@ -23,7 +23,7 @@ export async function login(page: Page): Promise<void> {
   await page.goto("/login");
   await page.waitForSelector('input[type="password"]', { timeout: 10000 });
   await page.fill('input[type="password"]', ADMIN_PASSWORD);
-  await page.click('button:has-text("Entrar")');
+  await page.click('button:has-text("Iniciar sesión"), button:has-text("Sign In")');
   await page.waitForFunction(
     () => !window.location.pathname.includes("/login"),
     { timeout: 15000 }
