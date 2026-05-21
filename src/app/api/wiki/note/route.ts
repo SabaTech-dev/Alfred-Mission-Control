@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { promises as fs } from "fs";
 import path from "path";
-import { requireAuth } from "@/lib/auth-check";
+import { requireAgentOrSessionAuth } from "@/lib/auth-helpers";
 
 const VAULT_PATH = process.env.VAULT_PATH || path.join(process.env.HOME || "", ".openclaw/wiki/main");
 
@@ -62,7 +62,7 @@ async function getFileSize(filePath: string): Promise<number> {
 
 export async function GET(request: NextRequest) {
   try {
-    requireAuth(request);
+    const _auth = await requireAgentOrSessionAuth(request); if (!_auth.authorized) return _auth.error;
 
     const { searchParams } = new URL(request.url);
     const filePath = searchParams.get("path");

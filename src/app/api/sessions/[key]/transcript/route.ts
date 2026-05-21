@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { readFileSync, existsSync } from "fs";
 import { join, resolve } from "path";
-import { requireAuth } from "@/lib/auth-helpers";
+import { requireAgentOrSessionAuth } from "@/lib/auth-helpers";
 
 const OPENCLAW_DIR = process.env.OPENCLAW_DIR || "/home/ubuntu/.openclaw";
 
@@ -50,7 +50,7 @@ export async function GET(
   { params }: { params: Promise<{ key: string }> }
 ) {
   // Auth check
-  const authResult = await requireAuth(request);
+  const authResult = await requireAgentOrSessionAuth(request);
   if (!authResult.authorized) {
     return authResult.error;
   }

@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { NextRequest, NextResponse } from "next/server";
-import { requireAuth } from "@/lib/auth-helpers";
+import { requireAgentOrSessionAuth } from "@/lib/auth-helpers";
 
 export const dynamic = "force-dynamic";
 
@@ -93,7 +93,7 @@ function calculateUptime(logs: HeartbeatLog[], daysBack: number = 30): UptimeSta
 
 export async function GET(request: NextRequest) {
   // Auth check
-  const auth = await requireAuth(request);
+  const auth = await requireAgentOrSessionAuth(request);
   if (!auth.authorized) return auth.error;
 
   try {

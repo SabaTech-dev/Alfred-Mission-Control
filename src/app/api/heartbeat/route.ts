@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from "fs";
 import { join, dirname } from "path";
-import { requireAuth } from "@/lib/auth-helpers";
+import { requireAgentOrSessionAuth } from "@/lib/auth-helpers";
 
 export const dynamic = "force-dynamic";
 
@@ -91,7 +91,7 @@ function getDefaultHeartbeatPaths(): string[] {
 }
 
 export async function GET(request: NextRequest) {
-  const auth = await requireAuth(request);
+  const auth = await requireAgentOrSessionAuth(request);
   if (!auth.authorized) {
     return auth.error;
   }
@@ -174,7 +174,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function PUT(request: NextRequest) {
-  const auth = await requireAuth(request);
+  const auth = await requireAgentOrSessionAuth(request);
   if (!auth.authorized) {
     return auth.error;
   }

@@ -71,16 +71,37 @@ const DB_PATH = process.env.NODE_ENV === "test"
   : path.join(process.cwd(), "data", "kanban.db");
 
 let _db: Database | null = null;
+let _isInitializing = false;
+let _initPromise: Promise<void> | null = null;
 
 function getDb(): Database {
-  if (!_db) {
-    const dir = path.dirname(DB_PATH);
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-    _db = new Database(DB_PATH);
-    _db.pragma("journal_mode = WAL");
-    initPipelineTable(_db);
+  if (_db) {
+    return _db;
   }
-  return _db;
+
+  if (_isInitializing && _initPromise) {
+    // Wait for the ongoing initialization to complete.
+    // In a synchronous context, throw to let the caller retry or handle.
+    // If needed, restructure call sites to be async.
+    throw new Error("Database is initializing. Please retry momentarily.");
+  }
+
+  const dir = path.dirname(DB_PATH);
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  const db = new Database(DB_PATH);
+  _db = db;
+  _isInitializing = true;
+  _initPromise = (async () => {
+    try {
+      db.pragma("journal_mode = WAL");
+      initPipelineTable(db);
+    } finally {
+      _isInitializing = false;
+      _initPromise = null;
+    }
+  })();
+
+  return db;
 }
 
 function initPipelineTable(db: Database) {

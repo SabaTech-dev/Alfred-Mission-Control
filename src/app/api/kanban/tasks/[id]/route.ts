@@ -12,7 +12,7 @@ import {
   shouldRequireTransitionComment,
 } from "@/lib/kanban-comments";
 import { emitKanbanTaskUpdated, emitKanbanTaskDeleted } from "@/lib/runtime-events";
-import { requireAuth } from "@/lib/auth-helpers";
+import { requireAgentOrSessionAuth } from "@/lib/auth-helpers";
 import { validateBody, UpdateTaskSchema } from "@/lib/api-validation";
 
 export const dynamic = "force-dynamic";
@@ -26,7 +26,7 @@ interface RouteParams {
  * Get a single task by ID
  */
 export async function GET(request: NextRequest, { params }: RouteParams) {
-  const authResult = await requireAuth(request);
+  const authResult = await requireAgentOrSessionAuth(request);
   if (!authResult.authorized) {
     return authResult.error;
   }
@@ -66,7 +66,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
  * Authorization: Requires authenticated session
  */
 export async function PUT(request: NextRequest, { params }: RouteParams) {
-  const authResult = await requireAuth(request);
+  const authResult = await requireAgentOrSessionAuth(request);
   if (!authResult.authorized) {
     return authResult.error;
   }
@@ -167,7 +167,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
  * Authorization: Requires authenticated session
  */
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
-  const authResult = await requireAuth(request);
+  const authResult = await requireAgentOrSessionAuth(request);
   if (!authResult.authorized) {
     return authResult.error;
   }

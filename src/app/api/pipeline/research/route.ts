@@ -275,6 +275,7 @@ export async function GET() {
     });
   } catch (error) {
     console.error("Pipeline research GET error:", error);
-    return NextResponse.json({ error: "Failed to load research pipeline" }, { status: 500 });
+    const msg = error instanceof Error ? error.message : String(error);
+    return NextResponse.json({ error: "Failed to load research pipeline", detail: msg }, { status: 500 });
   }
 }

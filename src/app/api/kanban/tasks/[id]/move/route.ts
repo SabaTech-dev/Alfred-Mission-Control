@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { moveTask, getTask } from "@/lib/kanban-db";
 import { emitKanbanTaskMoved } from "@/lib/runtime-events";
-import { requireAuth } from "@/lib/auth-helpers";
+import { requireAgentOrSessionAuth } from "@/lib/auth-helpers";
 import { 
   getOpportunity, 
   updateOpportunity,
@@ -31,7 +31,7 @@ interface MoveTaskBody {
  * Authorization: Requires authenticated session
  */
 export async function POST(request: NextRequest, { params }: RouteParams) {
-  const authResult = await requireAuth(request);
+  const authResult = await requireAgentOrSessionAuth(request);
   if (!authResult.authorized) {
     return authResult.error;
   }

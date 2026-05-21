@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireAuth } from "@/lib/auth-helpers";
+import { requireAgentOrSessionAuth } from "@/lib/auth-helpers";
 import { getAgentWorkload, listTasks, type AgentWorkload } from "@/lib/kanban-db";
 
 export const dynamic = "force-dynamic";
@@ -11,7 +11,7 @@ export const dynamic = "force-dynamic";
  */
 export async function GET(request: NextRequest) {
   // Auth check
-  const authResult = await requireAuth(request);
+  const authResult = await requireAgentOrSessionAuth(request);
   if (!authResult.authorized) {
     return authResult.error;
   }

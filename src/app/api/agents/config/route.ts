@@ -3,7 +3,7 @@
  * Does not depend on database or other services that may fail
  */
 import { NextRequest, NextResponse } from 'next/server';
-import { requireAuth } from '@/lib/auth-helpers';
+import { requireAgentOrSessionAuth } from '@/lib/auth-helpers';
 import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
 
@@ -14,7 +14,7 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
   // Auth check
-  const authResult = await requireAuth(request);
+  const authResult = await requireAgentOrSessionAuth(request);
   if (!authResult.authorized) {
     return authResult.error;
   }

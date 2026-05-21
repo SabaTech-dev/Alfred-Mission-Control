@@ -6,7 +6,7 @@ import {
   type ListTasksFilters,
 } from "@/lib/kanban-db";
 import { emitKanbanTaskCreated } from "@/lib/runtime-events";
-import { requireAuth } from "@/lib/auth-helpers";
+import { requireAgentOrSessionAuth } from "@/lib/auth-helpers";
 import { validateBody, CreateTaskSchema } from "@/lib/api-validation";
 
 export const dynamic = "force-dynamic";
@@ -18,7 +18,7 @@ export const dynamic = "force-dynamic";
  * - view: "active" (default), "archived", or "all"
  */
 export async function GET(request: NextRequest) {
-  const authResult = await requireAuth(request);
+  const authResult = await requireAgentOrSessionAuth(request);
   if (!authResult.authorized) {
     return authResult.error;
   }
@@ -57,7 +57,7 @@ export async function GET(request: NextRequest) {
  * Authorization: Requires authenticated session
  */
 export async function POST(request: NextRequest) {
-  const authResult = await requireAuth(request);
+  const authResult = await requireAgentOrSessionAuth(request);
   if (!authResult.authorized) {
     return authResult.error;
   }

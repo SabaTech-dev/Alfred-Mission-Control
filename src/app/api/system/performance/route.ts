@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { cachedSystemStats } from "@/lib/system-stats";
-import { requireAuth } from "@/lib/auth-helpers";
+import { requireAgentOrSessionAuth } from "@/lib/auth-helpers";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
   // Auth check
-  const auth = await requireAuth(request);
+  const auth = await requireAgentOrSessionAuth(request);
   if (!auth.authorized) return auth.error;
 
   const startTime = Date.now();

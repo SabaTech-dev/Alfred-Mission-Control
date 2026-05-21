@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { execSync } from "child_process";
 import path from "path";
-import { requireAuth } from "@/lib/auth-check";
+import { requireAgentOrSessionAuth } from "@/lib/auth-helpers";
 
 const VAULT_PATH = process.env.VAULT_PATH || path.join(process.env.HOME || "", ".openclaw/wiki/main");
 
@@ -41,7 +41,7 @@ function performSync(): { success: boolean; error?: string } {
 
 export async function POST(request: NextRequest) {
   try {
-    requireAuth(request);
+    const _auth = await requireAgentOrSessionAuth(request); if (!_auth.authorized) return _auth.error;
 
     const result = performSync();
 
@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
-    requireAuth(request);
+    const _auth = await requireAgentOrSessionAuth(request); if (!_auth.authorized) return _auth.error;
 
     const lastSync = getLastSyncTime();
     const now = new Date();

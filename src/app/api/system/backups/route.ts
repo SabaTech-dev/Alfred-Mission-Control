@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
 import { randomUUID } from "crypto";
-import { requireAuth } from "@/lib/auth-helpers";
+import { requireAgentOrSessionAuth } from "@/lib/auth-helpers";
 
 export const dynamic = "force-dynamic";
 
@@ -88,7 +88,7 @@ function createBackup(): BackupEntry {
 
 // GET /api/system/backups — List all backups
 export async function GET(request: NextRequest) {
-  const auth = await requireAuth(request);
+  const auth = await requireAgentOrSessionAuth(request);
   if (!auth.authorized) return auth.error;
   try {
     const entries = readBackupIndex();
@@ -104,7 +104,7 @@ export async function GET(request: NextRequest) {
 
 // POST /api/system/backups — Create a new backup
 export async function POST(request: NextRequest) {
-  const auth = await requireAuth(request);
+  const auth = await requireAgentOrSessionAuth(request);
   if (!auth.authorized) return auth.error;
   try {
     const entry = createBackup();
@@ -124,7 +124,7 @@ export async function POST(request: NextRequest) {
 
 // DELETE /api/system/backups — Delete backup by ?id=xxx
 export async function DELETE(request: NextRequest) {
-  const auth = await requireAuth(request);
+  const auth = await requireAgentOrSessionAuth(request);
   if (!auth.authorized) return auth.error;
   try {
     const { searchParams } = new URL(request.url);

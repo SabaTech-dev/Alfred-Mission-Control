@@ -1,12 +1,13 @@
 import { NextResponse } from 'next/server';
 import { promises as fs } from 'fs';
 import path from 'path';
+import { OPENCLAW_WORKSPACE } from '@/lib/paths';
 
 export async function GET() {
   try {
     const today = new Date();
     const dateStr = today.toISOString().split('T')[0]; // YYYY-MM-DD
-    const workspaceMemory = path.join(process.cwd(), '..', '..', 'memory', `${dateStr}.md`);
+    const workspaceMemory = path.join(OPENCLAW_WORKSPACE, 'memory', `${dateStr}.md`);
     
     let content = '';
     try {
@@ -41,9 +42,15 @@ export async function GET() {
         tasks.push(trimmed.replace('- [ ] ', ''));
       } else if (trimmed.startsWith('- [x]')) {
         completed.push(trimmed.replace('- [x] ', ''));
+      } else if (trimmed.startsWith('- ✅')) {
+        completed.push(trimmed.replace('- ✅ ', ''));
+      } else if (/^\d+\.\s/.test(trimmed) && currentSection.includes('objetivo')) {
+        tasks.push(trimmed.replace(/^\d+\.\s/, ''));
+      } else if (/^\d+\.\s/.test(trimmed) && currentSection.includes('pendiente')) {
+        tasks.push(trimmed.replace(/^\d+\.\s/, ''));
       } else if (trimmed.startsWith('- ') && !trimmed.startsWith('- [')) {
         // Regular notes (not checkboxes)
-        if (currentSection.includes('nota') || currentSection.includes('note') || currentSection.includes('important')) {
+        if (currentSection.includes('nota') || currentSection.includes('note') || currentSection.includes('important') || currentSection.includes('learning')) {
           notes.push(trimmed.replace('- ', ''));
         }
       }

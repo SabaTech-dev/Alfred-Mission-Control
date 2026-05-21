@@ -11,7 +11,7 @@ import {
   isCommentRateLimited,
   normalizeStructuredCommentPayload,
 } from "@/lib/kanban-comments";
-import { requireAuth } from "@/lib/auth-helpers";
+import { requireAgentOrSessionAuth } from "@/lib/auth-helpers";
 
 export const dynamic = "force-dynamic";
 
@@ -39,7 +39,7 @@ function getClientIp(request: NextRequest): string {
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
-  const authResult = await requireAuth(request);
+  const authResult = await requireAgentOrSessionAuth(request);
   if (!authResult.authorized) {
     return authResult.error;
   }
@@ -70,7 +70,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 }
 
 export async function POST(request: NextRequest, { params }: RouteParams) {
-  const authResult = await requireAuth(request);
+  const authResult = await requireAgentOrSessionAuth(request);
   if (!authResult.authorized) {
     return authResult.error;
   }
