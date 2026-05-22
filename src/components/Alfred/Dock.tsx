@@ -92,7 +92,6 @@ function DockSections(): DockSection[] {
         { href: "/skills", labelKey: "dock.skills", helpKey: "help.skills", icon: Wrench },
         { href: "/analytics", labelKey: "dock.analytics", helpKey: "help.analytics", icon: DollarSign },
         { href: "/costs-alerts", labelKey: "dock.costsAlerts", helpKey: "help.costsAlerts", icon: AlertTriangle },
-        { href: "/calendar", labelKey: "dock.calendar", helpKey: "help.calendar", icon: CalendarDays },
         { href: "/system", labelKey: "dock.system", helpKey: "help.system", icon: Server },
         { href: "/settings", labelKey: "dock.settings", helpKey: "help.settings", icon: Settings },
       ],
@@ -110,7 +109,6 @@ function DockSections(): DockSection[] {
       items: [
         { href: "/office", labelKey: "dock.office", helpKey: "help.office", icon: Briefcase },
         { href: "/calendar", labelKey: "dock.calendar", helpKey: "help.calendar", icon: CalendarDays },
-        { href: "/costs-alerts", labelKey: "dock.costsAlerts", helpKey: "help.costsAlerts", icon: AlertTriangle },
       ],
     },
   ];
