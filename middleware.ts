@@ -14,6 +14,11 @@ const PUBLIC_API_ROUTES = new Set([
   "/api/health",
 ]);
 
+// Routes that skip middleware auth entirely (called from browser without credentials)
+const SKIP_AUTH_ROUTES = new Set([
+  "/api/pipeline/scrap",
+]);
+
 // API routes requiring agent credentials ONLY (no browser session)
 const AGENT_ONLY_API_PREFIXES = [
   "/api/heartbeat",
@@ -99,6 +104,11 @@ export async function middleware(request: NextRequest) {
 
   // Always allow explicit public API routes
   if (PUBLIC_API_ROUTES.has(pathname)) {
+    return NextResponse.next();
+  }
+
+  // Skip auth for specific routes (e.g., scrap called from browser)
+  if (SKIP_AUTH_ROUTES.has(pathname)) {
     return NextResponse.next();
   }
 

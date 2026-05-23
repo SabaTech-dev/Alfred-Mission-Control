@@ -249,12 +249,12 @@ export default function ReportsClient() {
             <span className="hidden sm:inline">Filters</span>
           </button>
           <button
-            onClick={() => { setSearchQuery(""); setFilterCategory("all"); setFilterType("all"); }}
+            onClick={() => loadReports()}
             className="p-2 rounded-lg transition-colors hover:opacity-80"
             style={{ color: "var(--text-secondary)" }}
-            title="Reset filters"
+            title="Refresh reports"
           >
-            <RefreshCw className="w-4 h-4" />
+            <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
           </button>
         </div>
       </div>

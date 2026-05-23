@@ -25,13 +25,8 @@ function isSafeInput(input: string): boolean {
  * Security: uses execFile (no shell) to prevent command injection.
  */
 export async function POST(request: Request) {
-  // Auth check: require agent header (only if AGENT_API_KEY is set)
-  const agentId = request.headers.get("x-agent-id");
-  const agentKey = request.headers.get("x-agent-key");
-  const expectedKey = process.env.AGENT_API_KEY;
-  if (expectedKey && (agentId !== "coder" || agentKey !== expectedKey)) {
-    return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
-  }
+  // Auth handled by root middleware.ts (AGENT_OR_SESSION_API_PREFIXES)
+  // No additional auth check needed here
 
   // Parse and validate request body
   let body;
