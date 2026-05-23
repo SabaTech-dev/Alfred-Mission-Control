@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { Plus } from "lucide-react";
+import { useAutoRefresh } from "@/hooks/useAutoRefresh";
 import {
   PIPELINE_STAGES,
   type PipelineStage,
@@ -89,6 +90,9 @@ export default function PipelineClient() {
 
   useEffect(() => { fetchData(); }, [fetchData]);
   useEffect(() => { fetchResearchData(); }, [fetchResearchData]);
+
+  // Auto-refresh pipeline every 60s
+  useAutoRefresh(fetchData, { intervalMs: 60000, pauseWhenHidden: true });
 
   // Pipeline-Kanban Bridge: Fetch Kanban tasks when card is expanded
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
