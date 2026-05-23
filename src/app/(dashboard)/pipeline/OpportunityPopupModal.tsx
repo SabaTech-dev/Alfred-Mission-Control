@@ -1,6 +1,18 @@
 "use client";
 
 import { X, AlertTriangle, Clock, Send, DollarSign, Building2, Mail, Linkedin, Calendar } from "lucide-react";
+
+/** Sanitize URL: only allow safe protocols (http, https, mailto) */
+function sanitizeHref(value: string | undefined, protocol: "url" | "mailto"): string {
+  if (!value) return "#";
+  const trimmed = value.trim();
+  if (protocol === "mailto") {
+    // Basic email validation
+    return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(trimmed) ? `mailto:${trimmed}` : "#";
+  }
+  // Only allow http/https
+  return /^https?:\/\//i.test(trimmed) ? trimmed : "#";
+}
 import { type Opportunity, type PipelineStage } from "@/lib/pipeline-types";
 import { formatDate, formatCurrency } from "./PipelineTypes";
 
@@ -127,7 +139,7 @@ export function OpportunityPopupModal({ opp, onClose, onAction }: OpportunityPop
               {opp.contact_email && (
                 <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "13px", color: "var(--text-secondary)" }}>
                   <Mail size={16} />
-                  <a href={`mailto:${opp.contact_email}`} style={{ color: "var(--accent)", textDecoration: "none" }}>
+                  <a href={sanitizeHref(opp.contact_email, "mailto")} style={{ color: "var(--accent)", textDecoration: "none" }}>
                     {opp.contact_email}
                   </a>
                 </div>
@@ -135,7 +147,7 @@ export function OpportunityPopupModal({ opp, onClose, onAction }: OpportunityPop
               {opp.contact_linkedin && (
                 <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "13px", color: "var(--text-secondary)" }}>
                   <Linkedin size={16} />
-                  <a href={opp.contact_linkedin} target="_blank" rel="noopener noreferrer" style={{ color: "var(--accent)", textDecoration: "none" }}>
+                  <a href={sanitizeHref(opp.contact_linkedin, "url")} target="_blank" rel="noopener noreferrer" style={{ color: "var(--accent)", textDecoration: "none" }}>
                     LinkedIn
                   </a>
                 </div>
