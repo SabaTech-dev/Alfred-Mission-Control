@@ -14,7 +14,8 @@ export async function GET() {
     return NextResponse.json({ opportunities, kpis });
   } catch (error) {
     console.error("Pipeline GET error:", error);
-    return NextResponse.json({ error: "Failed to load pipeline", details: String(error) }, { status: 500 });
+    // Do not expose internal error details to client (security: prevent information leak)
+    return NextResponse.json({ error: "Failed to load pipeline" }, { status: 500 });
   }
 }
 
