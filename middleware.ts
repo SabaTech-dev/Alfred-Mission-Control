@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { validateAgentAuth } from "@/lib/agent-auth";
-import { sessionStore } from "@/lib/session-store";
+import { jwtUtils } from "@/lib/jwt-utils";
 import { isAdminRoute, isAdminFromToken } from "@/lib/role-based-access";
 
 // Routes that never require authentication
@@ -87,7 +87,7 @@ async function isAuthenticated(request: NextRequest): Promise<boolean> {
   if (!token) {
     return false;
   }
-  return sessionStore.validate(token);
+  return jwtUtils.isValidToken(token);
 }
 
 export async function middleware(request: NextRequest) {
@@ -159,7 +159,7 @@ export async function middleware(request: NextRequest) {
 
   // Check admin access for admin routes
   if (isAdminRoute(pathname)) {
-    const token = sessionStore.getTokenFromRequest(request);
+    const token = jwtUtils.getTokenFromRequest(request);
     if (!token) {
       return NextResponse.json(
         { error: "Forbidden", message: "Admin access required" },

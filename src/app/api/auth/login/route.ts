@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { sessionStore } from "@/lib/session-store";
+import { jwtUtils } from "@/lib/jwt-utils";
 import { validateBody, LoginSchema } from "@/lib/api-validation";
 
 export const dynamic = "force-dynamic";
@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
     clearAttempts(ip);
 
     const ttlMs = 24 * 60 * 60 * 1000;
-    const token = await sessionStore.generateToken(ttlMs, { role: "admin" });
+    const token = await jwtUtils.createSessionToken(ttlMs, { role: "admin" });
 
     const response = NextResponse.json({
       success: true,
