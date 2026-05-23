@@ -36,6 +36,7 @@
     "dompurify": "^3.4.5",
     "framer-motion": "^12.34.3",
     "html2canvas": "^1.4.1",
+    "jose": "^6.2.3",
     "lodash": "^4.17.21",
     "lucide-react": "^0.563.0",
     "next": "^16.2.6",

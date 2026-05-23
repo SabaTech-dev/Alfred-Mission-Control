@@ -2,23 +2,16 @@
  * Role-based access control for AMC admin pages.
  *
  * SECURITY MODEL:
- * - Extends session-store with role information
- * - Admin-only routes require role: 'admin' in session payload
+ * - Uses JWT tokens for stateless session management (Edge-compatible)
+ * - Admin-only routes require role: 'admin' in JWT payload
  * - Non-admin users get 403 Forbidden for admin routes
  *
  * @module role-based-access
  */
 
-import { sessionStore } from "./session-store";
+import { jwtUtils } from "./jwt-utils";
 
 export type UserRole = "user" | "admin";
-
-interface SessionPayloadWithRole {
-  exp: number;
-  jti: string;
-  role: UserRole;
-  username?: string;
-}
 
 const ADMIN_USERS = new Set<string>(
   process.env.ADMIN_USERS?.split(",").map((u) => u.trim()) || ["admin"]
@@ -35,51 +28,15 @@ export function isAdminUser(username: string): boolean {
 }
 
 /**
- * Extract role from a session token.
+ * Check if a user has admin role based on JWT session token.
  *
- * @param token - Session token
- * @returns Role or null if token is invalid
- */
-export function extractRoleFromToken(token: string): UserRole | null {
-  try {
-    const parts = token.split(".");
-    if (parts.length !== 2) {
-      return null;
-    }
-
-    const [payloadB64] = parts;
-    if (!payloadB64) {
-      return null;
-    }
-
-    const payload: SessionPayloadWithRole = JSON.parse(base64UrlDecode(payloadB64));
-    return payload.role || "user";
-  } catch {
-    return null;
-  }
-}
-
-/**
- * Base64 URL decode (copied from session-store.ts for compatibility).
- */
-function base64UrlDecode(str: string): string {
-  str = str.replace(/-/g, "+").replace(/_/g, "/");
-  while (str.length % 4) str += "=";
-  if (typeof globalThis !== "undefined" && globalThis.Buffer) {
-    return globalThis.Buffer.from(str, "base64").toString("utf8");
-  }
-  return atob(str);
-}
-
-/**
- * Check if a user has admin role based on session token.
- *
- * @param token - Session token
+ * @param token - JWT session token
  * @returns true if user is admin, false otherwise
  */
 export async function isAdminFromToken(token: string): Promise<boolean> {
-  const role = extractRoleFromToken(token);
-  return role === "admin";
+  const payload = await jwtUtils.verifyToken(token);
+  if (!payload) return false;
+  return payload.role === "admin";
 }
 
 /**

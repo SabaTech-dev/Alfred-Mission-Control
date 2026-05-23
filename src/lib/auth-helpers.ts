@@ -17,7 +17,7 @@
  * /api/kanban/agent (Agent endpoints):
  * - All endpoints require either:
  *   1) X-Agent-Id + X-Agent-Key headers, OR
- *   2) Authenticated human session
+ *   2) Authenticated human session (JWT)
  * - Uses requireAgentOrSessionAuth()
  *
  * Rationale:
@@ -26,8 +26,8 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { requireAgentAuth } from "@/lib/agent-auth";
-import { sessionStore } from "@/lib/session-store";
+import { validateAgentAuth } from "@/lib/agent-auth";
+import { jwtUtils } from "@/lib/jwt-utils";
 
 export interface AuthResult {
   authorized: boolean;
@@ -54,7 +54,7 @@ export async function requireAuth(request: NextRequest): Promise<AuthResult> {
     };
   }
 
-  const isValid = await sessionStore.validate(token);
+  const isValid = await jwtUtils.isValidToken(token);
 
   if (!isValid) {
     return {
@@ -72,12 +72,12 @@ export async function requireAuth(request: NextRequest): Promise<AuthResult> {
 export async function requireAgentOrSessionAuth(
   request: NextRequest
 ): Promise<AgentOrSessionAuthResult> {
-  const agentAuth = requireAgentAuth(request);
-  if (!(agentAuth instanceof NextResponse)) {
+  const agentId = validateAgentAuth(request);
+  if (agentId) {
     return {
       authorized: true,
       authType: "agent",
-      agentId: agentAuth.agentId,
+      agentId,
     };
   }
 
