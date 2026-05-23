@@ -24,6 +24,7 @@ import { LiveStatusIndicator } from "@/components/LiveStatusIndicator";
 interface Session {
   sessionKey: string;
   agent: string;
+  kind: string; // direct | cron | spawn-child
   model: string;
   startedAt: string;
   lastActivityAt: string;
@@ -39,6 +40,9 @@ interface LiveData {
   timestamp: string;
   hasActive: boolean;
   error?: string;
+  totalCount: number;
+  filteredCount: number;
+  byKind: Record<string, number>;
 }
 
 /* ------------------------------------------------------------------ */
@@ -202,11 +206,12 @@ export default function LiveFeedPage() {
   const [error, setError] = useState<string | null>(null);
   const [connected, setConnected] = useState(true);
   const [totalPolls, setTotalPolls] = useState(0);
+  const [filter, setFilter] = useState<string>("active"); // active | all | type:cron | type:spawn-child | type:direct
   const feedEndRef = useRef<HTMLDivElement>(null);
 
   const fetchData = useCallback(async () => {
     try {
-      const res = await fetch("/api/live");
+      const res = await fetch(`/api/live?filter=${filter}`);
       const json = await res.json();
       setData(json);
       setError(null);
@@ -218,7 +223,7 @@ export default function LiveFeedPage() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [filter]);
 
   useEffect(() => {
     fetchData();
@@ -271,7 +276,29 @@ export default function LiveFeedPage() {
             </div>
           )}
           {/* Connection indicator */}
-          <div className="ml-auto flex items-center gap-2">
+          <div className="ml-auto flex items-center gap-3">
+            {/* Filter buttons */}
+            <div className="flex items-center gap-1 text-xs">
+              {[
+                { key: "active", label: "Activas" },
+                { key: "all", label: `Todas (${data?.totalCount ?? 0})` },
+                { key: "type:direct", label: "Direct" },
+                { key: "type:cron", label: "Crons" },
+                { key: "type:spawn-child", label: "Subagentes" },
+              ].map((f) => (
+                <button
+                  key={f.key}
+                  onClick={() => setFilter(f.key)}
+                  className="px-2 py-1 rounded-md transition-colors font-medium"
+                  style={{
+                    backgroundColor: filter === f.key ? "var(--accent)" : "var(--card-elevated)",
+                    color: filter === f.key ? "white" : "var(--text-secondary)",
+                  }}
+                >
+                  {f.label}
+                </button>
+              ))}
+            </div>
             {connected ? (
               <Wifi className="w-4 h-4" style={{ color: "var(--success)" }} />
             ) : (
