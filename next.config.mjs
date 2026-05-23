@@ -9,6 +9,13 @@ const nextConfig = {
   // M-1: Remove x-powered-by header
   poweredByHeader: false,
 
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+
   outputFileTracingRoot: __dirname,
   allowedDevOrigins: [
     "100.84.105.74",

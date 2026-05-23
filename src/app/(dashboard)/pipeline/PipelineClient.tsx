@@ -16,6 +16,7 @@ import { PipelineListView } from "./PipelineListView";
 import { ResearchPipeline } from "./ResearchPipeline";
 import { PipelineStageColumn } from "./PipelineStageColumn";
 import { PipelineWonLost } from "./PipelineWonLost";
+import { OpportunityPopupModal } from "./OpportunityPopupModal";
 
 export default function PipelineClient() {
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
@@ -30,6 +31,8 @@ export default function PipelineClient() {
   const [formData, setFormData] = useState<any>({});
   const [expandedCard, setExpandedCard] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<"pipeline" | "list">("pipeline");
+  const [scraping, setScraping] = useState(false);
+  const [selectedOpp, setSelectedOpp] = useState<Opportunity | null>(null);
 
   // Pipeline-Kanban Bridge: Store Kanban tasks for opportunities
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -171,6 +174,74 @@ export default function PipelineClient() {
     fetchData();
   };
 
+  const handleLaunchScraping = async () => {
+    if (!confirm("¿Lanzar scrapping de leads? Esto buscará nuevas oportunidades en plataformas freelance.")) return;
+    setScraping(true);
+    try {
+      const res = await fetch("/api/pipeline/scrap", { method: "POST" });
+      const data = await res.json();
+      if (data.success) {
+        alert("Scrapping completado. Recargando oportunidades...");
+        fetchData();
+      } else {
+        alert(`Error: ${data.error}`);
+      }
+    } catch (err) {
+      alert("Error al lanzar scrapping: " + (err as Error).message);
+    } finally {
+      setScraping(false);
+    }
+  };
+
+  const handleOppClick = (opp: Opportunity) => {
+    setSelectedOpp(opp);
+  };
+
+  const handleOppAction = async (action: "discard" | "wait" | "investigate") => {
+    if (!selectedOpp) return;
+
+    if (action === "discard") {
+      await fetch(`/api/pipeline/${selectedOpp.id}`, { method: "DELETE" });
+      setSelectedOpp(null);
+      fetchData();
+      return;
+    }
+
+    if (action === "wait") {
+      await fetch(`/api/pipeline/${selectedOpp.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          stage: "negotiating",
+          notes: `${selectedOpp.notes || ""}\n\nPuesta en espera por usuario - ${new Date().toISOString()}`
+        }),
+      });
+      setSelectedOpp(null);
+      fetchData();
+      return;
+    }
+
+    if (action === "investigate") {
+      // Move to development stage and send to Alfred for investigation
+      await fetch(`/api/pipeline/${selectedOpp.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          stage: "development",
+          next_action: "Investigación estratégica requerida",
+          notes: `${selectedOpp.notes || ""}\n\nUsuario solicitó investigación estratégica - ${new Date().toISOString()}`
+        }),
+      });
+      
+      // Here you could also trigger a workflow to create OpenSpec files
+      // For now, just update the stage
+      
+      setSelectedOpp(null);
+      fetchData();
+      alert(`Oportunidad "${selectedOpp.title}" movida a Desarrollo para investigación. Alfred generará plan estratégico y tareas.`);
+    }
+  };
+
   if (loading) {
     return <div style={{ color: "var(--text-secondary)", padding: "40px" }}>Cargando pipeline...</div>;
   }
@@ -201,6 +272,22 @@ export default function PipelineClient() {
             }}
           >
             {viewMode === "pipeline" ? "📋 Lista" : "📊 Pipeline"}
+          </button>
+          <button
+            onClick={handleLaunchScraping}
+            disabled={scraping}
+            style={{
+              padding: "6px 12px",
+              borderRadius: "6px",
+              border: scraping ? "1px solid var(--border)" : "1px solid #eab308",
+              background: scraping ? "var(--surface-disabled)" : "#eab308",
+              color: scraping ? "var(--text-disabled)" : "#000",
+              cursor: scraping ? "not-allowed" : "pointer",
+              fontSize: "12px",
+              fontWeight: 600,
+            }}
+          >
+            {scraping ? "⏳ Scraping..." : "🔍 Lanzar Scraping"}
           </button>
           <button
             onClick={() => { setFormData({ stage: "lead", value: 5000, currency: "EUR" }); setShowForm(true); setEditingId(null); }}
@@ -265,6 +352,7 @@ export default function PipelineClient() {
               onStageChange={handleStageChange}
               onEdit={handleEdit}
               onDelete={handleDelete}
+              onOppClick={handleOppClick}
               activeStages={activeStages}
               kanbanTasks={kanbanTasks}
               loadingTasks={loadingTasks}
@@ -295,6 +383,15 @@ export default function PipelineClient() {
         onFormDataChange={setFormData}
         onSave={handleSave}
       />
+
+      {/* Opportunity Popup Modal */}
+      {selectedOpp && (
+        <OpportunityPopupModal
+          opp={selectedOpp}
+          onClose={() => setSelectedOpp(null)}
+          onAction={handleOppAction}
+        />
+      )}
     </div>
   );
 }

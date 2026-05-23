@@ -13,6 +13,7 @@ interface OppCardProps {
   onStageChange: (id: string, stage: PipelineStage) => void;
   onEdit: (opp: Opportunity) => void;
   onDelete: (id: string) => void;
+  onClick?: () => void;
   activeStages: PipelineStage[];
   kanbanTasks: any[];
   loadingTasks: boolean;
@@ -25,6 +26,7 @@ export function OppCard({
   onStageChange,
   onEdit,
   onDelete,
+  onClick,
   activeStages,
   kanbanTasks,
   loadingTasks,
