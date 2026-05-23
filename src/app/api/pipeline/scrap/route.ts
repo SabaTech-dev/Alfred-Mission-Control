@@ -9,7 +9,13 @@ export const dynamic = "force-dynamic";
 
 // Validate path contains no directory traversal or shell metacharacters
 function isSafePath(p: string): boolean {
-  return !/[;&|`$(){}\[\]<>\n\r\\]/.test(p) && !p.includes("..");
+  return !/[;&|`$(){}\[\]<>\n\r\\]/.test(p) && !p.includes("..") && !p.includes("\0");
+}
+
+// Validate input string contains only safe characters (alphanumeric, spaces, basic punctuation)
+function isSafeInput(input: string): boolean {
+  // Allow alphanumeric, spaces, and basic safe characters
+  return /^[a-zA-Z0-9\s\-\_\.\/\\:]+$/.test(input);
 }
 
 /**
@@ -27,6 +33,34 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
   }
 
+  // Parse and validate request body
+  let body;
+  try {
+    body = await request.json();
+  } catch (error) {
+    return NextResponse.json({ success: false, error: "Invalid JSON" }, { status: 400 });
+  }
+
+  // Validate workspaceDir if provided in request body
+  if (body.workspaceDir) {
+    if (!isSafeInput(body.workspaceDir) || !isSafePath(body.workspaceDir)) {
+      return NextResponse.json(
+        { success: false, error: "Invalid workspace directory path" },
+        { status: 400 }
+      );
+    }
+  }
+
+  // Validate scriptPath if provided in request body
+  if (body.scriptPath) {
+    if (!isSafeInput(body.scriptPath) || !isSafePath(body.scriptPath)) {
+      return NextResponse.json(
+        { success: false, error: "Invalid script path" },
+        { status: 400 }
+      );
+    }
+  }
+
   try {
     const workspaceDir = process.env.OPENCLAW_WORKSPACE || "/home/ubuntu/.openclaw/workspace";
     if (!isSafePath(workspaceDir)) {
@@ -39,7 +73,10 @@ export async function POST(request: Request) {
     const scriptDir = path.join(workspaceDir, "scripts", "lead-scraper");
     const scriptPath = path.join(scriptDir, "index-v2.js");
 
-    if (!isSafePath(scriptPath)) {
+    // Use the validated script path
+    const finalScriptPath = body.scriptPath || scriptPath;
+    
+    if (!isSafePath(finalScriptPath)) {
       return NextResponse.json(
         { success: false, error: "Invalid script path" },
         { status: 500 }

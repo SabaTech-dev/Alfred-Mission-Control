@@ -1,6 +1,7 @@
 "use client";
 
 import { X, AlertTriangle, Clock, Send, DollarSign, Building2, Mail, Linkedin, Calendar } from "lucide-react";
+import DOMPurify from "dompurify";
 
 /** Sanitize URL: only allow safe protocols (http, https, mailto) */
 function sanitizeHref(value: string | undefined, protocol: "url" | "mailto"): string {
@@ -12,6 +13,12 @@ function sanitizeHref(value: string | undefined, protocol: "url" | "mailto"): st
   }
   // Only allow http/https
   return /^https?:\/\//i.test(trimmed) ? trimmed : "#";
+}
+
+/** Sanitize user-provided text to prevent XSS */
+function sanitizeText(value: string | undefined): string {
+  if (!value) return "";
+  return DOMPurify.sanitize(value, { ALLOWED_TAGS: [] });
 }
 import { type Opportunity, type PipelineStage } from "@/lib/pipeline-types";
 import { formatDate, formatCurrency } from "./PipelineTypes";
@@ -69,9 +76,9 @@ export function OpportunityPopupModal({ opp, onClose, onAction }: OpportunityPop
         >
           <div>
             <div style={{ fontSize: "20px", fontWeight: 700, color: "var(--text-primary)", marginBottom: "4px" }}>
-              {opp.company}
+              {sanitizeText(opp.company)}
             </div>
-            <div style={{ fontSize: "14px", color: "var(--text-secondary)" }}>{opp.title}</div>
+            <div style={{ fontSize: "14px", color: "var(--text-secondary)" }}>{sanitizeText(opp.title)}</div>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
             <div
@@ -133,7 +140,7 @@ export function OpportunityPopupModal({ opp, onClose, onAction }: OpportunityPop
               {opp.contact_name && (
                 <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "13px", color: "var(--text-secondary)" }}>
                   <span style={{ fontSize: "16px" }}>👤</span>
-                  {opp.contact_name}
+                  {sanitizeText(opp.contact_name)}
                 </div>
               )}
               {opp.contact_email && (
@@ -155,7 +162,7 @@ export function OpportunityPopupModal({ opp, onClose, onAction }: OpportunityPop
               {opp.source && (
                 <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "13px", color: "var(--text-secondary)" }}>
                   <span style={{ fontSize: "16px" }}>📍</span>
-                  {opp.source}
+                  {sanitizeText(opp.source)}
                 </div>
               )}
             </div>
@@ -168,7 +175,7 @@ export function OpportunityPopupModal({ opp, onClose, onAction }: OpportunityPop
                 Descripción
               </h3>
               <div style={{ fontSize: "14px", color: "var(--text-secondary)", lineHeight: "1.6" }}>
-                {opp.description}
+                {sanitizeText(opp.description)}
               </div>
             </div>
           )}
@@ -181,7 +188,7 @@ export function OpportunityPopupModal({ opp, onClose, onAction }: OpportunityPop
                 Próxima Acción
               </h3>
               <div style={{ fontSize: "13px", color: "var(--text-secondary)" }}>
-                {opp.next_action}
+                {sanitizeText(opp.next_action)}
                 {opp.next_action_date && (
                   <span style={{ display: "flex", alignItems: "center", gap: "6px", marginTop: "4px", fontSize: "12px" }}>
                     <Calendar size={14} />
@@ -199,7 +206,7 @@ export function OpportunityPopupModal({ opp, onClose, onAction }: OpportunityPop
                 Notas
               </h3>
               <div style={{ fontSize: "13px", color: "var(--text-secondary)", lineHeight: "1.6", background: "var(--surface-elevated)", padding: "12px", borderRadius: "8px" }}>
-                {opp.notes}
+                {sanitizeText(opp.notes)}
               </div>
             </div>
           )}
