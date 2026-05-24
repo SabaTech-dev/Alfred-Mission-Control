@@ -1,9 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import { Filter, X } from "lucide-react";
-import { PipelineStage, SourceType, SOURCE_TYPE_LABELS } from "@/lib/pipeline-types";
-import { PIPELINE_STAGES, STAGE_LABELS } from "@/lib/pipeline-types";
+import { PipelineStage, SourceType, SOURCE_TYPE_LABELS, SOURCE_TYPE_COLORS, PIPELINE_STAGES, STAGE_LABELS } from "@/lib/pipeline-types";
 
 interface PipelineFiltersProps {
   filterStage: PipelineStage | "all";
@@ -136,36 +134,6 @@ export function PipelineFilters({
               <option value="auto_sync">🔄 Auto Sync</option>
             </select>
           </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-// Helper component for opportunity type badge
-export function OpportunityTypeBadge({ type }: { type: SourceType }) {
-  const labels = {
-    business_opportunity: "💼 Negocio",
-    manual: "✏️ Manual",
-    internal_report: "📋 Técnico",
-    auto_sync: "🔄 Auto Sync",
-  };
-  
-  return (
-    <span
-      style={{
-        padding: "2px 6px",
-        borderRadius: "4px",
-        fontSize: "10px",
-        fontWeight: 500,
-        background: SOURCE_TYPE_COLORS[type],
-        color: type === "internal_report" ? "#000" : "#fff",
-      }}
-    >
-      {labels[type]}
-    </span>
-  );
-}
           <div style={{ minWidth: "140px" }}>
             <label style={{ fontSize: "11px", color: "var(--text-muted)", fontWeight: 500, display: "block", marginBottom: "4px" }}>Desde</label>
             <input
@@ -185,5 +153,32 @@ export function OpportunityTypeBadge({ type }: { type: SourceType }) {
             />
           </div>
         </div>
-      );
+      )}
+    </div>
+  );
+}
+
+// Helper component for opportunity type badge
+export function OpportunityTypeBadge({ type }: { type: SourceType }) {
+  const labels: Record<SourceType, string> = {
+    business_opportunity: "💼 Negocio",
+    manual: "✏️ Manual",
+    internal_report: "📋 Técnico",
+    auto_sync: "🔄 Auto Sync",
+  };
+
+  return (
+    <span
+      style={{
+        padding: "2px 6px",
+        borderRadius: "4px",
+        fontSize: "10px",
+        fontWeight: 500,
+        background: SOURCE_TYPE_COLORS[type],
+        color: type === "internal_report" ? "#000" : "#fff",
+      }}
+    >
+      {labels[type]}
+    </span>
+  );
 }
