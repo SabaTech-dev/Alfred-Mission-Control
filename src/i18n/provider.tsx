@@ -73,14 +73,16 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
     if (!initRef.current) {
       initRef.current = true;
       const detected = detectLocale();
-      // Defer locale switch to after hydration to avoid mismatch
-      // Use requestAnimationFrame so it happens after React hydration completes
-      requestAnimationFrame(() => {
+      // Schedule locale switch after hydration completes.
+      // requestAnimationFrame fires after React hydration but before paint,
+      // which still triggers a hydration mismatch warning.
+      // Using setTimeout(0) defers past the hydration comparison.
+      setTimeout(() => {
         if (detected !== locale) {
           setLocaleState(detected);
         }
         setHydrated(true);
-      });
+      }, 0);
     }
   }, [locale]);
 
@@ -97,7 +99,9 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
       locale,
       setLocale: handleSetLocale,
       t: (key: string, values?: Record<string, string | number>) => {
-        const raw = getByPath(messages, key) ?? getByPath(DICTIONARY.en, key) ?? key;
+        // Always use English until hydrated to match SSR output
+        const msgs = hydrated ? messages : DICTIONARY.en;
+        const raw = getByPath(msgs, key) ?? getByPath(DICTIONARY.en, key) ?? key;
         return typeof raw === "string" ? interpolate(raw, values) : key;
       },
       formatNumber: (value: number) => new Intl.NumberFormat(locale).format(value),
