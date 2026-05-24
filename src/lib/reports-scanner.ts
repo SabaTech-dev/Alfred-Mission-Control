@@ -63,17 +63,14 @@ function mapServiceType(
 
 /**
  * Infer the initial pipeline stage from an OpportunitySource.
+ *
+ * Most reports should start at 'lead'. Only explicit outreach should move to 'contacted',
+ * and only qualification should move to 'qualifying'.
  */
 function inferInitialStage(
   source: OpportunitySource
 ): CreateOpportunityInput["stage"] {
-  if (
-    source === "security_audit" ||
-    source === "security_review" ||
-    source === "security_rereview"
-  )
-    return "qualifying";
-  if (source === "qa_review" || source === "qa_testing") return "contacted";
+  // All reports start at 'lead' — need explicit outreach to advance
   return "lead";
 }
 

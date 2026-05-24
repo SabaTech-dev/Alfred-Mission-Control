@@ -4,6 +4,20 @@ import { validateAgentAuth } from "@/lib/agent-auth";
 import { jwtUtils } from "@/lib/jwt-utils";
 import { isAdminRoute, isAdminFromToken } from "@/lib/role-based-access";
 
+// Startup validation — ensures critical config is present
+(() => {
+  const secret = process.env.JWT_SECRET;
+  if (!secret || secret.length < 32) {
+    console.error(
+      "❌ CRITICAL: JWT_SECRET environment variable must be set and at least 32 characters long."
+    );
+    throw new Error(
+      "JWT_SECRET not configured correctly. This is required for secure JWT signing."
+    );
+  }
+  console.log("✅ JWT_SECRET validated (" + secret.length + " characters)");
+})();
+
 // Routes that never require authentication
 const PUBLIC_ROUTES = new Set(["/login"]);
 
@@ -24,15 +38,15 @@ const AGENT_ONLY_API_PREFIXES = [
   "/api/terminal",
   "/api/subagents",
   "/api/handoffs",
-  "/api/openclaw",
   "/api/logs",
-  "/api/files",
   "/api/sessions",
 ];
 
 // API routes allowing agent credentials OR authenticated browser session
 const AGENT_OR_SESSION_API_PREFIXES = [
   "/api/agents",
+  "/api/files",
+  "/api/openclaw",
   "/api/reports",
   "/api/wiki",
   "/api/skills",

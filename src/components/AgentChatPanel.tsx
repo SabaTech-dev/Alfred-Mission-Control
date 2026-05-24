@@ -8,6 +8,7 @@ import { useToast } from "@/components/Toast";
 import { ChatInputForm } from "@/components/ChatInputForm";
 import { ChatMessageList, MessageItem } from "@/components/ChatMessageList";
 import { useI18n } from "@/i18n/provider";
+import { authFetch } from "@/lib/auth-fetch";
 import { getErrorMessage, mapGatewayScopeError, processChatStream } from "@/lib/chat-stream";
 
 interface AgentOption {
@@ -62,7 +63,7 @@ export function AgentChatPanel() {
   useEffect(() => {
     const loadAgents = async () => {
       try {
-        const response = await fetch("/api/openclaw/agents");
+        const response = await authFetch("/api/openclaw/agents");
         const data = (await response.json()) as { agents?: AgentOption[] };
         const nextAgents = data.agents ?? [];
         setAgents(nextAgents);
@@ -96,7 +97,7 @@ export function AgentChatPanel() {
       setLoading(true);
       try {
         const query = sessionKey ? `?sessionKey=${encodeURIComponent(sessionKey)}` : "";
-        const response = await fetch(`/api/chat/agents/${encodeURIComponent(agentId)}${query}`);
+        const response = await authFetch(`/api/chat/agents/${encodeURIComponent(agentId)}${query}`);
         const data = (await response.json()) as ChatSnapshot;
         setMessages(data.messages ?? []);
         setSessions(data.sessions ?? []);
@@ -135,7 +136,7 @@ export function AgentChatPanel() {
     }]);
 
     try {
-      const response = await fetch(`/api/chat/agents/${encodeURIComponent(agentId)}/send`, {
+      const response = await authFetch(`/api/chat/agents/${encodeURIComponent(agentId)}/send`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "text/event-stream" },
         body: JSON.stringify({ message: outgoing, sessionKey }),

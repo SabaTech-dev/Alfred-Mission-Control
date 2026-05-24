@@ -1,10 +1,17 @@
 // JWT Utils — Edge-compatible JWT session management using jose
 import { SignJWT, jwtVerify, type JWTPayload } from "jose";
 
-// Use a proper secret key from environment
-const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || "fallback-secret-for-development-only"
-);
+// Use a proper secret key from environment — NO fallback allowed
+const JWT_SECRET = (() => {
+  const secret = process.env.JWT_SECRET;
+  if (!secret || secret.length < 32) {
+    throw new Error(
+      "JWT_SECRET environment variable must be set and at least 32 characters long. " +
+      "This is required for secure JWT signing."
+    );
+  }
+  return new TextEncoder().encode(secret);
+})();
 
 interface SessionPayload extends JWTPayload {
   role: string;
@@ -23,7 +30,7 @@ export const jwtUtils = {
     const validatedTtlMs = Math.min(Math.max(ttlMs, 1000), 7 * 24 * 60 * 60 * 1000); // Min 1s, max 7 days
     
     // Security: validate role to prevent injection
-    const validatedRole = payload.role && /^[a-z_]+$/.test(payload.role) ? payload.role : "user";
+    const validatedRole = payload.role && /^[a-zA-Z0-9_-]+$/.test(payload.role) ? payload.role : "user";
     
     const now = Math.floor(Date.now() / 1000); // JWT uses seconds, not milliseconds
     const exp = now + Math.floor(validatedTtlMs / 1000);
