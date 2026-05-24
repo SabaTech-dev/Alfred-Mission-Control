@@ -51,6 +51,7 @@ function detectLocale(): Locale {
 }
 
 export function I18nProvider({ children }: { children: React.ReactNode }) {
+  // Always start with "en" to match SSR output, then detect client locale
   const [locale, setLocaleState] = useState<Locale>("en");
   const [hydrated, setHydrated] = useState(false);
   const initRef = useRef(false);
@@ -72,6 +73,8 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
     if (!initRef.current) {
       initRef.current = true;
       const detected = detectLocale();
+      // Defer locale switch to after hydration to avoid mismatch
+      // Use requestAnimationFrame so it happens after React hydration completes
       requestAnimationFrame(() => {
         if (detected !== locale) {
           setLocaleState(detected);
