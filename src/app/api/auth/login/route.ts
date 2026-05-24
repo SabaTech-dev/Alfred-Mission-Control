@@ -108,7 +108,7 @@ export async function POST(request: NextRequest) {
     response.cookies.set("auth_token", token, {
       httpOnly: true,
       secure: isHttps,
-      sameSite: "none",
+      sameSite: "lax",
       maxAge: ttlMs / 1000,
       path: "/",
     });
