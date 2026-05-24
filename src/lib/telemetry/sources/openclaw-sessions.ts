@@ -1,4 +1,4 @@
-// Stub - OpenClaw sessions telemetry source
-export async function getOpenClawSessionsTelemetry() {
-  return { totalSessions: 0, activeSessions: 0, agents: {} };
+// OpenClaw sessions telemetry source - stub with correct shape
+export function getOpenClawSessionsTelemetry() {
+  return { sessions: [], degraded: [] };
 }
