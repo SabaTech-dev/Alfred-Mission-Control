@@ -11,7 +11,7 @@ export default function DashboardLayout({
 }) {
   return (
     <I18nProvider>
-      <div className="alfred-shell" style={{ minHeight: "100vh" }}>
+      <div className="alfred-shell" style={{ minHeight: "100vh" }} suppressHydrationWarning>
         <Dock />
         <TopBar />
 
