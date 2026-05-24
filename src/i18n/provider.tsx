@@ -107,7 +107,7 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
       formatNumber: (value: number) => new Intl.NumberFormat(locale).format(value),
       formatDateTime: (value: Date | number | string) => new Intl.DateTimeFormat(locale, { hour: "2-digit", minute: "2-digit", second: "2-digit" }).format(new Date(value)),
     };
-  }, [locale, handleSetLocale]);
+  }, [locale, handleSetLocale, hydrated]);
 
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
 }
