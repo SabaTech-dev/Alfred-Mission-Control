@@ -207,18 +207,19 @@ export function getKanbanStats(): KanbanStats {
     }
 
     // Try to load sqlite-wrapper (node-sqlite3-wasm), but handle failure gracefully (e.g., in test environments)
-    let Database: ReturnType<typeof require> | null = null;
+    let SqliteDb: any = null;
     try {
       // eslint-disable-next-line @typescript-eslint/no-require-imports
-      Database = require("@/lib/sqlite-wrapper");
+      const mod = require("@/lib/sqlite-wrapper");
+      SqliteDb = mod.Database || mod.default || mod;
     } catch {
       // Module not available (e.g., in test environment)
       return stats;
     }
 
-    if (!Database) return stats;
+    if (!SqliteDb) return stats;
 
-    const db = new Database(dbPath, { readonly: true });
+    const db = new SqliteDb(dbPath, { readonly: true });
 
     try {
       const hasKanbanTasksTable = Boolean(
