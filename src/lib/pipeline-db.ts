@@ -40,6 +40,7 @@ export interface CreateOpportunityInput {
   service_type?: Opportunity["service_type"];
   probability?: number;
   source?: string;
+  source_type?: Opportunity["source_type"];
   next_action?: string;
   next_action_date?: string;
   notes?: string;
@@ -58,6 +59,7 @@ export interface UpdateOpportunityInput {
   service_type?: Opportunity["service_type"];
   probability?: number | null;
   source?: string | null;
+  source_type?: Opportunity["source_type"];
   next_action?: string | null;
   next_action_date?: string | null;
   notes?: string | null;
@@ -139,6 +141,16 @@ function initPipelineTable(db: Database) {
     db.exec(`ALTER TABLE opportunities ADD COLUMN progress REAL NOT NULL DEFAULT 0`);
     console.log("[pipeline-db] Added progress column to opportunities");
   }
+
+  // Idempotent migration: Add source_type column if it doesn't exist
+  const sourceTypeColumnExists = db
+    .prepare("SELECT 1 FROM pragma_table_info('opportunities') WHERE name = 'source_type'")
+    .get() as { "1": number } | undefined;
+
+  if (!sourceTypeColumnExists) {
+    db.exec(`ALTER TABLE opportunities ADD COLUMN source_type TEXT NOT NULL DEFAULT 'auto_sync'`);
+    console.log("[pipeline-db] Added source_type column to opportunities");
+  }
 }
 
 export function createOpportunity(input: CreateOpportunityInput): Opportunity {
@@ -160,6 +172,7 @@ export function createOpportunity(input: CreateOpportunityInput): Opportunity {
     service_type: input.service_type || "other",
     probability: input.probability ?? null,
     source: input.source || null,
+    source_type: input.source_type || "auto_sync",
     next_action: input.next_action || null,
     next_action_date: input.next_action_date || null,
     notes: input.notes || null,
@@ -170,12 +183,12 @@ export function createOpportunity(input: CreateOpportunityInput): Opportunity {
   };
 
   db.prepare(`
-    INSERT INTO opportunities (id, company, contact_name, contact_email, contact_linkedin, title, description, stage, value, currency, service_type, probability, source, next_action, next_action_date, notes, progress, created_at, updated_at, closed_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO opportunities (id, company, contact_name, contact_email, contact_linkedin, title, description, stage, value, currency, service_type, probability, source, source_type, next_action, next_action_date, notes, progress, created_at, updated_at, closed_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `).run(
     opp.id, opp.company, opp.contact_name, opp.contact_email, opp.contact_linkedin,
     opp.title, opp.description, opp.stage, opp.value, opp.currency, opp.service_type,
-    opp.probability, opp.source, opp.next_action, opp.next_action_date, opp.notes, opp.progress,
+    opp.probability, opp.source, opp.source_type, opp.next_action, opp.next_action_date, opp.notes, opp.progress,
     opp.created_at, opp.updated_at, opp.closed_at
   );
 
@@ -207,6 +220,7 @@ const ALLOWED_UPDATE_COLUMNS = [
   "service_type",
   "probability",
   "source",
+  "source_type",
   "next_action",
   "next_action_date",
   "notes",

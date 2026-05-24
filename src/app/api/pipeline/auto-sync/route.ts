@@ -85,6 +85,7 @@ function buildOpportunityInput(parsed: ParsedReport): CreateOpportunityInput {
     currency: "EUR",
     service_type: mapServiceType(parsed.serviceType),
     source: `report:${parsed.agent}`,
+    source_type: parsed.sourceType,
     next_action: `Seguimiento de ${parsed.title}`,
     next_action_date: new Date(
       Date.now() + 7 * 24 * 60 * 60 * 1000

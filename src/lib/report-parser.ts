@@ -31,19 +31,20 @@ export interface ParsedReport {
 export interface ParsedFilename {
   agent: string;
   serviceType: OpportunitySource;
+  sourceType: "internal_report" | "business_opportunity" | "auto_sync";
   target: string;
   date: string | null;
 }
 
-const AGENT_PREFIX_MAP: Record<string, { agent: string; serviceType: OpportunitySource }> = {
-  "security-audit": { agent: "security", serviceType: "security_audit" },
-  "security-review": { agent: "security", serviceType: "security_review" },
-  "security-rereview": { agent: "security", serviceType: "security_rereview" },
-  "research-market": { agent: "research", serviceType: "research_market" },
-  "research-tech": { agent: "research", serviceType: "research_technology" },
-  "qa-review": { agent: "qa-tester", serviceType: "qa_review" },
-  "qa-testing": { agent: "qa-tester", serviceType: "qa_testing" },
-  "devops-infra": { agent: "devops", serviceType: "devops_infra" },
+const AGENT_PREFIX_MAP: Record<string, { agent: string; serviceType: OpportunitySource; sourceType: "internal_report" | "business_opportunity" }> = {
+  "security-audit": { agent: "security", serviceType: "security_audit", sourceType: "internal_report" },
+  "security-review": { agent: "security", serviceType: "security_review", sourceType: "internal_report" },
+  "security-rereview": { agent: "security", serviceType: "security_rereview", sourceType: "internal_report" },
+  "research-market": { agent: "research", serviceType: "research_market", sourceType: "business_opportunity" },
+  "research-tech": { agent: "research", serviceType: "research_technology", sourceType: "business_opportunity" },
+  "qa-review": { agent: "qa-tester", serviceType: "qa_review", sourceType: "internal_report" },
+  "qa-testing": { agent: "qa-tester", serviceType: "qa_testing", sourceType: "internal_report" },
+  "devops-infra": { agent: "devops", serviceType: "devops_infra", sourceType: "internal_report" },
 };
 
 const DATE_PATTERN = /-\d{4}-\d{2}-\d{2}$/;
@@ -65,6 +66,7 @@ export function parseReportFilename(filename: string): ParsedFilename {
       return {
         agent: info.agent,
         serviceType: info.serviceType,
+        sourceType: info.sourceType,
         target: targetRaw,
         date,
       };
@@ -81,6 +83,7 @@ export function parseReportFilename(filename: string): ParsedFilename {
   return {
     agent: parts[0],
     serviceType: "other",
+    sourceType: "auto_sync",
     target: targetRaw,
     date,
   };
@@ -184,13 +187,14 @@ export function parseReport(content: string, filename: string): ParsedReport {
     reportId: filename.replace(/\.md$/, ""),
     agent: agentField || parsed.agent,
     serviceType: parsed.serviceType,
+    sourceType: parsed.sourceType,
     target,
     date: parsed.date,
     title,
     summary,
     taskId,
     reportStatus,
-    isOpportunity: confidence >= 50,
+    isOpportunity: confidence >= 50 && parsed.sourceType === "business_opportunity",
     confidence,
   };
 }

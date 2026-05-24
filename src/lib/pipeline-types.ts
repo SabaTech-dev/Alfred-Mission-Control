@@ -51,6 +51,22 @@ export const STAGE_PROBABILITY: Record<PipelineStage, number> = {
   lost: 0,
 };
 
+export type SourceType = "auto_sync" | "manual" | "internal_report" | "business_opportunity";
+
+export const SOURCE_TYPE_LABELS: Record<SourceType, string> = {
+  auto_sync: "Auto Sync",
+  manual: "Manual",
+  internal_report: "Reporte Técnico",
+  business_opportunity: "Oportunidad Negocio",
+};
+
+export const SOURCE_TYPE_COLORS: Record<SourceType, string> = {
+  auto_sync: "#6b7280",
+  manual: "#3b82f6",
+  internal_report: "#f59e0b",
+  business_opportunity: "#10b981",
+};
+
 export interface Opportunity {
   id: string;
   company: string;
@@ -65,6 +81,7 @@ export interface Opportunity {
   service_type: "consultoria_audit" | "consultoria_retainer" | "consultoria_managed" | "orquestacion_setup" | "orquestacion_advanced" | "orquestacion_managed" | "other";
   probability: number | null;
   source: string | null;
+  source_type: SourceType;
   next_action: string | null;
   next_action_date: string | null;
   notes: string | null;

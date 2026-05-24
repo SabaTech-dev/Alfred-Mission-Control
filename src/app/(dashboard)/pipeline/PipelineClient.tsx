@@ -8,9 +8,10 @@ import {
   type PipelineStage,
   type Opportunity,
   type PipelineKPIs,
+  type SourceType,
 } from "@/lib/pipeline-types";
 import * as PipelineTypes from "./PipelineTypes";
-import { PipelineFilters } from "./PipelineFilters";
+import { PipelineFilters, OpportunityTypeBadge } from "./PipelineFilters";
 import { PipelineKpiCards } from "./PipelineKpiCards";
 import { PipelineModal } from "./PipelineModal";
 import { PipelineListView } from "./PipelineListView";
@@ -43,6 +44,7 @@ export default function PipelineClient() {
   // Filters
   const [filterStage, setFilterStage] = useState<PipelineStage | "all">("all");
   const [filterServiceType, setFilterServiceType] = useState<string>("all");
+  const [filterSourceType, setFilterSourceType] = useState<SourceType | "all">("business_opportunity"); // Default to business opportunities only
   const [filterDateFrom, setFilterDateFrom] = useState<string>("");
   const [filterDateTo, setFilterDateTo] = useState<string>("");
   const [showFilters, setShowFilters] = useState(false);
@@ -50,6 +52,7 @@ export default function PipelineClient() {
   const filteredOpportunities = opportunities.filter((o) => {
     if (filterStage !== "all" && o.stage !== filterStage) return false;
     if (filterServiceType !== "all" && o.service_type !== filterServiceType) return false;
+    if (filterSourceType !== "all" && o.source_type !== filterSourceType) return false;
     if (filterDateFrom && o.created_at < filterDateFrom) return false;
     if (filterDateTo && o.created_at > filterDateTo + "T23:59:59") return false;
     return true;
@@ -58,11 +61,12 @@ export default function PipelineClient() {
   const clearFilters = () => {
     setFilterStage("all");
     setFilterServiceType("all");
+    setFilterSourceType("business_opportunity"); // Keep default business opportunities
     setFilterDateFrom("");
     setFilterDateTo("");
   };
 
-  const hasActiveFilters = Boolean(filterStage !== "all" || filterServiceType !== "all" || filterDateFrom || filterDateTo);
+  const hasActiveFilters = Boolean(filterStage !== "all" || filterServiceType !== "all" || filterSourceType !== "business_opportunity" || filterDateFrom || filterDateTo);
   const fetchData = useCallback(async () => {
     try {
       const res = await fetch("/api/pipeline");
@@ -155,6 +159,7 @@ export default function PipelineClient() {
       service_type: opp.service_type,
       probability: opp.probability ?? undefined,
       source: opp.source || undefined,
+      source_type: opp.source_type || "manual",
       next_action: opp.next_action || undefined,
       next_action_date: opp.next_action_date || undefined,
       notes: opp.notes || undefined,
@@ -318,6 +323,7 @@ export default function PipelineClient() {
       <PipelineFilters
         filterStage={filterStage}
         filterServiceType={filterServiceType}
+        filterSourceType={filterSourceType}
         filterDateFrom={filterDateFrom}
         filterDateTo={filterDateTo}
         showFilters={showFilters}
@@ -326,6 +332,7 @@ export default function PipelineClient() {
         totalOpportunitiesCount={opportunities.length}
         onFilterStageChange={setFilterStage}
         onFilterServiceTypeChange={setFilterServiceType}
+        onFilterSourceTypeChange={setFilterSourceType}
         onFilterDateFromChange={setFilterDateFrom}
         onFilterDateToChange={setFilterDateTo}
         onToggleFilters={() => setShowFilters(!showFilters)}
