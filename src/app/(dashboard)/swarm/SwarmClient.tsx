@@ -44,8 +44,11 @@ type ApiStatus = "online" | "offline" | "loading" | "error";
 // Use AMC proxy routes (works in both dev and prod)
 const SWARM_PROXY = "/api/swarm";
 
-function getHeaders(): Record<string, string> {
-  return { "Content-Type": "application/json" };
+function getHeaders(): RequestInit {
+  return {
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+  };
 }
 
 // --- Status Badge ---
@@ -315,11 +318,11 @@ export function SwarmClient() {
     setErrorMessage(null);
 
     try {
-      const headers = getHeaders();
+      const init = getHeaders();
 
       const [tasksRes, agentsRes] = await Promise.all([
-        fetch(`${SWARM_PROXY}/tasks`, { headers }),
-        fetch(`${SWARM_PROXY}/agents`, { headers }),
+        fetch(`${SWARM_PROXY}/tasks`, init),
+        fetch(`${SWARM_PROXY}/agents`, init),
       ]);
 
       if (!tasksRes.ok || !agentsRes.ok) {
@@ -376,8 +379,8 @@ export function SwarmClient() {
   const handleCreateTask = async (task: string, agentId: string) => {
     try {
       const res = await fetch(`${SWARM_PROXY}/tasks`, {
+        ...getHeaders(),
         method: "POST",
-        headers: getHeaders(),
         body: JSON.stringify({ task, agentId }),
       });
 
@@ -394,8 +397,8 @@ export function SwarmClient() {
   const handleMarkDone = async (taskId: string) => {
     try {
       const res = await fetch(`${SWARM_PROXY}/tasks/${taskId}`, {
+        ...getHeaders(),
         method: "PATCH",
-        headers: getHeaders(),
         body: JSON.stringify({ status: "done" }),
       });
 
