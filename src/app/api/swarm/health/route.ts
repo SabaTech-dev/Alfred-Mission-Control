@@ -16,7 +16,8 @@ interface SwarmHealthResponse {
 }
 
 export async function GET() {
-  const result = await swarmFetch<SwarmHealthResponse>("/api/health");
+  // Swarm serves health at /health (not /api/health)
+  const result = await swarmFetch<SwarmHealthResponse>("/health");
 
   if (!result.ok) {
     // Graceful: return structured error, not a cascade
