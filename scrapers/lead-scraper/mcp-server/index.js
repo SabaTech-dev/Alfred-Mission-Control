@@ -199,7 +199,6 @@ server.tool(
   },
   async ({ source, keywords }) => {
     try {
-      const { execSync } = await import("child_process");
       const scraperDir = "/home/ubuntu/.openclaw/workspace/scripts/lead-scraper";
 
       if (source === "all") {

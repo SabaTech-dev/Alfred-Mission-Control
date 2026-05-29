@@ -20,7 +20,7 @@ import { getDashboardHTML } from "./dashboard.html.js";
 const PORT = process.env.MCP_PORT || 8182;
 const PIPELINE_URL = process.env.PIPELINE_URL || "http://localhost:3000/api/pipeline";
 const AGENT_ID = process.env.AGENT_ID || "devops";
-const AGENT_KEY = process.env.AGENT_KEY || "sk-devops-alfred-2026";
+const AGENT_KEY = process.env.AGENT_KEY;
 const JOBS_API_URL = process.env.JOBS_API_URL || "http://localhost:3001";
 
 const AUTH_HEADERS = {
@@ -190,6 +190,18 @@ app.get("/tool/get_lead_stats", async (req, res) => {
 // --- Tool: run_scraper ---
 app.get("/tool/run_scraper", async (req, res) => {
   const { source, keywords } = req.query;
+
+  // F-011: Validate source name (prevent path traversal)
+  if (source && source !== "all") {
+    if (source.includes("..") || source.includes("/") || source.includes("\\")) {
+      res.status(400).json({ error: "Invalid source name: path traversal detected" });
+      return;
+    }
+    if (!/^[a-z0-9_-]+$/.test(source)) {
+      res.status(400).json({ error: "Invalid source name: only alphanumeric, hyphen, underscore" });
+      return;
+    }
+  }
   const scraperDir = "/home/ubuntu/.openclaw/workspace/scripts/lead-scraper/platforms";
 
   try {

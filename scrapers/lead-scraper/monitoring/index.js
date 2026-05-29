@@ -20,7 +20,7 @@ import path from "path";
 const PORT = process.env.MONITOR_PORT || 8183;
 const PIPELINE_URL = process.env.PIPELINE_URL || "http://localhost:3000/api/pipeline";
 const AGENT_ID = process.env.AGENT_ID || "devops";
-const AGENT_KEY = process.env.AGENT_KEY || "sk-devops-alfred-2026";
+const AGENT_KEY = process.env.AGENT_KEY;
 const JOBS_API_URL = process.env.JOBS_API_URL || "http://localhost:3001";
 const MCP_URL = process.env.MCP_URL || "http://localhost:8182";
 
