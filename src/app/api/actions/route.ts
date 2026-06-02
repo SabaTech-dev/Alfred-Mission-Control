@@ -12,7 +12,7 @@ export const dynamic = "force-dynamic";
 
 const execAsync = promisify(exec);
 
-const WORKSPACE = process.env.OPENCLAW_DIR ? `${process.env.OPENCLAW_DIR}/workspace` : '/home/ubuntu/.openclaw/workspace';
+const WORKSPACE = process.env.OPENCLAW_DIR ? `${process.env.OPENCLAW_DIR}/workspace` : '/home/joker/.openclaw/workspace';
 
 interface ActionResult {
   action: string;

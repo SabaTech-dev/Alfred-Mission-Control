@@ -7,7 +7,7 @@ import path from "path";
 
 export const dynamic = "force-dynamic";
 
-const OPENCLAW_DIR = process.env.OPENCLAW_DIR || "/home/ubuntu/.openclaw";
+const OPENCLAW_DIR = process.env.OPENCLAW_DIR || "/home/joker/.openclaw";
 const WORKSPACE = path.join(OPENCLAW_DIR, "workspace");
 const USAGE_DB_PATH = path.join(process.cwd(), "data", "usage-tracking.db");
 

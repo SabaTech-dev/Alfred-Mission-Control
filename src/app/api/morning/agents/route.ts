@@ -12,7 +12,7 @@ interface AgentStatus {
   workspace?: string;
 }
 
-const OPENCLAW_DIR = process.env.OPENCLAW_DIR || '/home/ubuntu/.openclaw';
+const OPENCLAW_DIR = process.env.OPENCLAW_DIR || '/home/joker/.openclaw';
 const OPENCLAW_CONFIG = path.join(OPENCLAW_DIR, 'openclaw.json');
 
 interface OpenClawAgent {

@@ -9,6 +9,6 @@
 - Environments: .env.local
 
 ✓ Starting...
-⨯ Unable to acquire lock at /home/ubuntu/.openclaw/workspace/Alfred-Mission-Control/.next/dev/lock, is another instance of next dev running?
+⨯ Unable to acquire lock at /home/joker/.openclaw/workspace/Alfred-Mission-Control/.next/dev/lock, is another instance of next dev running?
   Suggestion: If you intended to restart next dev, terminate the other process, and then try again.
 [?25h

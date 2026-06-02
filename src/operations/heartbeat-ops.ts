@@ -4,7 +4,7 @@
 import { readFileSync, existsSync } from "fs";
 import { join } from "path";
 
-const OPENCLAW_DIR = process.env.OPENCLAW_DIR || "/home/ubuntu/.openclaw";
+const OPENCLAW_DIR = process.env.OPENCLAW_DIR || "/home/joker/.openclaw";
 
 export interface AgentHeartbeat {
   agentId: string;

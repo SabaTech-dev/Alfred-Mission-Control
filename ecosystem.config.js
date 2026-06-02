@@ -1,9 +1,9 @@
 module.exports = {
   apps: [{
     name: 'alfred-mc',
-    script: '/home/ubuntu/.openclaw/workspace/Alfred-Mission-Control/node_modules/.bin/next',
+    script: '/home/joker/.openclaw/workspace/Alfred-Mission-Control/node_modules/.bin/next',
     args: 'start -H 0.0.0.0 -p 3000',
-    cwd: '/home/ubuntu/.openclaw/workspace/Alfred-Mission-Control',
+    cwd: '/home/joker/.openclaw/workspace/Alfred-Mission-Control',
     instances: 1,
     autorestart: true,
     watch: false,

@@ -13,7 +13,7 @@ import { MODEL_PRICING_CONSTANTS } from "./model-pricing-constants";
  */
 
 const PRICING_PATH = join(process.cwd(), "data", "model-pricing.json");
-const OPENCLAW_DIR = process.env.OPENCLAW_DIR || "/home/ubuntu/.openclaw";
+const OPENCLAW_DIR = process.env.OPENCLAW_DIR || "/home/joker/.openclaw";
 
 export interface ModelPricing {
   id: string;

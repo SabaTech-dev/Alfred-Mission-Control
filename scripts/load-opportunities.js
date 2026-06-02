@@ -12,7 +12,7 @@ const path = require('path');
 const { createOpportunity } = require('../src/lib/pipeline-db');
 
 // Configuración
-const WORKSPACE = path.resolve(process.env.OPENCLAW_WORKSPACE || '/home/ubuntu/.openclaw/workspace');
+const WORKSPACE = path.resolve(process.env.OPENCLAW_WORKSPACE || '/home/joker/.openclaw/workspace');
 const SOURCES = {
   prospectosMidMarket: path.join(WORKSPACE, 'reports/central/active/consultoria-f4-prospectos-midmarket-2026-05-02.md'),
   operativePlan: path.join(WORKSPACE, 'docs/SABATECH-OPERATIVE-PLAN-2026.md'),

@@ -5,7 +5,7 @@ import { requireAgentOrSessionAuth } from "@/lib/auth-helpers";
 
 export const dynamic = "force-dynamic";
 
-const OPENCLAW_DIR = process.env.OPENCLAW_DIR || "/home/ubuntu/.openclaw";
+const OPENCLAW_DIR = process.env.OPENCLAW_DIR || "/home/joker/.openclaw";
 
 export interface AgentHeartbeat {
   agentId: string;

@@ -3,7 +3,7 @@ import { readFileSync, existsSync } from "fs";
 import { join, resolve } from "path";
 import { requireAgentOrSessionAuth } from "@/lib/auth-helpers";
 
-const OPENCLAW_DIR = process.env.OPENCLAW_DIR || "/home/ubuntu/.openclaw";
+const OPENCLAW_DIR = process.env.OPENCLAW_DIR || "/home/joker/.openclaw";
 
 // Safe session key pattern: agent:main:* with allowed characters
 const SAFE_SESSION_KEY_PATTERN = /^agent:[a-zA-Z0-9_\-]+:[a-zA-Z0-9_\-:./@]*$/;

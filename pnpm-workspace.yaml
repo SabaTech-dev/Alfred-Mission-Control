@@ -1,0 +1,7 @@
+allowBuilds:
+  agent-browser: set this to true or false
+  edgedriver: set this to true or false
+  geckodriver: set this to true or false
+  puppeteer: set this to true or false
+  sharp: true
+  unrs-resolver: true

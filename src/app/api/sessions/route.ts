@@ -9,7 +9,7 @@ import { join } from 'path';
 
 export const dynamic = "force-dynamic";
 
-const OPENCLAW_DIR = process.env.OPENCLAW_DIR || '/home/ubuntu/.openclaw';
+const OPENCLAW_DIR = process.env.OPENCLAW_DIR || '/home/joker/.openclaw';
 
 interface RawSession {
   key: string;

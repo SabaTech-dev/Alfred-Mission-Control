@@ -7,7 +7,7 @@ import { validateBody, CreateCronJobSchema, UpdateCronJobSchema } from "@/lib/ap
 
 export const dynamic = "force-dynamic";
 
-const OPENCLAW_DIR = process.env.OPENCLAW_DIR || "/home/ubuntu/.openclaw";
+const OPENCLAW_DIR = process.env.OPENCLAW_DIR || "/home/joker/.openclaw";
 const CRON_JOBS_FILE = join(OPENCLAW_DIR, "cron", "jobs.json");
 
 export async function GET() {

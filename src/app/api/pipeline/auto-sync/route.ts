@@ -36,11 +36,11 @@ interface SyncResult {
 }
 
 const WORKSPACE_DIRS = [
-  "/home/ubuntu/.openclaw/workspace-coder",
-  "/home/ubuntu/.openclaw/workspace-security",
-  "/home/ubuntu/.openclaw/workspace-research",
-  "/home/ubuntu/.openclaw/workspace-qa-tester",
-  "/home/ubuntu/.openclaw/workspace-devops",
+  "/home/joker/.openclaw/workspace-coder",
+  "/home/joker/.openclaw/workspace-security",
+  "/home/joker/.openclaw/workspace-research",
+  "/home/joker/.openclaw/workspace-qa-tester",
+  "/home/joker/.openclaw/workspace-devops",
   OPENCLAW_WORKSPACE,
 ];
 

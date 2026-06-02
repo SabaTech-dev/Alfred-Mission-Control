@@ -3,7 +3,7 @@
 # Optimized: batch sqlite inserts + mtime-based delta (only new/modified files)
 # Run via cron every 5 minutes: */5 * * * * ubuntu /path/to/sync-openclaw-activities.sh
 
-OPENCLAW_DIR="${OPENCLAW_DIR:-/home/ubuntu/.openclaw}"
+OPENCLAW_DIR="${OPENCLAW_DIR:-/home/joker/.openclaw}"
 MISSION_CONTROL_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 MISSION_CONTROL_DB="${MISSION_CONTROL_DB:-$MISSION_CONTROL_DIR/data/activities.db}"
 STATE_FILE="${MISSION_CONTROL_DIR}/data/.activities-sync-state"
