@@ -40,11 +40,12 @@ export interface UseOfficePollingReturn {
 
 export function useOfficePolling(options: UseOfficePollingOptions = {}): UseOfficePollingReturn {
   const { initialAgents } = options;
+  const hasInitialAgents = (initialAgents?.length ?? 0) > 0;
   const [agents, setAgents] = useState<AgentConfig[]>(initialAgents || []);
   const [agentStates, setAgentStates] = useState<Record<string, AgentState>>({});
   const [visitors, setVisitors] = useState<Visitor[]>([]);
   const [configuredSubagents, setConfiguredSubagents] = useState<ConfiguredSubagent[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!hasInitialAgents);
 
   // Ref to expose a refetch function into the useEffect closures
   const refetchRef = useRef<() => void>(() => {});
@@ -53,7 +54,11 @@ export function useOfficePolling(options: UseOfficePollingOptions = {}): UseOffi
     let isMounted = true;
     let configInterval: NodeJS.Timeout | null = null;
     let statusInterval: NodeJS.Timeout | null = null;
-    const hasInitialAgents = initialAgents && initialAgents.length > 0;
+
+    console.log("[office] useOfficePolling mounted", {
+      hasInitialAgents,
+      initialAgentCount: initialAgents?.length ?? 0,
+    });
 
     if (hasInitialAgents && agents.length === 0) {
       setAgents(initialAgents as AgentConfig[]);

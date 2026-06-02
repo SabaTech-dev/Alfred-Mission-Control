@@ -11,8 +11,8 @@ const SWARM_BASE_URL =
 /** Request timeout in milliseconds */
 const SWARM_TIMEOUT_MS = 8_000;
 
-/** Auth header key read from env — forwarded to Swarm server */
-const SWARM_API_KEY = process.env.SWARM_API_KEY || process.env.NEXT_PUBLIC_SWARM_API_KEY || "";
+/** Auth header key from server-side env — NEVER expose in client bundle */
+const SWARM_API_KEY = process.env.SWARM_API_KEY || "";
 
 export interface SwarmProxyResult<T = unknown> {
   ok: true;

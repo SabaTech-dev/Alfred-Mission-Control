@@ -16,6 +16,7 @@ const nextConfig = {
   outputFileTracingRoot: __dirname,
   allowedDevOrigins: [
     "100.84.105.74",
+    "127.0.0.1",
     "localhost",
   ],
   serverExternalPackages: ["better-sqlite3"],
@@ -60,6 +61,20 @@ const nextConfig = {
           {
             key: 'Permissions-Policy',
             value: 'camera=(), microphone=(), geolocation=(), payment=()'
+          },
+          {
+            key: 'Content-Security-Policy',
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
+              "style-src 'self' 'unsafe-inline'",
+              "img-src 'self' data: blob:",
+              "font-src 'self' data:",
+              "connect-src 'self' ws: wss:",
+              "frame-ancestors 'none'",
+              "base-uri 'self'",
+              "form-action 'self'",
+            ].join('; ')
           }
         ]
       }

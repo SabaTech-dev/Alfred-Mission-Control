@@ -7,25 +7,32 @@
  * and improve pipeline transparency.
  *
  * Rules:
- * 1. Tasks in 'review' > 12h without comment → auto-comment + notify specialist
- * 2. Tasks in 'in_progress' > 2h → ping specialist
- * 3. Tasks in 'in_progress' > 4h → escalate to Alfred (main)
+ * 1. Dedup: detect same-title+assignee in_progress tasks → close all but newest
+ * 2. backlog/in_progress/review > 1h → notify specialist (notification)
+ * 3. review > 2h → escalate to Alfred for decision (notification)
+ * 4. FAIL from security/qa-tester → reassign to coder + notification
+ * 5. Cron executor processes notifications[] and executes sessions_send
  *
- * This endpoint is designed to be called by a cron job every 40 minutes.
+ * Called by the `Kanban Auto-Enforce` cron job every 40 minutes.
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { listTasks, getTask, createTaskComment, updateTask } from "@/lib/kanban-db";
+import {
+  listTasks,
+  getTask,
+  createTaskComment,
+  updateTask,
+  listTaskComments,
+} from "@/lib/kanban-db";
 import { requireAgentOrSessionAuth } from "@/lib/auth-helpers";
 import { logActivity } from "@/lib/activities-db";
 
 export const dynamic = "force-dynamic";
 
-// Threshold configurations — configurable via env vars, with sensible defaults
-const REVIEW_TIMEOUT_MS = parseMsEnv('KANBAN_REVIEW_TIMEOUT_HOURS', 12) * 60 * 60 * 1000;
-const IN_PROGRESS_WARNING_MS = parseMsEnv('KANBAN_PROGRESS_WARNING_HOURS', 2) * 60 * 60 * 1000;
-const IN_PROGRESS_ESCALATE_MS = parseMsEnv('KANBAN_PROGRESS_ESCALATE_HOURS', 4) * 60 * 60 * 1000;
-const REVIEW_NO_COMMENT_MS = parseMsEnv('KANBAN_REVIEW_NO_COMMENT_HOURS', 6) * 60 * 60 * 1000;
+// ── Timeout thresholds (aggressive: 1h warning, 2h escalation) ──
+const STALE_TASK_WARNING_MS = parseMsEnv('KANBAN_STALE_WARNING_HOURS', 1) * 60 * 60 * 1000;
+const REVIEW_ESCALATE_MS = parseMsEnv('KANBAN_REVIEW_ESCALATE_HOURS', 2) * 60 * 60 * 1000;
+const REVIEW_NO_COMMENT_MS = parseMsEnv('KANBAN_REVIEW_NO_COMMENT_HOURS', 2) * 60 * 60 * 1000;
 
 function parseMsEnv(key: string, defaultHours: number): number {
   const val = process.env[key];
@@ -36,83 +43,178 @@ function parseMsEnv(key: string, defaultHours: number): number {
   return defaultHours;
 }
 
+// ── Types ──
+
 interface EnforceResult {
   taskId: string;
   title: string;
-  action: "ping" | "escalate" | "comment" | "none";
+  action: "ping" | "escalate" | "comment" | "dedup_closed" | "fail_reroute" | "none";
   reason: string;
   timestamp: string;
+}
+
+interface Notification {
+  type: "sessions_send" | "telegram";
+  target: string;
+  message: string;
 }
 
 interface AutoEnforceResponse {
   success: boolean;
   processed: number;
+  dedup_closed: EnforceResult[];
   actions: EnforceResult[];
+  notifications: Notification[];
   summary: {
     pings: number;
     escalates: number;
     comments: number;
+    dedup_closed: number;
+    fail_rerouted: number;
     noAction: number;
   };
 }
 
-/**
- * POST /api/kanban/auto-enforce
- * Enforce timeout rules on Kanban tasks
- */
-export async function POST(request: NextRequest) {
-  // Require agent or session authentication
-  const authResult = await requireAgentOrSessionAuth(request);
-  if (!authResult.authorized) {
-    return authResult.error;
-  }
+// ── Helpers ──
 
-  const actorId: string = authResult.authType === "agent" ? (authResult.agentId ?? "system") : "system";
+function normalizeTitle(title: string): string {
+  return title
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, '')
+    .replace(/(fase\s*\d+|phase\s*\d+)/g, 'faseN')
+    .trim();
+}
+
+function formatDuration(ms: number): string {
+  if (!Number.isFinite(ms) || ms < 0) return "unknown";
+  const seconds = Math.floor(ms / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+  if (days > 0) return `${days}d ${hours % 24}h`;
+  if (hours > 0) return `${hours}h ${minutes % 60}m`;
+  if (minutes > 0) return `${minutes}m`;
+  return `${seconds}s`;
+}
+
+function getLastCommentTime(taskId: string): number | null {
+  try {
+    const comments = listTaskComments({ taskId });
+    if (comments.length === 0) return null;
+    return new Date(comments[comments.length - 1].created_at).getTime();
+  } catch (error) {
+    console.error(`[auto-enforce] Error getting comments for ${taskId}:`, error);
+    return null;
+  }
+}
+
+function addAutoComment(taskId: string, message: string, actorId: string): void {
+  try {
+    createTaskComment({ taskId, authorType: "agent", authorId: actorId, body: message });
+  } catch (error) {
+    console.error(`[auto-enforce] Error adding comment to ${taskId}:`, error);
+  }
+}
+
+// ── Main Handler ──
+
+export async function POST(request: NextRequest) {
+  const authResult = await requireAgentOrSessionAuth(request);
+  if (!authResult.authorized) return authResult.error;
+
+  const actorId = authResult.authType === "agent" ? (authResult.agentId ?? "system") : "system";
+  const now = Date.now();
+  const dedupClosed: EnforceResult[] = [];
+  const results: EnforceResult[] = [];
+  const notifications: Notification[] = [];
 
   try {
-    const now = Date.now();
-    const results: EnforceResult[] = [];
+    // ── 1. Get all active (not done, not archived) tasks ──
+    const allTasks = listTasks({ status: undefined }).filter(
+      (t: any) => t.status !== "done" && !t.archived
+    );
+    console.log(`[auto-enforce] ${allTasks.length} active tasks`);
 
-    // Get all active tasks (not done, not archived)
-    const activeTasks = listTasks({
-      status: undefined, // Get all statuses
-    }).filter(
-      (task) => task.status !== "done" && !task.archived
+    // ── 2. Dedup: close duplicate in_progress tasks ──
+    const groups = new Map<string, any[]>();
+    for (const task of allTasks) {
+      if (task.status !== "in_progress" || !task.assignee) continue;
+      const key = `${normalizeTitle(task.title)}::${task.assignee}`;
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key)!.push(task);
+    }
+
+    const dedupRemaining = new Set<string>();
+    for (const [, group] of groups) {
+      if (group.length <= 1) {
+        dedupRemaining.add(group[0].id);
+        continue;
+      }
+      group.sort(
+        (a: any, b: any) =>
+          new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
+      );
+      dedupRemaining.add(group[0].id);
+      for (const dup of group.slice(1)) {
+        try {
+          updateTask(dup.id, { status: "done" });
+          addAutoComment(
+            dup.id,
+            `🔁 **Auto-Enforce**: Duplicado cerrado. Tarea activa: \`${group[0].id}\``,
+            actorId
+          );
+          logActivity(
+            "pipeline-governance",
+            `Duplicado cerrado: ${dup.title} (${dup.id}) → activa: ${group[0].id}`,
+            "info",
+            { agent: actorId, metadata: { closedTaskId: dup.id, keptTaskId: group[0].id } }
+          );
+          dedupClosed.push({
+            taskId: dup.id,
+            title: dup.title,
+            action: "dedup_closed",
+            reason: `Duplicado de ${group[0].id}`,
+            timestamp: new Date().toISOString(),
+          });
+        } catch (e) {
+          console.error(`[auto-enforce] Error closing duplicate ${dup.id}:`, e);
+        }
+      }
+    }
+
+    // ── 3. Process remaining active tasks for timeouts ──
+    const remaining = allTasks.filter(
+      (t: any) => t.status !== "in_progress" || dedupRemaining.has(t.id)
     );
 
-    console.log(`[auto-enforce] Processing ${activeTasks.length} active tasks`);
-
-    for (const task of activeTasks) {
-      const result = await enforceTaskRules(task, now, actorId);
+    for (const task of remaining) {
+      const result = await enforceTaskRules(task, now, actorId, notifications);
       results.push(result);
     }
 
-    // Calculate summary
+    // ── 4. Summary ──
     const summary = {
       pings: results.filter((r) => r.action === "ping").length,
       escalates: results.filter((r) => r.action === "escalate").length,
       comments: results.filter((r) => r.action === "comment").length,
+      dedup_closed: dedupClosed.length,
+      fail_rerouted: results.filter((r) => r.action === "fail_reroute").length,
       noAction: results.filter((r) => r.action === "none").length,
     };
 
-    // Log activity
     logActivity(
       "pipeline-governance",
-      `Auto-enforce completado: ${summary.pings} pings, ${summary.escalates} escalados, ${summary.comments} comentarios`,
+      `Auto-enforce: ${summary.pings} pings, ${summary.escalates} escalados, ${summary.dedup_closed} dedup, ${summary.fail_rerouted} rerouted`,
       "info",
-      {
-        agent: actorId,
-        metadata: {
-          processed: activeTasks.length,
-          summary,
-        },
-      }
+      { agent: actorId, metadata: { processed: allTasks.length, summary, notifications: notifications.length } }
     );
 
     const response: AutoEnforceResponse = {
       success: true,
-      processed: activeTasks.length,
+      processed: allTasks.length,
+      dedup_closed: dedupClosed,
       actions: results,
+      notifications,
       summary,
     };
 
@@ -120,85 +222,190 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("[auto-enforce] Error:", error);
     return NextResponse.json(
-      {
-        success: false,
-        error: error instanceof Error ? error.message : "Unknown error",
-      },
+      { success: false, error: error instanceof Error ? error.message : "Unknown error" },
       { status: 500 }
     );
   }
 }
 
-/**
- * Enforce rules on a single task
- */
+// ── Per-task enforcement ──
+
 async function enforceTaskRules(
   task: any,
   now: number,
-  actorId: string
+  actorId: string,
+  notifications: Notification[]
 ): Promise<EnforceResult> {
   const updated = new Date(task.updated_at).getTime();
   const timeInStatus = now - updated;
 
-  // Rule 1: Tasks in 'review' without recent comment
-  if (task.status === "review") {
-    const lastComment = getLastCommentTime(task.id);
-    const timeSinceComment = lastComment ? now - lastComment : timeInStatus;
-
-    // Two sub-rules: long review (>REVIEW_TIMEOUT) or no comments (>REVIEW_NO_COMMENT)
-    const timeoutToUse = Math.min(timeSinceComment > REVIEW_NO_COMMENT_MS ? timeSinceComment : Infinity, timeInStatus);
-    
-    if (timeInStatus > REVIEW_TIMEOUT_MS || timeSinceComment > REVIEW_NO_COMMENT_MS) {
-      const idleReason = timeInStatus > REVIEW_TIMEOUT_MS
-        ? `Review task idle for ${formatDuration(timeInStatus)} (status timeout)`
-        : `Review task has no comments for ${formatDuration(timeSinceComment)}`;
-
-      await addAutoComment(
-        task.id,
-        `⚠️ **Auto-Enforce**: ${idleReason}. Revisa y añade comentarios o toma acción.`,
-        actorId
-      );
-      await notifySpecialist(task.assignee, task.title, "review", Math.max(timeInStatus, timeSinceComment));
-
-      return {
-        taskId: task.id,
-        title: task.title,
-        action: "comment",
-        reason: idleReason,
-        timestamp: new Date().toISOString(),
-      };
+  // ── Rule: FAIL from security/qa-tester → reroute to coder ──
+  if (task.status === "in_progress" || task.status === "review") {
+    const hasFailFindings = checkForFailFindings(task);
+    if (hasFailFindings && task.assignee !== "coder") {
+      try {
+        updateTask(task.id, { assignee: "coder" });
+        addAutoComment(
+          task.id,
+          `🔄 **Auto-Enforce**: FAIL detectado de Security/QA. Reasignada a coder para aplicar fixes.`,
+          actorId
+        );
+        notifications.push({
+          type: "sessions_send",
+          target: "coder",
+          message: `🛠️ Tarea "${task.title}" tiene FAIL de Security/QA y te ha sido reasignada. Revisa los findings y aplica fixes.`,
+        });
+        logActivity(
+          "pipeline-governance",
+          `FAIL reroute: ${task.title} → coder`,
+          "info",
+          { agent: actorId, metadata: { taskId: task.id, fromAssignee: task.assignee } }
+        );
+        return {
+          taskId: task.id,
+          title: task.title,
+          action: "fail_reroute",
+          reason: `FAIL findings → reassigned to coder (was: ${task.assignee})`,
+          timestamp: new Date().toISOString(),
+        };
+      } catch (e) {
+        console.error(`[auto-enforce] Error rerouting FAIL task ${task.id}:`, e);
+      }
     }
   }
 
-  // Rule 2: Tasks in 'in_progress' > 2h → ping specialist
-  if (task.status === "in_progress") {
-    if (timeInStatus > IN_PROGRESS_ESCALATE_MS) {
-      // Rule 3: Tasks in 'in_progress' > 4h → escalate to Alfred
-      await escalateToAlfred(task, timeInStatus, actorId);
-
-      return {
-        taskId: task.id,
-        title: task.title,
-        action: "escalate",
-        reason: `Tarea en progreso durante ${formatDuration(timeInStatus)} (>4h)`,
-        timestamp: new Date().toISOString(),
-      };
-    } else if (timeInStatus > IN_PROGRESS_WARNING_MS) {
-      await addAutoComment(
-        task.id,
-        "🔔 **Auto-Enforce**: Esta tarea está en progreso desde hace más de 2 horas. ¿Necesitas ayuda?",
-        actorId
-      );
-      await notifySpecialist(task.assignee, task.title, "in_progress", timeInStatus);
-
+  // ── Rule: backlog > 1h → notify intended assignee ──
+  if (task.status === "backlog") {
+    if (timeInStatus > STALE_TASK_WARNING_MS && task.assignee) {
+      notifications.push({
+        type: "sessions_send",
+        target: task.assignee,
+        message: `📋 Tarea "${task.title}" lleva >1h en **backlog**. ¿Puedes tomarla?`,
+      });
       return {
         taskId: task.id,
         title: task.title,
         action: "ping",
-        reason: `Tarea en progreso durante ${formatDuration(timeInStatus)} (>2h)`,
+        reason: `Backlog >1h, notified ${task.assignee}`,
         timestamp: new Date().toISOString(),
       };
     }
+    return {
+      taskId: task.id,
+      title: task.title,
+      action: "none",
+      reason: "Backlog reciente o sin asignar",
+      timestamp: new Date().toISOString(),
+    };
+  }
+
+  // ── Rule: in_progress > 1h → notify specialist; > 2h → escalate (review only) ──
+  if (task.status === "in_progress") {
+    if (timeInStatus > STALE_TASK_WARNING_MS) {
+      // Notify the specialist
+      if (task.assignee) {
+        notifications.push({
+          type: "sessions_send",
+          target: task.assignee,
+          message: `⏰ Tarea "${task.title}" lleva >${formatDuration(timeInStatus)} en **progreso**. ¿Necesitas ayuda o está completada?`,
+        });
+      }
+      return {
+        taskId: task.id,
+        title: task.title,
+        action: "ping",
+        reason: `In_progress >1h (${formatDuration(timeInStatus)}), notified ${task.assignee || "nadie"}`,
+        timestamp: new Date().toISOString(),
+      };
+    }
+    return {
+      taskId: task.id,
+      title: task.title,
+      action: "none",
+      reason: "En progreso reciente",
+      timestamp: new Date().toISOString(),
+    };
+  }
+
+  // ── Rule: review > 1h → notify assignee; > 2h → escalate to Alfred ──
+  if (task.status === "review") {
+    // Always ping at 1h
+    if (timeInStatus > STALE_TASK_WARNING_MS && task.assignee) {
+      notifications.push({
+        type: "sessions_send",
+        target: task.assignee,
+        message: `👀 Tarea "${task.title}" lleva >${formatDuration(timeInStatus)} en **review**. ¿Puedes revisarla?`,
+      });
+    }
+
+    // Escalate to Alfred at 2h — ONLY if assignee is main (awaiting Alfred's approval)
+    // If assignee is another agent, ping them harder instead
+    if (timeInStatus > REVIEW_ESCALATE_MS) {
+      if (task.assignee === "main" || !task.assignee) {
+        notifications.push({
+          type: "sessions_send",
+          target: "main",
+          message: `📋 **DECISIÓN REQUERIDA**: Tarea "${task.title}" en **review** desde hace ${formatDuration(timeInStatus)}. ¿La apruebo (DONE) o la devuelvo al pipeline?`,
+        });
+
+        addAutoComment(
+          task.id,
+          `🚨 **Auto-Enforce**: Review >2h. Notificado Alfred para decisión.`,
+          actorId
+        );
+
+        return {
+          taskId: task.id,
+          title: task.title,
+          action: "escalate",
+          reason: `Review >2h (${formatDuration(timeInStatus)}), notified Alfred`,
+          timestamp: new Date().toISOString(),
+        };
+      } else {
+        // Task is in review but assigned to another agent — notify them, not Alfred
+        notifications.push({
+          type: "sessions_send",
+          target: task.assignee,
+          message: `⏰ Tarea "${task.title}" lleva >${formatDuration(timeInStatus)} en **review** asignada a ti. ¿Está completada? Muévela a done o al siguiente paso del pipeline.`,
+        });
+
+        return {
+          taskId: task.id,
+          title: task.title,
+          action: "ping",
+          reason: `Review >2h (${formatDuration(timeInStatus)}), pinged assignee ${task.assignee}`,
+          timestamp: new Date().toISOString(),
+        };
+      }
+    }
+
+    // No comments for >2h → add comment
+    if (timeInStatus > REVIEW_NO_COMMENT_MS) {
+      const lastComment = getLastCommentTime(task.id);
+      const timeSinceComment = lastComment ? now - lastComment : timeInStatus;
+      if (timeSinceComment > REVIEW_NO_COMMENT_MS) {
+        addAutoComment(
+          task.id,
+          `⚠️ **Auto-Enforce**: Sin actividad en ${formatDuration(timeSinceComment)}. Por favor revisa y toma acción.`,
+          actorId
+        );
+        return {
+          taskId: task.id,
+          title: task.title,
+          action: "comment",
+          reason: `Sin comentarios en ${formatDuration(timeSinceComment)}`,
+          timestamp: new Date().toISOString(),
+        };
+      }
+    }
+
+    return {
+      taskId: task.id,
+      title: task.title,
+      action: timeInStatus > STALE_TASK_WARNING_MS ? "ping" : "none",
+      reason: timeInStatus > STALE_TASK_WARNING_MS ? "Review >1h, notified" : "Review reciente",
+      timestamp: new Date().toISOString(),
+    };
   }
 
   return {
@@ -211,186 +418,25 @@ async function enforceTaskRules(
 }
 
 /**
- * Get the timestamp of the last comment on a task
+ * Check if a task has FAIL findings from security or qa-tester.
+ * Scans comments for FAIL/Hallazgos/HIGH/CRITICAL patterns from agent authors.
  */
-function getLastCommentTime(taskId: string): number | null {
+function checkForFailFindings(task: any): boolean {
   try {
-    // Import dynamically to avoid circular dependencies
-    const { listTaskComments } = require("@/lib/kanban-db");
-    const comments = listTaskComments({ taskId });
-    if (comments.length === 0) return null;
-    const lastComment = comments[comments.length - 1];
-    return new Date(lastComment.created_at).getTime();
-  } catch (error) {
-    console.error(`[auto-enforce] Error getting comments for ${taskId}:`, error);
-    return null;
-  }
-}
-
-/**
- * Add an automatic comment to a task
- */
-async function addAutoComment(
-  taskId: string,
-  message: string,
-  actorId: string
-): Promise<void> {
-  try {
-    createTaskComment({
-      taskId,
-      authorType: "agent",
-      authorId: actorId,
-      body: message,
+    const comments = listTaskComments({ taskId: task.id });
+    return comments.some((c: any) => {
+      if (c.authorType !== "agent") return false;
+      if (!["security", "qa-tester"].includes(c.authorId)) return false;
+      const body = (c.body || "").toLowerCase();
+      return (
+        body.includes("**fail**") ||
+        body.includes("**hallazgo") ||
+        body.includes("finding") ||
+        (body.includes("hallazgos") && (body.includes("high") || body.includes("critical") || body.includes("medium")))
+      );
     });
   } catch (error) {
-    console.error(`[auto-enforce] Error adding comment to ${taskId}:`, error);
-  }
-}
-
-/**
- * Notify a specialist about a task
- * Writes .pipeline-status flag and logs for Alfred heartbeat pickup.
- */
-async function notifySpecialist(
-  assignee: string | null,
-  taskTitle: string,
-  status: string,
-  duration: number
-): Promise<void> {
-  if (!assignee) return;
-
-  // Write flag for Alfred heartbeat to detect
-  writePipelineFlag("PING", {
-    agent: assignee,
-    title: taskTitle.substring(0, 50),
-    status,
-    duration: formatDuration(duration),
-  });
-
-  logActivity(
-    "pipeline-governance",
-    `Notificación auto-enforce: ${assignee} — tarea "${taskTitle}" en ${status} durante ${formatDuration(duration)}`,
-    "info",
-    {
-      agent: "auto-enforce",
-      metadata: {
-        targetAgent: assignee,
-        taskTitle,
-        status,
-        duration,
-        action: "notify",
-      },
-    }
-  );
-
-  console.log(`[auto-enforce] Notified ${assignee} about task "${taskTitle}" (flag + log)`);
-}
-
-
-/**
- * Write an action flag to .pipeline-status for Alfred heartbeat detection.
- * Ensures Alfred knows about auto-enforce actions without waiting for manual check.
- */
-function writePipelineFlag(action: string, details: Record<string, string>): void {
-  try {
-    const fs = require('fs');
-    const path = require('path');
-    const flagPath = path.join(
-      process.env.HOME || '/home/ubuntu',
-      '.openclaw',
-      'workspace',
-      '.pipeline-status'
-    );
-    const timestamp = new Date().toISOString();
-    const params = Object.entries(details).map(([k, v]) => `${k}=${v}`).join('|');
-    const entry = `${timestamp}:${action}|${params}`;
-    let existing = '';
-    if (fs.existsSync(flagPath)) {
-      existing = fs.readFileSync(flagPath, 'utf8').trim();
-      if (existing && !existing.endsWith('CLEAN')) {
-        fs.writeFileSync(flagPath, existing + '\n' + entry + '\n');
-      } else {
-        fs.writeFileSync(flagPath, entry + '\n');
-      }
-    } else {
-      fs.writeFileSync(flagPath, entry + '\n');
-    }
-    console.log(`[auto-enforce] Wrote .pipeline-status flag: ${action}`);
-  } catch (flagError) {
-    console.error('[auto-enforce] Could not write .pipeline-status flag:', flagError);
-  }
-}
-/**
-/**
- * Escalate a task to Alfred (main agent)
- * Adds a comment, writes .pipeline-status flag, and logs for heartbeat pickup.
- * Does NOT auto-block — Alfred decides next action.
- */
-async function escalateToAlfred(
-  task: any,
-  duration: number,
-  actorId: string
-): Promise<void> {
-  try {
-    createTaskComment({
-      taskId: task.id,
-      authorType: "agent",
-      authorId: actorId,
-      commentType: "comment",
-      body: `🚨 **ESCALADO**: Tarea en progreso durante ${formatDuration(duration)} (>4h). Marcada para revisión de Alfred. Especialista: ${task.assignee || "sin asignar"}.`,
-    });
-
-    // Write flag for Alfred heartbeat to detect immediately
-    writePipelineFlag("ESCALATION", {
-      taskId: task.id,
-      title: task.title.substring(0, 50),
-      assignee: task.assignee || "none",
-      duration: formatDuration(duration),
-    });
-
-    logActivity(
-      "pipeline-governance",
-      `Tarea escalada: ${task.title} (${task.id}) - en progreso durante ${formatDuration(duration)}`,
-      "warning",
-      {
-        agent: actorId,
-        metadata: {
-          taskId: task.id,
-          taskTitle: task.title,
-          assignee: task.assignee,
-          duration,
-          action: "escalate_flag",
-          note: ".pipeline-status flag written. Alfred decides via heartbeat.",
-        },
-      }
-    );
-
-    console.log(`[auto-enforce] Escalated task "${task.title}" to Alfred (flagged, not blocked)`);
-  } catch (error) {
-    console.error(`[auto-enforce] Error escalating task ${task.id}:`, error);
-  }
-}
-
-/**
- * Format duration in milliseconds to human-readable format
- * Handles Infinity and NaN gracefully
- */
-function formatDuration(ms: number): string {
-  if (!Number.isFinite(ms) || ms < 0) {
-    return "unknown";
-  }
-  const seconds = Math.floor(ms / 1000);
-  const minutes = Math.floor(seconds / 60);
-  const hours = Math.floor(minutes / 60);
-  const days = Math.floor(hours / 24);
-
-  if (days > 0) {
-    return `${days}d ${hours % 24}h`;
-  } else if (hours > 0) {
-    return `${hours}h ${minutes % 60}m`;
-  } else if (minutes > 0) {
-    return `${minutes}m`;
-  } else {
-    return `${seconds}s`;
+    console.error(`[auto-enforce] Error checking FAIL findings for ${task.id}:`, error);
+    return false;
   }
 }

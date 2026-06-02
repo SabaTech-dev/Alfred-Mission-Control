@@ -145,6 +145,8 @@
     "logs": "Logs",
     "analytics": "Analytics",
     "costsAlerts": "Costs",
+    "costs-alerts": "Costs & Alerts",
+    "actions": "Actions",
     "calendar": "Calendar",
     "system": "System",
     "settings": "Settings",
@@ -295,6 +297,14 @@
     "swarm": {
       "title": "Agent Swarm",
       "description": "Monitor and manage Agent Swarm tasks and agents in real time."
+    },
+    "actions": {
+      "title": "Actions",
+      "description": "Quick actions and shortcuts for common agent tasks."
+    },
+    "costs-alerts": {
+      "title": "Costs & Alerts",
+      "description": "Budget tracking, cost anomalies, and spending alerts across models and agents."
     }
   },
   "topbar": {
@@ -1306,7 +1316,7 @@
     },
     "errors": {
       "offline": "Agent Swarm API is offline. Make sure it is running on localhost:3013.",
-      "unauthorized": "Unauthorized. Check NEXT_PUBLIC_SWARM_API_KEY.",
+      "unauthorized": "Unauthorized. Check SWARM_API_KEY (server-side).",
       "generic": "Failed to fetch swarm data: {error}"
     },
     "createTask": {

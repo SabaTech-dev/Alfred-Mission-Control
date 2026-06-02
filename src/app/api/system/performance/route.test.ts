@@ -1,6 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { GET } from "./route";
 
+vi.mock("@/lib/auth-helpers", () => ({
+  requireAgentOrSessionAuth: vi.fn().mockResolvedValue({ authorized: true, authType: "session" }),
+}));
+
 // Mock system-stats module
 vi.mock("@/lib/system-stats", () => ({
   cachedSystemStats: {
@@ -17,10 +21,6 @@ vi.mock("@/lib/system-stats", () => ({
       totalServices: 4,
     }),
   },
-}));
-// Mock auth-helpers - all requests authenticated by default
-vi.mock("@/lib/auth-helpers", () => ({
-  requireAuth: vi.fn().mockResolvedValue({ authorized: true }),
 }));
 
 const mockRequest = new Request("http://localhost:3000/api/system/performance");
@@ -128,8 +128,8 @@ describe("GET /api/system/performance", () => {
 
 describe("Auth middleware", () => {
   it("should return 401 when not authenticated", async () => {
-    const { requireAuth } = await import("@/lib/auth-helpers");
-    (requireAuth as any).mockResolvedValueOnce({
+    const { requireAgentOrSessionAuth } = await import("@/lib/auth-helpers");
+    (requireAgentOrSessionAuth as any).mockResolvedValueOnce({
       authorized: false,
       error: new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 }),
     });

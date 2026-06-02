@@ -2,6 +2,7 @@ import "server-only";
 
 import { createPrivateKey, sign } from "crypto";
 import fs from "fs";
+import net from "net";
 
 import type { ChatGatewayStatus } from "@/lib/openclaw-chat-types";
 import { OPENCLAW_DIR } from "@/lib/paths";
@@ -198,6 +199,52 @@ function toWebSocketUrl(value: string): string {
   return `ws://${value}`;
 }
 
+function toHttpUrl(value: string): string {
+  if (/^https?:\/\//i.test(value)) {
+    return value;
+  }
+
+  if (/^wss?:\/\//i.test(value)) {
+    return value.replace(/^ws/i, "http");
+  }
+
+  return `http://${value}`;
+}
+
+async function probeTcpPort(host: string, port: number, timeoutMs: number): Promise<boolean> {
+  return await new Promise<boolean>((resolve) => {
+    const socket = new net.Socket();
+    let settled = false;
+
+    const finish = (result: boolean) => {
+      if (settled) {
+        return;
+      }
+
+      settled = true;
+      socket.removeAllListeners();
+      socket.destroy();
+      resolve(result);
+    };
+
+    socket.setTimeout(timeoutMs);
+    socket.once("connect", () => finish(true));
+    socket.once("timeout", () => finish(false));
+    socket.once("error", () => finish(false));
+    socket.once("close", () => finish(false));
+    socket.connect(port, host);
+  });
+}
+
+export interface GatewayRuntimeProbe {
+  available: boolean;
+  latencyMs: number | null;
+  port: number;
+  listenerActive: boolean;
+  checkedUrl: string | null;
+  error: string | null;
+}
+
 export function getGatewaySocketUrls(config: GatewayConfig): string[] {
   const urls = new Set<string>();
   const push = (value: string | null | undefined) => {
@@ -221,33 +268,88 @@ export function getGatewaySocketUrls(config: GatewayConfig): string[] {
   return Array.from(urls);
 }
 
-export async function checkGatewayStatus(): Promise<ChatGatewayStatus> {
-  const start = Date.now();
-  try {
-    // Use lightweight HTTP health check instead of WebSocket
-    // WebSocket requires device pairing which may not be configured
-    const config = readGatewayConfig();
-    const hosts = config.url ? [config.url] : [
-      `http://${config.host}:${config.port}`,
-      `http://127.0.0.1:${config.port}`,
-      `http://localhost:${config.port}`,
-    ];
-
-    for (const base of hosts) {
-      try {
-        const url = base.replace(/^ws/i, "http");
-        const res = await fetch(`${url}/health`, {
-          signal: AbortSignal.timeout(2_000),
-        });
-        if (res.ok) {
-          return { available: true, latencyMs: Date.now() - start, error: null };
-        }
-      } catch {
-        // try next host
-      }
+export function getGatewayHttpUrls(config: GatewayConfig): string[] {
+  const urls = new Set<string>();
+  const push = (value: string | null | undefined) => {
+    const normalized = value?.trim();
+    if (!normalized) {
+      return;
     }
 
-    return { available: false, latencyMs: null, error: "Gateway HTTP health check failed" };
+    urls.add(toHttpUrl(normalized));
+  };
+
+  if (config.url) {
+    push(config.url);
+    return Array.from(urls);
+  }
+
+  push(`${config.host}:${config.port}`);
+  push(`127.0.0.1:${config.port}`);
+  push(`localhost:${config.port}`);
+
+  return Array.from(urls);
+}
+
+export async function probeGatewayRuntime(timeoutMs = 2_000): Promise<GatewayRuntimeProbe> {
+  const start = Date.now();
+  const config = readGatewayConfig();
+  const urls = getGatewayHttpUrls(config);
+  let lastError: string | null = null;
+
+  for (const url of urls) {
+    try {
+      const response = await fetch(`${url}/health`, {
+        signal: AbortSignal.timeout(timeoutMs),
+      });
+
+      if (response.ok) {
+        return {
+          available: true,
+          latencyMs: Date.now() - start,
+          port: config.port,
+          listenerActive: true,
+          checkedUrl: url,
+          error: null,
+        };
+      }
+
+      lastError = `Gateway health returned ${response.status}`;
+    } catch (error) {
+      lastError = error instanceof Error ? error.message : "Gateway HTTP health check failed";
+    }
+  }
+
+  const listenerHosts = Array.from(new Set([config.host, "127.0.0.1", "localhost"]));
+  let listenerActive = false;
+
+  for (const host of listenerHosts) {
+    if (await probeTcpPort(host, config.port, Math.min(timeoutMs, 1_000))) {
+      listenerActive = true;
+      break;
+    }
+  }
+
+  return {
+    available: false,
+    latencyMs: null,
+    port: config.port,
+    listenerActive,
+    checkedUrl: null,
+    error: listenerActive
+      ? `Gateway listener reachable but /health failed${lastError ? `: ${lastError}` : ""}`
+      : lastError ?? `Gateway listener unreachable on port ${config.port}`,
+  };
+}
+
+export async function checkGatewayStatus(): Promise<ChatGatewayStatus> {
+  try {
+    const probe = await probeGatewayRuntime();
+    return {
+      available: probe.available,
+      latencyMs: probe.latencyMs,
+      error: probe.error,
+    };
   } catch (error) {
     return {
       available: false,

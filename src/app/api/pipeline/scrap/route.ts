@@ -28,10 +28,13 @@ export async function POST(request: Request) {
   // Auth handled by root middleware.ts (AGENT_OR_SESSION_API_PREFIXES)
   // No additional auth check needed here
 
-  // Parse and validate request body
-  let body;
+  // Parse and validate request body (allow empty body)
+  let body = {};
   try {
-    body = await request.json();
+    const text = await request.text();
+    if (text.trim()) {
+      body = JSON.parse(text);
+    }
   } catch (error) {
     return NextResponse.json({ success: false, error: "Invalid JSON" }, { status: 400 });
   }

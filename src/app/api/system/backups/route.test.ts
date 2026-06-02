@@ -6,6 +6,7 @@ import path from "path";
 // Mock auth-helpers - all requests authenticated by default
 vi.mock("@/lib/auth-helpers", () => ({
   requireAuth: vi.fn().mockResolvedValue({ authorized: true }),
+  requireAgentOrSessionAuth: vi.fn().mockResolvedValue({ authorized: true }),
 }));
 
 const mockRequest = new Request("http://localhost:3000/api/system/backups");

@@ -44,7 +44,7 @@ export default function PipelineClient() {
   // Filters
   const [filterStage, setFilterStage] = useState<PipelineStage | "all">("all");
   const [filterServiceType, setFilterServiceType] = useState<string>("all");
-  const [filterSourceType, setFilterSourceType] = useState<SourceType | "all">("business_opportunity"); // Default to business opportunities only
+  const [filterSourceType, setFilterSourceType] = useState<SourceType | "all">("business_opportunity");
   const [filterDateFrom, setFilterDateFrom] = useState<string>("");
   const [filterDateTo, setFilterDateTo] = useState<string>("");
   const [showFilters, setShowFilters] = useState(false);
@@ -52,7 +52,7 @@ export default function PipelineClient() {
   const filteredOpportunities = opportunities.filter((o) => {
     if (filterStage !== "all" && o.stage !== filterStage) return false;
     if (filterServiceType !== "all" && o.service_type !== filterServiceType) return false;
-    if (filterSourceType !== "all" && o.source_type !== filterSourceType) return false;
+    if (filterSourceType !== "business_opportunity" && o.source_type !== filterSourceType) return false;
     if (filterDateFrom && o.created_at < filterDateFrom) return false;
     if (filterDateTo && o.created_at > filterDateTo + "T23:59:59") return false;
     return true;
@@ -61,7 +61,7 @@ export default function PipelineClient() {
   const clearFilters = () => {
     setFilterStage("all");
     setFilterServiceType("all");
-    setFilterSourceType("business_opportunity"); // Keep default business opportunities
+    setFilterSourceType("business_opportunity");
     setFilterDateFrom("");
     setFilterDateTo("");
   };

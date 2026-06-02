@@ -145,6 +145,22 @@ function calculateConfidence(
 }
 
 /**
+ * Determine if a parsed report represents a sellable/billable opportunity.
+ */
+function isReportOpportunity(
+  source: OpportunitySource,
+  sourceType: "internal_report" | "business_opportunity" | "auto_sync",
+  confidence: number
+): boolean {
+  // Threshold: confidence must be at least 50
+  if (confidence < 50) return false;
+
+  // Any internal_report or business_opportunity with sufficient confidence is an opportunity
+  // (can be billed to customer or used internally)
+  return sourceType !== "auto_sync" || source !== "other";
+}
+
+/**
  * Parse a full report file into structured data.
  */
 export function parseReport(content: string, filename: string): ParsedReport {
@@ -194,7 +210,7 @@ export function parseReport(content: string, filename: string): ParsedReport {
     summary,
     taskId,
     reportStatus,
-    isOpportunity: confidence >= 50 && parsed.sourceType === "business_opportunity",
+    isOpportunity: isReportOpportunity(parsed.serviceType, parsed.sourceType, confidence),
     confidence,
   };
 }

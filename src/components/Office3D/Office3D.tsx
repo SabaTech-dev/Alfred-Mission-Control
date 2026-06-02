@@ -119,6 +119,12 @@ export default function Office3D({ initialAgents }: Office3DProps = {}) {
   const obstacles = buildObstacles(agents, subagentConfigs);
   const officeBounds = { minX: -12, maxX: 12, minZ: -9, maxZ: 9 };
 
+  console.log("[office] Office3D render", {
+    loading,
+    initialAgentCount: initialAgents?.length ?? 0,
+    agentCount: agents.length,
+  });
+
   if (loading) {
     return (
       <div className="fixed inset-0 bg-neutral-900 flex items-center justify-center" style={{ height: "100vh", width: "100vw" }}>

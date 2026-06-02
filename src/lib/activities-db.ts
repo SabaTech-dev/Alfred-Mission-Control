@@ -7,7 +7,11 @@ import path from 'path';
 import fs from 'fs';
 import { randomUUID } from 'crypto';
 
-const DB_PATH = path.join(process.cwd(), 'data', 'activities.db');
+const IS_TEST_ENV = process.env.VITEST === "true" || process.env.NODE_ENV === "test";
+
+const DB_PATH = IS_TEST_ENV
+  ? ":memory:"
+  : path.join(process.cwd(), 'data', 'activities.db');
 
 export type ActivityType =
   | 'file'
@@ -45,6 +49,14 @@ export interface Activity {
 let _db: Database | null = null;
 
 function getDb(): Database {
+  // In test environment, always use in-memory database
+  if (IS_TEST_ENV) {
+    if (_db) return _db;
+    _db = new Database(":memory:");
+    initializeSchema(_db);
+    return _db;
+  }
+
   // Clean up stale WASM SQLite lock directory
   const lockDir = DB_PATH + '.lock';
   try {
@@ -71,8 +83,15 @@ function getDb(): Database {
   }
   _db.pragma('synchronous = NORMAL');
 
+  initializeSchema(_db);
+  migrateFromJsonIfNeeded(_db);
+
+  return _db;
+}
+
+function initializeSchema(db: Database): void {
   // Create table
-  _db.exec(`
+  db.exec(`
     CREATE TABLE IF NOT EXISTS activities (
       id TEXT PRIMARY KEY,
       timestamp TEXT NOT NULL,
@@ -89,19 +108,21 @@ function getDb(): Database {
     CREATE INDEX IF NOT EXISTS idx_activities_type ON activities(type);
     CREATE INDEX IF NOT EXISTS idx_activities_status ON activities(status);
   `);
+}
 
+function migrateFromJsonIfNeeded(db: Database): void {
   // Migrate from JSON if DB is empty and JSON exists
-  const count = (_db.prepare('SELECT COUNT(*) as n FROM activities').get() as { n: number }).n;
+  const count = (db.prepare('SELECT COUNT(*) as n FROM activities').get() as { n: number }).n;
   if (count === 0) {
     const jsonPath = path.join(process.cwd(), 'data', 'activities.json');
     if (fs.existsSync(jsonPath)) {
       try {
         const data = JSON.parse(fs.readFileSync(jsonPath, 'utf-8'));
-        const insert = _db.prepare(`
+        const insert = db.prepare(`
           INSERT OR IGNORE INTO activities (id, timestamp, type, description, status, duration_ms, tokens_used, agent, metadata)
           VALUES (@id, @timestamp, @type, @description, @status, @duration_ms, @tokens_used, @agent, @metadata)
         `);
-        const insertMany = _db.transaction((activities: Activity[]) => {
+        const insertMany = db.transaction((activities: Activity[]) => {
           for (const a of activities) {
             insert.run({
               ...a,
@@ -117,8 +138,13 @@ function getDb(): Database {
       }
     }
   }
+}
 
-  return _db;
+export function resetDbForTesting(): void {
+  if (_db) {
+    _db.close();
+    _db = null;
+  }
 }
 
 export function logActivity(
@@ -282,7 +308,7 @@ export function getActivities(opts: GetActivitiesOptions = {}): ActivitiesResult
   const offset = opts.offset ?? 0;
 
   const total = (db.prepare(`SELECT COUNT(*) as n FROM activities ${where}`).get(...params) as { n: number }).n;
-  const rows = db.prepare(`SELECT * FROM activities ${where} ORDER BY timestamp ${order} LIMIT ? OFFSET ?`).all(...params, limit, offset) as Record<string, unknown>[];
+  const rows = db.prepare(`SELECT * FROM activities ${where} ORDER BY timestamp ${order}, rowid ${order} LIMIT ? OFFSET ?`).all(...params, limit, offset) as Record<string, unknown>[];
 
   return {
     activities: rows.map(parseRow),

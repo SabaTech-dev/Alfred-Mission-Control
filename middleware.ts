@@ -29,9 +29,15 @@ const PUBLIC_API_ROUTES = new Set([
 ]);
 
 
-// API routes requiring agent credentials ONLY (no browser session)
+// API routes requiring agent credentials ONLY (no browser session).
+// Keep this list narrow and specific: several dashboard pages call the
+// operational APIs below via authenticated browser session.
 const AGENT_ONLY_API_PREFIXES = [
-  "/api/heartbeat",
+  "/api/heartbeat/tasks",
+];
+
+// API routes allowing agent credentials OR authenticated browser session
+const AGENT_OR_SESSION_API_PREFIXES = [
   "/api/config",
   "/api/cron",
   "/api/collect-usage",
@@ -40,10 +46,7 @@ const AGENT_ONLY_API_PREFIXES = [
   "/api/handoffs",
   "/api/logs",
   "/api/sessions",
-];
-
-// API routes allowing agent credentials OR authenticated browser session
-const AGENT_OR_SESSION_API_PREFIXES = [
+  "/api/heartbeat",
   "/api/agents",
   "/api/files",
   "/api/openclaw",
@@ -84,6 +87,7 @@ const AGENT_OR_SESSION_API_PREFIXES = [
   "/api/git",
   "/api/live",
   "/api/hindsight",
+  "/api/swarm",
 ];
 
 function extractToken(request: NextRequest): string | null {

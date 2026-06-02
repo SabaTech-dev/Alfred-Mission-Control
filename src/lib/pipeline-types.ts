@@ -9,7 +9,8 @@ export type PipelineStage =
   | "proposal"
   | "negotiation"
   | "won"
-  | "lost";
+  | "lost"
+  | "done";
 
 export const PIPELINE_STAGES: PipelineStage[] = [
   "lead",
@@ -19,6 +20,7 @@ export const PIPELINE_STAGES: PipelineStage[] = [
   "negotiation",
   "won",
   "lost",
+  "done",
 ];
 
 export const STAGE_LABELS: Record<PipelineStage, string> = {
@@ -29,6 +31,7 @@ export const STAGE_LABELS: Record<PipelineStage, string> = {
   negotiation: "Negociación",
   won: "Ganado",
   lost: "Perdido",
+  done: "Completado",
 };
 
 export const STAGE_COLORS: Record<PipelineStage, string> = {
@@ -39,6 +42,7 @@ export const STAGE_COLORS: Record<PipelineStage, string> = {
   negotiation: "#ec4899",
   won: "#10b981",
   lost: "#ef4444",
+  done: "#059669",
 };
 
 export const STAGE_PROBABILITY: Record<PipelineStage, number> = {
@@ -49,6 +53,7 @@ export const STAGE_PROBABILITY: Record<PipelineStage, number> = {
   negotiation: 0.7,
   won: 1.0,
   lost: 0,
+  done: 1.0,
 };
 
 export type SourceType = "auto_sync" | "manual" | "internal_report" | "business_opportunity";

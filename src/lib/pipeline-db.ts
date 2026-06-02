@@ -67,42 +67,34 @@ export interface UpdateOpportunityInput {
 }
 
 
+const IS_TEST_ENV = process.env.VITEST === "true" || process.env.NODE_ENV === "test";
 
-const DB_PATH = process.env.NODE_ENV === "test"
+const DB_PATH = IS_TEST_ENV
   ? ":memory:"
   : path.join(process.cwd(), "data", "kanban.db");
 
 let _db: Database | null = null;
-let _isInitializing = false;
-let _initPromise: Promise<void> | null = null;
 
 function getDb(): Database {
   if (_db) {
     return _db;
   }
 
-  if (_isInitializing && _initPromise) {
-    // Wait for the ongoing initialization to complete.
-    // In a synchronous context, throw to let the caller retry or handle.
-    // If needed, restructure call sites to be async.
-    throw new Error("Database is initializing. Please retry momentarily.");
-  }
-
+  // Ensure data directory exists
   const dir = path.dirname(DB_PATH);
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-  const db = new Database(DB_PATH);
-  _db = db;
-  _isInitializing = true;
-  _initPromise = (async () => {
-    try {
-      db.pragma("journal_mode = WAL");
-      initPipelineTable(db);
-    } finally {
-      _isInitializing = false;
-      _initPromise = null;
-    }
-  })();
 
+  const db = new Database(DB_PATH);
+
+  // better-sqlite3 is synchronous — initialize schema before returning.
+  // Previously this ran inside an async IIFE, creating a race condition
+  // where the first caller got a db without tables created yet.
+  db.pragma("journal_mode = WAL");
+  db.pragma("synchronous = NORMAL");
+  db.pragma("busy_timeout = 5000");
+  initPipelineTable(db);
+
+  _db = db;
   return db;
 }
 
@@ -341,7 +333,7 @@ export function findOpportunityByCompany(company: string): Opportunity | null {
  * Resets the in-memory DB so tests start clean.
  */
 export function clearAllPipelineDataForTesting(): void {
-  if (process.env.NODE_ENV !== "test") {
+  if (!IS_TEST_ENV) {
     throw new Error("clearAllPipelineDataForTesting is only for tests");
   }
   // Reset the DB singleton so next getDb() creates a fresh in-memory DB
@@ -365,6 +357,9 @@ export function getPipelineKPIs(): PipelineKPIs {
   }
 
   for (const opp of opps) {
+    // Skip opportunities with unknown stages (defensive guard)
+    if (!byStage[opp.stage]) continue;
+
     const prob = opp.probability ?? STAGE_PROBABILITY[opp.stage];
     byStage[opp.stage].count++;
     byStage[opp.stage].value += opp.value;

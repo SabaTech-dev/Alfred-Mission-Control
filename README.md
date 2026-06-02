@@ -272,11 +272,27 @@ npm run dev    # Development → http://localhost:3000
 npm run build && npm start  # Production
 ```
 
+### 7. Test and verify
+
+Quick path:
+
+```bash
+npm run test:backend
+npm run test:run
+E2E_ADMIN_PASSWORD=your_password npm run test:e2e
+```
+
+Notes:
+
+- Playwright targets `http://127.0.0.1:3000`, so keep the app or user service running before E2E.
+- The E2E regression suite fails on Chromium console errors for the key dashboard routes.
+- Keep build/runtime aligned on Node 24 so native modules like `better-sqlite3` do not drift.
+
 ---
 
 ## Production Deployment
 
-### PM2 (recommended)
+### PM2 (optional)
 
 ```bash
 npm run build
@@ -288,29 +304,34 @@ pm2 startup
 ### systemd
 
 ```ini
-# /etc/systemd/system/alfred-mission-control.service
+# ~/.config/systemd/user/alfred-mission-control.service
 [Unit]
 Description=Alfred Mission Control — OpenClaw Dashboard
-After=network.target
+After=network.target openclaw-gateway.service
+Wants=openclaw-gateway.service
 
 [Service]
 Type=simple
-User=root
-WorkingDirectory=/root/.openclaw/workspace/alfred-mission-control
-ExecStart=/usr/bin/npm start
-Restart=always
+WorkingDirectory=/home/ubuntu/.openclaw/workspace/Alfred-Mission-Control
+ExecStart=/home/ubuntu/.local/bin/node node_modules/.bin/next start -p 3000 -H 0.0.0.0
+Restart=on-failure
 RestartSec=10
+EnvironmentFile=/etc/alfred-mission-control/.env
 Environment=NODE_ENV=production
+Environment=OPENCLAW_DIR=/home/ubuntu/.openclaw
+Environment=OPENCLAW_WORKSPACE=/home/ubuntu/.openclaw/workspace
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target
 ```
 
 ```bash
-sudo systemctl daemon-reload
-sudo systemctl enable alfred-mission-control
-sudo systemctl start alfred-mission-control
+systemctl --user daemon-reload
+systemctl --user enable alfred-mission-control
+systemctl --user restart alfred-mission-control
 ```
+
+Use the checked-in `alfred-mission-control.service` file as the source of truth and adjust absolute paths only if you deploy outside this workspace.
 
 ### Reverse Proxy (Caddy)
 
@@ -333,7 +354,7 @@ alfred-mission-control.yourdomain.com {
 | Graphs | @xyflow/react (React Flow) |
 | Icons | Lucide React |
 | Database | SQLite (better-sqlite3) |
-| Runtime | Node.js 22 |
+| Runtime | Node.js 24 |
 
 ---
 

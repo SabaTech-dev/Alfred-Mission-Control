@@ -272,11 +272,27 @@ npm run dev    # Desarrollo → http://localhost:3000
 npm run build && npm start  # Producción
 ```
 
+### 7. Testear y verificar
+
+Camino rápido:
+
+```bash
+npm run test:backend
+npm run test:run
+E2E_ADMIN_PASSWORD=tu_password npm run test:e2e
+```
+
+Notas:
+
+- Playwright apunta a `http://127.0.0.1:3000`, así que la app o el user service deben estar levantados antes de correr E2E.
+- La suite de regresión E2E falla si Chromium registra errores en consola en las rutas clave del dashboard.
+- Mantené build y runtime alineados en Node 24 para evitar drift con módulos nativos como `better-sqlite3`.
+
 ---
 
 ## Despliegue en Producción
 
-### PM2 (recomendado)
+### PM2 (opcional)
 
 ```bash
 npm run build
@@ -288,29 +304,34 @@ pm2 startup
 ### systemd
 
 ```ini
-# /etc/systemd/system/alfred-mission-control.service
+# ~/.config/systemd/user/alfred-mission-control.service
 [Unit]
 Description=Alfred Mission Control — Dashboard para OpenClaw
-After=network.target
+After=network.target openclaw-gateway.service
+Wants=openclaw-gateway.service
 
 [Service]
 Type=simple
-User=root
-WorkingDirectory=/root/.openclaw/workspace/alfred-mission-control
-ExecStart=/usr/bin/npm start
-Restart=always
+WorkingDirectory=/home/ubuntu/.openclaw/workspace/Alfred-Mission-Control
+ExecStart=/home/ubuntu/.local/bin/node node_modules/.bin/next start -p 3000 -H 0.0.0.0
+Restart=on-failure
 RestartSec=10
+EnvironmentFile=/etc/alfred-mission-control/.env
 Environment=NODE_ENV=production
+Environment=OPENCLAW_DIR=/home/ubuntu/.openclaw
+Environment=OPENCLAW_WORKSPACE=/home/ubuntu/.openclaw/workspace
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target
 ```
 
 ```bash
-sudo systemctl daemon-reload
-sudo systemctl enable alfred-mission-control
-sudo systemctl start alfred-mission-control
+systemctl --user daemon-reload
+systemctl --user enable alfred-mission-control
+systemctl --user restart alfred-mission-control
 ```
+
+Usá el archivo versionado `alfred-mission-control.service` como fuente de verdad y ajustá las rutas absolutas solo si desplegás fuera de este workspace.
 
 ### Proxy Inverso (Caddy)
 
@@ -333,7 +354,7 @@ alfred-mission-control.tudominio.com {
 | Grafos | @xyflow/react (React Flow) |
 | Iconos | Lucide React |
 | Base de datos | SQLite (better-sqlite3) |
-| Runtime | Node.js 22 |
+| Runtime | Node.js 24 |
 
 ---
 

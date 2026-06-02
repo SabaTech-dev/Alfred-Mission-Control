@@ -26,6 +26,7 @@ export async function fetchWithTimeout(url: string, options?: RequestInit): Prom
   try {
     const response = await fetch(url, {
       ...options,
+      credentials: options?.credentials ?? "same-origin",
       signal: controller.signal,
     });
     return response;
