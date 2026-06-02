@@ -5,6 +5,7 @@ import { DollarSign, RotateCcw, Save, X, RefreshCw, Loader2 } from "lucide-react
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { useI18n } from "@/i18n/provider";
 import { useToast } from "@/components/Toast";
+import { authFetch } from "@/lib/auth-fetch";
 
 interface ModelPricingEntry {
   id: string;
@@ -214,7 +215,7 @@ export function PricingEditor() {
     const controller = new AbortController();
     fetchPricingControllerRef.current = controller;
     try {
-      const res = await fetch("/api/pricing", { signal: controller.signal });
+      const res = await authFetch("/api/pricing", { signal: controller.signal });
       if (!res.ok) {
         throw new Error(t("pricing.loadError"));
       }
@@ -268,7 +269,7 @@ export function PricingEditor() {
         ...changes,
       }));
 
-      const res = await fetch("/api/pricing", {
+      const res = await authFetch("/api/pricing", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ overrides }),
@@ -294,7 +295,7 @@ export function PricingEditor() {
   const handleReset = async () => {
     setResetting(true);
     try {
-      const res = await fetch("/api/pricing", { method: "DELETE" });
+      const res = await authFetch("/api/pricing", { method: "DELETE" });
       const data = await res.json();
 
       if (!res.ok) {

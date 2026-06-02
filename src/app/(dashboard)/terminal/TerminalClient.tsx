@@ -5,6 +5,7 @@ import { Terminal, Send, Trash2, Copy } from "lucide-react";
 
 import { useToast } from "@/components/Toast";
 import { useI18n } from "@/i18n/provider";
+import { authFetch } from "@/lib/auth-fetch";
 
 interface HistoryEntry {
   command: string;
@@ -65,7 +66,7 @@ export default function TerminalClient() {
     runControllerRef.current = controller;
 
     try {
-      const res = await fetch("/api/terminal", {
+      const res = await authFetch("/api/terminal", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ command: trimmed }),

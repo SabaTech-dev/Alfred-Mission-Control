@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { format, subDays, eachDayOfInterval, startOfWeek } from "date-fns";
+import { authFetch } from "@/lib/auth-fetch";
 
 interface HeatmapDay {
   day: string;
@@ -32,7 +33,7 @@ export function ActivityHeatmap() {
   const [tooltip, setTooltip] = useState<{ day: string; count: number; x: number; y: number } | null>(null);
 
   useEffect(() => {
-    fetch("/api/activities/stats")
+    authFetch("/api/activities/stats")
       .then((r) => r.json())
       .then((data) => { setStats(data); setLoading(false); })
       .catch(() => setLoading(false));

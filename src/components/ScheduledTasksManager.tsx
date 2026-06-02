@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Trash2, Clock, Heart, AlertCircle, CheckCircle, XCircle, Loader2, RefreshCw } from "lucide-react";
 import { useI18n } from "@/i18n/provider";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
+import { authFetch } from "@/lib/auth-fetch";
 
 interface ScheduledTask {
   id: string;
@@ -34,7 +35,7 @@ export function ScheduledTasksManager({ onTasksChange }: ScheduledTasksManagerPr
 
   const fetchTasks = async () => {
     try {
-      const res = await fetch("/api/tasks");
+      const res = await authFetch("/api/tasks");
       const data = await res.json();
       if (Array.isArray(data)) {
         setTasks(data);
@@ -56,7 +57,7 @@ export function ScheduledTasksManager({ onTasksChange }: ScheduledTasksManagerPr
     setError(null);
 
     try {
-      const res = await fetch(`/api/tasks?jobId=${encodeURIComponent(task.id)}`, {
+      const res = await authFetch(`/api/tasks?jobId=${encodeURIComponent(task.id)}`, {
         method: "DELETE",
       });
 

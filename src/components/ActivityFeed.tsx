@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Activity, AlertTriangle, CheckCircle2, Clock3 } from "lucide-react";
+import { authFetch } from "@/lib/auth-fetch";
 
 interface ActivityItem {
   id: string;
@@ -61,7 +62,7 @@ export function ActivityFeed({ limit = 10, status, agent }: ActivityFeedProps) {
         if (agent && agent !== "all") params.set("agent", agent);
         params.set("limit", String(limit));
 
-        const response = await fetch(`/api/activities?${params}`, { cache: "no-store" });
+        const response = await authFetch(`/api/activities?${params}`, { cache: "no-store" });
         if (!response.ok) {
           throw new Error(`Activity feed request failed: ${response.status}`);
         }

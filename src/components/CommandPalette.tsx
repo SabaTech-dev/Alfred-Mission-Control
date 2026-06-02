@@ -11,6 +11,7 @@ import {
 } from "@/lib/command-registry";
 import { useCommandPalette } from "@/hooks/useCommandPalette";
 import { useDebounce } from "@/hooks/useDebounce";
+import { authFetch } from "@/lib/auth-fetch";
 
 /**
  * Search result from /api/search
@@ -144,7 +145,7 @@ export function CommandPalette({ onCommand }: CommandPaletteProps) {
     const fetchSearchResults = async () => {
       setIsSearching(true);
       try {
-        const response = await fetch(`/api/search?q=${encodeURIComponent(debouncedQuery)}`);
+        const response = await authFetch(`/api/search?q=${encodeURIComponent(debouncedQuery)}`);
         if (response.ok) {
           const data = await response.json();
           setSearchResults(data);

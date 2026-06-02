@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 
 import { RepoStatus } from "@/operations/git-ops";
+import { authFetch } from "@/lib/auth-fetch";
 
 interface OutputModal {
   title: string;
@@ -36,7 +37,7 @@ export default function GitClient({ initialRepos }: GitClientProps) {
 
   const loadRepos = async () => {
     try {
-      const res = await fetch("/api/git");
+      const res = await authFetch("/api/git");
       const data = await res.json();
       setRepos(data.repos || []);
     } catch {
@@ -65,7 +66,7 @@ export default function GitClient({ initialRepos }: GitClientProps) {
     setOutputModal({ title: `${repo.name}: git ${action}`, content: "", loading: true });
 
     try {
-      const res = await fetch("/api/git", {
+      const res = await authFetch("/api/git", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ repo: repo.path, action }),

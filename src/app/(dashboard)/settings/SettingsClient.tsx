@@ -12,6 +12,7 @@ import { BRANDING } from "@/config/branding";
 import { SystemData, AboutStats, RealSkill, SettingsTab } from "./SettingsTypes";
 import { SettingsTabs } from "./SettingsTabs";
 import { SettingsAboutSection } from "./SettingsAboutSection";
+import { authFetch } from "@/lib/auth-fetch";
 
 interface SettingsClientProps {
   initialSystemData: SystemData | null;
@@ -38,7 +39,7 @@ export default function SettingsClient({ initialSystemData }: SettingsClientProp
 
   const fetchSystemData = async () => {
     try {
-      const res = await fetch("/api/system");
+      const res = await authFetch("/api/system");
       const data = await res.json();
       setSystemData(data);
       setLastRefresh(new Date());
@@ -52,9 +53,9 @@ export default function SettingsClient({ initialSystemData }: SettingsClientProp
   const fetchAboutStats = async () => {
     try {
       const [activities, skillsRes, tasks] = await Promise.all([
-        fetch("/api/activities").then((r) => r.json()),
-        fetch("/api/skills").then((r) => r.json()),
-        fetch("/api/tasks").then((r) => r.json()),
+        authFetch("/api/activities").then((r) => r.json()),
+        authFetch("/api/skills").then((r) => r.json()),
+        authFetch("/api/tasks").then((r) => r.json()),
       ]);
       const total = activities.activities?.length || activities.length || 0;
       const success = (activities.activities || activities).filter(

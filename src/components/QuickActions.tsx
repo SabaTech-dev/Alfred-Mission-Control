@@ -11,6 +11,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { ChangePasswordModal } from "./ChangePasswordModal";
+import { authFetch } from "@/lib/auth-fetch";
 
 interface QuickActionsProps {
   onActionComplete?: () => void;
@@ -46,7 +47,7 @@ export function QuickActions({ onActionComplete }: QuickActionsProps) {
   const handleClearActivityLog = async () => {
     setLoadingAction("clear_log");
     try {
-      const res = await fetch("/api/system", {
+      const res = await authFetch("/api/system", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "clear_activity_log" }),

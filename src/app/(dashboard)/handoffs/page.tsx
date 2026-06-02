@@ -1,5 +1,6 @@
 "use client";
 
+import { authFetch } from "@/lib/auth-fetch";
 import { useEffect, useState, useCallback } from "react";
 import {
   ArrowRight,
@@ -63,7 +64,7 @@ export default function HandoffsPage() {
 
   const fetchData = useCallback(async () => {
     try {
-      const res = await fetch("/api/handoffs");
+      const res = await authFetch("/api/handoffs");
       const json = await res.json();
       setData(json);
     } catch (error) {

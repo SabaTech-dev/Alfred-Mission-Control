@@ -7,6 +7,7 @@ import { Cpu, Hash, TrendingUp, Clock } from "lucide-react";
 import { SessionListItem, SessionMessage } from "@/operations/sessions-list-ops";
 import { MessageBubble } from "./MessageBubble";
 import { AlertTriangle, MessageSquare } from "lucide-react";
+import { authFetch } from "@/lib/auth-fetch";
 
 interface SessionDetailProps {
   session: SessionListItem;
@@ -73,7 +74,7 @@ export function SessionDetail({
       setErrorMessage(null);
     }, 0);
 
-    fetch(`/api/sessions?id=${session.sessionId}`, { signal: controller.signal })
+    authFetch(`/api/sessions?id=${session.sessionId}`, { signal: controller.signal })
       .then((r) => r.json())
       .then((data) => {
         setMessages(data.messages || []);

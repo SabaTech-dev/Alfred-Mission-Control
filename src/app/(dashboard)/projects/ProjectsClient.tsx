@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { FolderOpen, MoreVertical, Calendar, CheckCircle, Circle } from "lucide-react";
 import { useI18n } from "@/i18n/provider";
+import { authFetch } from "@/lib/auth-fetch";
 
 export interface ProjectWithStats {
   id: string;
@@ -29,7 +30,7 @@ export default function ProjectsClient({ initialData }: { initialData?: Projects
 
   useEffect(() => {
     if (!initialData?.projects) {
-      fetch("/api/projects")
+      authFetch("/api/projects")
         .then((res) => res.json())
         .then((data) => {
           if (data.projects) {

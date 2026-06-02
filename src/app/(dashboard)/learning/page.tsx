@@ -31,6 +31,7 @@ import { FeaturesTab } from "./FeaturesTab";
 import { PDCACyclesTab } from "./PDCACyclesTab";
 import { SkillsAuditTab } from "./SkillsAuditTab";
 import { FeatureTrackerView } from "./FeatureTrackerView";
+import { authFetch } from "@/lib/auth-fetch";
 
 // ── KPI Card ────────────────────────────────────────────────────────────────
 
@@ -60,7 +61,7 @@ export default function LearningLabPage() {
   const [radarLoading, setRadarLoading] = useState(false);
 
   useEffect(() => {
-    fetch("/api/learning")
+    authFetch("/api/learning")
       .then(r => r.json())
       .then(setData)
       .catch(console.error);
@@ -68,7 +69,7 @@ export default function LearningLabPage() {
 
   useEffect(() => {
     if (activeTab === "pdca" && !pdcaData) {
-      fetch("/api/learning/pdca")
+      authFetch("/api/learning/pdca")
         .then(r => r.json())
         .then(setPdcaData)
         .catch(console.error);
@@ -78,7 +79,7 @@ export default function LearningLabPage() {
   useEffect(() => {
     if (activeTab === "skills-audit" && !auditData && !auditLoading) {
       setAuditLoading(true);
-      fetch("/api/learning/skills-audit")
+      authFetch("/api/learning/skills-audit")
         .then(r => r.json())
         .then(d => { setAuditData(d); setAuditLoading(false); })
         .catch(() => setAuditLoading(false));
@@ -88,7 +89,7 @@ export default function LearningLabPage() {
   useEffect(() => {
     if (activeTab === "feature-tracker" && !ftData && !ftLoading) {
       setFtLoading(true);
-      fetch("/api/learning/feature-tracker")
+      authFetch("/api/learning/feature-tracker")
         .then(r => r.json())
         .then(d => { setFtData(d); setFtLoading(false); })
         .catch(() => setFtLoading(false));
@@ -98,7 +99,7 @@ export default function LearningLabPage() {
   useEffect(() => {
     if (activeTab === "radar" && !radarData && !radarLoading) {
       setRadarLoading(true);
-      fetch("/api/learning/tech-radar")
+      authFetch("/api/learning/tech-radar")
         .then(r => r.json())
         .then(d => { setRadarData(d); setRadarLoading(false); })
         .catch(() => setRadarLoading(false));

@@ -6,6 +6,7 @@ import { Search } from "lucide-react";
 
 import { useDebounce } from "@/hooks/useDebounce";
 import { useI18n } from "@/i18n/provider";
+import { authFetch } from "@/lib/auth-fetch";
 
 interface SearchResult {
   type: "memory" | "activity" | "task";
@@ -42,7 +43,7 @@ export function GlobalSearch() {
       }
 
       try {
-        const response = await fetch(`/api/search?q=${encodeURIComponent(debouncedQuery)}`);
+        const response = await authFetch(`/api/search?q=${encodeURIComponent(debouncedQuery)}`);
         if (!response.ok) {
           throw new Error(`Global search request failed: ${response.status}`);
         }

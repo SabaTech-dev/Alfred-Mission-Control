@@ -11,6 +11,7 @@ import { ServicesTable } from "./ServicesTable";
 import { NetworkInfo } from "./NetworkInfo";
 import { LogsModal } from "./LogsModal";
 import type { SystemData, SystemdService, LogsModal as LogsModalData } from "./types";
+import { authFetch } from "@/lib/auth-fetch";
 
 export type { SystemData, SystemdService, TailscaleDevice, FirewallRule, LogsModal } from "./types";
 
@@ -27,7 +28,7 @@ export default function SystemClient({ initialData }: { initialData: SystemData 
   useEffect(() => {
     const fetchSystemData = async () => {
       try {
-        const res = await fetch("/api/system/monitor");
+        const res = await authFetch("/api/system/monitor");
         if (res.ok) {
           const data = await res.json();
           setSystemData(data);
@@ -54,7 +55,7 @@ export default function SystemClient({ initialData }: { initialData: SystemData 
         setLogsModal({ name: svc.name, backend: svc.backend || "pm2", content: "", loading: true });
       }
 
-      const res = await fetch("/api/system/services", {
+      const res = await authFetch("/api/system/services", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: svc.name, backend: svc.backend || "pm2", action }),
@@ -69,7 +70,7 @@ export default function SystemClient({ initialData }: { initialData: SystemData 
       } else {
         showSuccess(`${svc.name}: ${action} ${t("system.actionSuccessful")}`);
         setTimeout(async () => {
-          const r = await fetch("/api/system/monitor");
+          const r = await authFetch("/api/system/monitor");
           if (r.ok) setSystemData(await r.json());
         }, 2000);
       }

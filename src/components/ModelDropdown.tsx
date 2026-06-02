@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { ChevronDown, Check, Loader2, Cpu } from "lucide-react";
+import { authFetch } from "@/lib/auth-fetch";
 
 interface Model {
   id: string;
@@ -44,7 +45,7 @@ export function ModelDropdown({
     const fetchModels = async () => {
       setLoading(true);
       try {
-        const res = await fetch("/api/models");
+        const res = await authFetch("/api/models");
         const data = await res.json();
         setModels(data);
       } catch {
@@ -78,7 +79,7 @@ export function ModelDropdown({
     setError(null);
 
     try {
-      const res = await fetch(
+      const res = await authFetch(
         `/api/sessions/${encodeURIComponent(sessionKey)}/model`,
         {
           method: "PATCH",

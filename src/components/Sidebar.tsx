@@ -50,6 +50,7 @@ interface NavGroup {
   items: NavItem[];
 }
 import { getAgentDisplayName } from "@/config/branding";
+import { authFetch } from "@/lib/auth-fetch";
 
 const baseNavGroups: NavGroup[] = [
   {
@@ -153,7 +154,7 @@ export function Sidebar() {
   }, [isOpen, isMobile]);
 
   const handleLogout = async () => {
-    await fetch("/api/auth/logout", { method: "POST" });
+    await authFetch("/api/auth/logout", { method: "POST" });
     router.push("/login");
     router.refresh();
   };

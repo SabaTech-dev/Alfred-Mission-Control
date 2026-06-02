@@ -11,6 +11,7 @@ import { GatewayStatusBadge } from "@/components/GatewayStatusBadge";
 import { BRANDING } from "@/config/branding";
 import { useI18n } from "@/i18n/provider";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { authFetch } from "@/lib/auth-fetch";
 
 export function TopBar() {
   const [showSearch, setShowSearch] = useState(false);
@@ -23,7 +24,7 @@ export function TopBar() {
 
   const handleLogout = async () => {
     try {
-      await fetch("/api/auth/logout", { method: "POST" });
+      await authFetch("/api/auth/logout", { method: "POST" });
     } catch (error) {
       console.error("Logout failed:", error);
     }

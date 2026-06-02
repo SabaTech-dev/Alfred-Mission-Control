@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Search, Download, Star, Loader2, Package, X } from "lucide-react";
+import { authFetch } from "@/lib/auth-fetch";
 
 interface ClawHubSkill {
   slug: string;
@@ -46,7 +47,7 @@ export function ClawHubBrowser({ onInstall, onClose }: ClawHubBrowserProps) {
     setError(null);
 
     try {
-      const res = await fetch(`/api/skills/clawhub/search?q=${encodeURIComponent(query)}`);
+      const res = await authFetch(`/api/skills/clawhub/search?q=${encodeURIComponent(query)}`);
       const data = await res.json();
 
       if (data.error) {
@@ -67,7 +68,7 @@ export function ClawHubBrowser({ onInstall, onClose }: ClawHubBrowserProps) {
     setError(null);
 
     try {
-      const res = await fetch("/api/skills/clawhub/install", {
+      const res = await authFetch("/api/skills/clawhub/install", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ slug }),

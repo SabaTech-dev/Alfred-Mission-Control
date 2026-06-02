@@ -1,5 +1,6 @@
 "use client";
 
+import { authFetch } from "@/lib/auth-fetch";
 import { useEffect, useState, useCallback, useRef } from "react";
 import {
   Plus,
@@ -33,7 +34,7 @@ export default function NotepadPage() {
 
   const fetchNotes = useCallback(async () => {
     try {
-      const res = await fetch('/api/notepad');
+      const res = await authFetch('/api/notepad');
       const data = await res.json();
       setNotes(Array.isArray(data) ? data : []);
       if (data.length > 0 && !selectedNote) {
@@ -52,7 +53,7 @@ export default function NotepadPage() {
 
   const createNote = async () => {
     try {
-      const res = await fetch('/api/notepad', {
+      const res = await authFetch('/api/notepad', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title: '', content: '' }),
@@ -68,7 +69,7 @@ export default function NotepadPage() {
   const saveNote = useCallback(async (note: Note) => {
     setSaving(true);
     try {
-      await fetch('/api/notepad', {
+      await authFetch('/api/notepad', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(note),
@@ -98,7 +99,7 @@ export default function NotepadPage() {
 
   const deleteNote = async (id: string) => {
     try {
-      await fetch(`/api/notepad?id=${id}`, { method: 'DELETE' });
+      await authFetch(`/api/notepad?id=${id}`, { method: 'DELETE' });
       const filtered = notes.filter(n => n.id !== id);
       setNotes(filtered);
       if (selectedNote?.id === id) {

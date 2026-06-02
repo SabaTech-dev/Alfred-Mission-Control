@@ -5,6 +5,7 @@ import { RefreshCw, Sparkles, ChevronRight, ChevronDown } from "lucide-react";
 import { SuggestionCard } from "./SuggestionCard";
 import type { Suggestion } from "@/lib/suggestions-engine";
 import { useI18n } from "@/i18n/provider";
+import { authFetch } from "@/lib/auth-fetch";
 
 interface SuggestionsPanelProps {
   compact?: boolean;
@@ -22,7 +23,7 @@ export function SuggestionsPanel({ compact = false, maxItems = 3 }: SuggestionsP
   const fetchSuggestions = useCallback(async () => {
     setIsLoading(true);
     try {
-      const res = await fetch("/api/suggestions");
+      const res = await authFetch("/api/suggestions");
       const data = await res.json();
       setSuggestions(data.suggestions || []);
     } catch (error) {
@@ -35,7 +36,7 @@ export function SuggestionsPanel({ compact = false, maxItems = 3 }: SuggestionsP
   const regenerateSuggestions = useCallback(async () => {
     setIsLoading(true);
     try {
-      const res = await fetch("/api/suggestions?regenerate=true");
+      const res = await authFetch("/api/suggestions?regenerate=true");
       const data = await res.json();
       setSuggestions(data.suggestions || []);
     } catch (error) {
@@ -53,7 +54,7 @@ export function SuggestionsPanel({ compact = false, maxItems = 3 }: SuggestionsP
     async (id: string) => {
       setApplyingId(id);
       try {
-        const res = await fetch(`/api/suggestions/${id}/apply`, { method: "POST" });
+        const res = await authFetch(`/api/suggestions/${id}/apply`, { method: "POST" });
         const data = await res.json();
         
         if (data.success) {
@@ -75,7 +76,7 @@ export function SuggestionsPanel({ compact = false, maxItems = 3 }: SuggestionsP
   const handleDismiss = useCallback(async (id: string) => {
     setDismissingId(id);
     try {
-      const res = await fetch(`/api/suggestions/${id}/dismiss`, { method: "POST" });
+      const res = await authFetch(`/api/suggestions/${id}/dismiss`, { method: "POST" });
       const data = await res.json();
       
       if (data.success) {

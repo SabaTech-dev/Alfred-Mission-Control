@@ -11,6 +11,7 @@ import {
 } from "recharts";
 import { TrendingUp, TrendingDown, Activity, AlertTriangle, Zap, ChevronDown, ChevronUp } from "lucide-react";
 import { useI18n } from "@/i18n/provider";
+import { authFetch } from "@/lib/auth-fetch";
 
 interface DailyMood {
   date: string;
@@ -137,7 +138,7 @@ export function MoodWidget() {
 
   const fetchMood = async () => {
     try {
-      const res = await fetch("/api/agents/mood");
+      const res = await authFetch("/api/agents/mood");
       if (res.ok) {
         const data = await res.json();
         setMoodData(data);

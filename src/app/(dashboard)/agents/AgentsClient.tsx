@@ -21,6 +21,7 @@ import { AgentOrganigrama } from "@/components/AgentOrganigrama";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { PageHeader } from "@/components/PageHeader";
 import { useI18n } from "@/i18n/provider";
+import { authFetch } from "@/lib/auth-fetch";
 
 type AgentStatus = "working" | "idle" | "error" | "paused" | "online" | "offline";
 
@@ -104,7 +105,7 @@ export default function AgentsClient({ initialAgents }: { initialAgents: Agent[]
 
   const fetchAgents = async () => {
     try {
-      const res = await fetch("/api/agents");
+      const res = await authFetch("/api/agents");
       const data = await res.json();
       setAgents(data.agents || []);
     } catch (error) {

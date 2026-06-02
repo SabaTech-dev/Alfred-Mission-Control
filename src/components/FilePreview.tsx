@@ -13,6 +13,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { MarkdownPreview } from "@/components/MarkdownPreview";
+import { authFetch } from "@/lib/auth-fetch";
 
 const PdfViewer = dynamic(
   () => import("@/components/PdfViewer").then((mod) => mod.PdfViewer),
@@ -83,7 +84,7 @@ export function FilePreview({ workspace, path, name, onClose }: FilePreviewProps
       return;
     }
 
-    fetch(`/api/browse?workspace=${encodeURIComponent(workspace)}&path=${encodeURIComponent(path)}&content=true`)
+    authFetch(`/api/browse?workspace=${encodeURIComponent(workspace)}&path=${encodeURIComponent(path)}&content=true`)
       .then((res) => {
         if (!res.ok) throw new Error("Failed to load file");
         return res.json();

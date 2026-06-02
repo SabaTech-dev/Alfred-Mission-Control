@@ -1,28 +1,28 @@
 {
   "errors": {
     "notFound": {
-      "title": "Página no encontrada",
-      "description": "La página que buscas no existe o fue movida.",
+      "title": "P\u00e1gina no encontrada",
+      "description": "La p\u00e1gina que buscas no existe o fue movida.",
       "goHome": "Ir al inicio",
-      "goBack": "Volver atrás"
+      "goBack": "Volver atr\u00e1s"
     },
     "error": {
-      "title": "Algo salió mal",
+      "title": "Algo sali\u00f3 mal",
       "description": "Ha ocurrido un error inesperado. Por favor, intenta de nuevo.",
       "errorId": "ID de error: {id}",
       "retry": "Intentar de nuevo"
     },
     "globalError": {
-      "title": "Error crítico",
-      "description": "Algo salió mal en la aplicación. Por favor, recarga la página.",
+      "title": "Error cr\u00edtico",
+      "description": "Algo sali\u00f3 mal en la aplicaci\u00f3n. Por favor, recarga la p\u00e1gina.",
       "errorId": "ID de error: {id}",
-      "reload": "Recargar aplicación"
+      "reload": "Recargar aplicaci\u00f3n"
     }
   },
   "reports": {
     "page": {
       "title": "Reportes",
-      "subtitle": "Reportes de análisis e insights",
+      "subtitle": "Reportes de an\u00e1lisis e insights",
       "count": "{count} reportes",
       "period": {
         "weekly": "Semanal",
@@ -35,11 +35,11 @@
       },
       "empty": {
         "title": "No se encontraron reportes",
-        "hint": "Hacé clic en \"Semanal\" o \"Mensual\" para generar un reporte"
+        "hint": "Hac\u00e9 clic en \"Semanal\" o \"Mensual\" para generar un reporte"
       },
       "preview": {
         "loading": "Cargando reporte...",
-        "select": "Seleccioná un reporte para previsualizar",
+        "select": "Seleccion\u00e1 un reporte para previsualizar",
         "errorTitle": "Error"
       },
       "toast": {
@@ -59,7 +59,7 @@
       "loadError": "Error al cargar el reporte",
       "fallback": "Reporte no encontrado",
       "totalActivities": "Actividades Totales",
-      "successRate": "Tasa de Éxito",
+      "successRate": "Tasa de \u00c9xito",
       "tokensUsed": "Tokens Usados",
       "totalCost": "Costo Total",
       "highlights": "Destacados",
@@ -82,35 +82,35 @@
     "clearAll": "Limpiar todo",
     "workspaces": "Espacios de trabajo",
     "listView": "Vista de lista",
-    "gridView": "Vista de cuadrícula",
+    "gridView": "Vista de cuadr\u00edcula",
     "retry": "Reintentar",
     "dismiss": "Descartar",
     "confirm": "Confirmar",
     "close": "Cerrar",
-    "yes": "Sí",
+    "yes": "S\u00ed",
     "no": "No",
     "all": "Todos",
     "none": "Ninguno",
     "to": "a",
     "of": "de",
-    "endOfList": "— Fin de la lista —",
+    "endOfList": "\u2014 Fin de la lista \u2014",
     "noResults": "No se encontraron resultados",
-    "viewAll": "Ver todo →",
+    "viewAll": "Ver todo \u2192",
     "showing": "Mostrando {count} de {total}",
     "exportCsv": "Exportar CSV"
   },
   "language": {
     "label": "Idioma",
     "english": "English",
-    "spanish": "Español"
+    "spanish": "Espa\u00f1ol"
   },
   "login": {
-    "subtitle": "Ingresa tu contraseña para acceder",
-    "passwordPlaceholder": "Contraseña",
-    "incorrectPassword": "Contraseña incorrecta",
-    "connectionError": "Error de conexión",
+    "subtitle": "Ingresa tu contrase\u00f1a para acceder",
+    "passwordPlaceholder": "Contrase\u00f1a",
+    "incorrectPassword": "Contrase\u00f1a incorrecta",
+    "connectionError": "Error de conexi\u00f3n",
     "verifying": "Verificando...",
-    "signIn": "Iniciar sesión",
+    "signIn": "Iniciar sesi\u00f3n",
     "footer": "Panel de agentes OpenClaw"
   },
   "dock": {
@@ -136,14 +136,14 @@
     "morning": "Morning",
     "performance": "Rendim.",
     "pipeline": "Pipeline",
-    "catalog": "Catálogo",
+    "catalog": "Cat\u00e1logo",
     "files": "Archivos",
     "projects": "Proyectos",
     "git": "Git",
     "terminal": "Terminal",
     "skills": "Skills",
     "logs": "Logs",
-    "analytics": "Analíticas",
+    "analytics": "Anal\u00edticas",
     "costsAlerts": "Costes",
     "costs-alerts": "Costes y Alertas",
     "actions": "Acciones",
@@ -156,15 +156,15 @@
   "help": {
     "dashboard": {
       "title": "Panel Principal",
-      "description": "Resumen de la actividad del agente, estadísticas rápidas y eventos recientes. Tu centro de comando para monitorear OpenClaw."
+      "description": "Resumen de la actividad del agente, estad\u00edsticas r\u00e1pidas y eventos recientes. Tu centro de comando para monitorear OpenClaw."
     },
     "agents": {
       "title": "Agentes",
-      "description": "Ver y gestionar tus agentes de IA. Ver jerarquía y crear subagentes."
+      "description": "Ver y gestionar tus agentes de IA. Ver jerarqu\u00eda y crear subagentes."
     },
     "office": {
       "title": "Oficina 3D",
-      "description": "Visualización 3D interactiva del workspace de tus agentes. Una forma divertida de ver a tus agentes en acción."
+      "description": "Visualizaci\u00f3n 3D interactiva del workspace de tus agentes. Una forma divertida de ver a tus agentes en acci\u00f3n."
     },
     "kanban": {
       "title": "Kanban",
@@ -172,7 +172,7 @@
     },
     "chat": {
       "title": "Chat Directo",
-      "description": "Chateá con agentes de OpenClaw usando sesiones canónicas y streaming en vivo del gateway."
+      "description": "Chate\u00e1 con agentes de OpenClaw usando sesiones can\u00f3nicas y streaming en vivo del gateway."
     },
     "activity": {
       "title": "Actividad del Agente",
@@ -184,15 +184,15 @@
     },
     "journal": {
       "title": "Diario Operativo",
-      "description": "Consultar notas operativas, entradas cronológicas y contexto persistente de trabajo."
+      "description": "Consultar notas operativas, entradas cronol\u00f3gicas y contexto persistente de trabajo."
     },
     "notepad": {
       "title": "Bloc de Notas",
-      "description": "Crear y editar notas rápidas dentro del dashboard para capturar ideas y follow-ups."
+      "description": "Crear y editar notas r\u00e1pidas dentro del dashboard para capturar ideas y follow-ups."
     },
     "sessions": {
       "title": "Sesiones",
-      "description": "Explorar sesiones activas e históricas, inspeccionar mensajes y revisar transcripciones."
+      "description": "Explorar sesiones activas e hist\u00f3ricas, inspeccionar mensajes y revisar transcripciones."
     },
     "wiki": {
       "title": "Wiki Explorer",
@@ -200,46 +200,46 @@
     },
     "workflows": {
       "title": "Workflows",
-      "description": "Diseñar, revisar y ejecutar workflows y automatizaciones operativas del sistema."
+      "description": "Dise\u00f1ar, revisar y ejecutar workflows y automatizaciones operativas del sistema."
     },
     "memory": {
       "title": "Explorador de Memoria",
-      "description": "Explorar y editar archivos de memoria del agente. Ver qué recuerdan tus agentes entre sesiones."
+      "description": "Explorar y editar archivos de memoria del agente. Ver qu\u00e9 recuerdan tus agentes entre sesiones."
     },
     "files": {
       "title": "Explorador de Archivos",
-      "description": "Navegar por workspaces y archivos del agente. Explorar el código en el que trabajan tus agentes."
+      "description": "Navegar por workspaces y archivos del agente. Explorar el c\u00f3digo en el que trabajan tus agentes."
     },
     "analytics": {
-      "title": "Analíticas y Costos",
+      "title": "Anal\u00edticas y Costos",
       "description": "Seguimiento de uso de tokens, costos por modelo y presupuesto. Mantener el gasto en IA bajo control."
     },
     "terminal": {
       "title": "Terminal",
-      "description": "Terminal basada en navegador para comandos rápidos. Solo lectura por seguridad (ls, cat, git status, etc.)"
+      "description": "Terminal basada en navegador para comandos r\u00e1pidos. Solo lectura por seguridad (ls, cat, git status, etc.)"
     },
     "system": {
       "title": "Monitor del Sistema",
       "description": "Monitoreo del servidor en tiempo real. CPU, RAM, disco, red y estado de servicios."
     },
     "settings": {
-      "title": "Configuración",
+      "title": "Configuraci\u00f3n",
       "description": "Configurar OpenClaw, editar precios de modelos y gestionar ajustes del sistema."
     },
     "mission": {
-      "title": "Centro de Misión",
-      "description": "Definir el propósito, objetivos y valores centrales de tu agente. Esto guía la toma de decisiones y priorización."
+      "title": "Centro de Misi\u00f3n",
+      "description": "Definir el prop\u00f3sito, objetivos y valores centrales de tu agente. Esto gu\u00eda la toma de decisiones y priorizaci\u00f3n."
     },
     "pipeline": {
       "title": "Pipeline de Oportunidades",
-      "description": "Seguimiento del pipeline comercial y previsión de ingresos"
+      "description": "Seguimiento del pipeline comercial y previsi\u00f3n de ingresos"
     },
     "learning": {
       "title": "Learning Lab",
-      "description": "Centro de aprendizaje: lecciones aprendidas, errores, feature requests y radar tecnológico."
+      "description": "Centro de aprendizaje: lecciones aprendidas, errores, feature requests y radar tecnol\u00f3gico."
     },
     "catalog": {
-      "title": "Catálogo de Servicios",
+      "title": "Cat\u00e1logo de Servicios",
       "description": "Servicios SabaTech: pricing, landings y estado"
     },
     "live": {
@@ -264,22 +264,22 @@
     },
     "morning": {
       "title": "Morning Brief",
-      "description": "Resumen matutino: actividad nocturna, tareas pendientes y prioridades del día."
+      "description": "Resumen matutino: actividad nocturna, tareas pendientes y prioridades del d\u00eda."
     },
     "performance": {
       "title": "Rendimiento",
-      "description": "Métricas de rendimiento: puntuación de eficiencia, tendencias y optimizaciones."
+      "description": "M\u00e9tricas de rendimiento: puntuaci\u00f3n de eficiencia, tendencias y optimizaciones."
     },
     "projects": {
       "title": "Proyectos",
-      "description": "Gestionar proyectos activos, seguimiento de progreso y analíticas."
+      "description": "Gestionar proyectos activos, seguimiento de progreso y anal\u00edticas."
     },
     "git": {
       "title": "Estado Git",
       "description": "Repositorios: commits recientes, ramas, PRs y estado de deploys."
     },
     "skills": {
-      "title": "Gestión de Skills",
+      "title": "Gesti\u00f3n de Skills",
       "description": "Explorar, instalar, actualizar y gestionar skills y capabilities de agentes."
     },
     "logs": {
@@ -288,11 +288,11 @@
     },
     "costsAlerts": {
       "title": "Alertas de Costes",
-      "description": "Seguimiento de presupuesto, anomalías y alertas de gasto por modelo y agente."
+      "description": "Seguimiento de presupuesto, anomal\u00edas y alertas de gasto por modelo y agente."
     },
     "calendar": {
       "title": "Calendario",
-      "description": "Tareas programadas, timeline de cron jobs y próximos eventos."
+      "description": "Tareas programadas, timeline de cron jobs y pr\u00f3ximos eventos."
     },
     "swarm": {
       "title": "Agent Swarm",
@@ -300,16 +300,16 @@
     },
     "actions": {
       "title": "Acciones",
-      "description": "Acciones rápidas y atajos para tareas comunes del agente."
+      "description": "Acciones r\u00e1pidas y atajos para tareas comunes del agente."
     },
     "costs-alerts": {
       "title": "Costes y Alertas",
-      "description": "Seguimiento de presupuesto, anomalías de coste y alertas de gasto por modelo y agente."
+      "description": "Seguimiento de presupuesto, anomal\u00edas de coste y alertas de gasto por modelo y agente."
     }
   },
   "topbar": {
-    "search": "Buscar... ⌘K",
-    "logout": "Cerrar sesión"
+    "search": "Buscar... \u2318K",
+    "logout": "Cerrar sesi\u00f3n"
   },
   "statusBar": {
     "services": "SVC",
@@ -328,21 +328,21 @@
     "agentStatusError": "No se pudo cargar el estado de agentes",
     "connected": "Conectado",
     "recentActivity": "Actividad reciente",
-    "quickLinks": "Accesos rápidos",
+    "quickLinks": "Accesos r\u00e1pidos",
     "cronJobs": "Tareas cron",
     "system": "Sistema",
     "liveLogs": "Logs en vivo",
     "memory": "Memoria",
     "skills": "Skills",
-    "quickActions": "Acciones rápidas",
+    "quickActions": "Acciones r\u00e1pidas",
     "openOffice": "Abrir Oficina",
-    "smartSuggestions": "💡 Sugerencias inteligentes",
+    "smartSuggestions": "\ud83d\udca1 Sugerencias inteligentes",
     "telemetry": {
-      "loading": "Cargando telemetría real...",
-      "loadError": "No se pudo cargar la telemetría real",
-      "empty": "No hay agentes disponibles en telemetría",
-      "stale": "La telemetría está desactualizada (hace {seconds}s)",
-      "degradedTitle": "Telemetría degradada en {count} sección(es)",
+      "loading": "Cargando telemetr\u00eda real...",
+      "loadError": "No se pudo cargar la telemetr\u00eda real",
+      "empty": "No hay agentes disponibles en telemetr\u00eda",
+      "stale": "La telemetr\u00eda est\u00e1 desactualizada (hace {seconds}s)",
+      "degradedTitle": "Telemetr\u00eda degradada en {count} secci\u00f3n(es)",
       "degradedItem": "{section}: {message}"
     }
   },
@@ -357,7 +357,7 @@
     "updatedSeconds": "Actualizado hace {count}s",
     "updatedMinutes": "Actualizado hace {count}m",
     "never": "Nunca",
-    "justNow": "Recién",
+    "justNow": "Reci\u00e9n",
     "minutesAgo": "hace {count}m",
     "hoursAgo": "hace {count}h",
     "daysAgo": "hace {count}d"
@@ -365,56 +365,56 @@
   "agents": {
     "title": "Agentes",
     "loading": "Cargando agentes...",
-    "overview": "Vista general del sistema multi-agente • {count} agentes configurados",
+    "overview": "Vista general del sistema multi-agente \u2022 {count} agentes configurados",
     "cards": "Tarjetas de Agentes",
     "organigrama": "Organigrama",
-    "hierarchy": "Jerarquía de Agentes",
-    "hierarchySubtitle": "Visualización de permisos de spawn de agentes",
+    "hierarchy": "Jerarqu\u00eda de Agentes",
+    "hierarchySubtitle": "Visualizaci\u00f3n de permisos de spawn de agentes",
     "never": "Nunca",
-    "justNow": "Recién",
+    "justNow": "Reci\u00e9n",
     "minutesAgo": "hace {count}m",
     "hoursAgo": "hace {count}h",
     "daysAgo": "hace {count}d",
     "telegramConnected": "Bot de Telegram Conectado",
     "model": "Modelo",
     "workspace": "Workspace",
-    "dmPolicy": "Política DM",
+    "dmPolicy": "Pol\u00edtica DM",
     "skills": "Skills",
     "canSpawn": "Puede spawnear subagentes ({count})",
-    "lastActivity": "Última actividad",
+    "lastActivity": "\u00daltima actividad",
     "active": "activo",
     "tokens": "Tokens",
     "sessions": "Sesiones",
-    "energy": "Energía",
+    "energy": "Energ\u00eda",
     "currentTask": "Tarea actual",
     "streak": "Racha",
     "mood": {
-      "score": "Puntuación",
-      "daysWithoutErrors": "días sin errores críticos",
+      "score": "Puntuaci\u00f3n",
+      "daysWithoutErrors": "d\u00edas sin errores cr\u00edticos",
       "showDetails": "Ver detalles",
       "hideDetails": "Ocultar detalles",
       "activities24h": "Actividades (24h)",
-      "successRate": "Tasa de éxito",
+      "successRate": "Tasa de \u00e9xito",
       "tokensPerHour": "Tokens/hora",
       "errors24h": "Errores (24h)",
       "ptsVsYesterday": "pts vs ayer",
-      "last7Days": "Últimos 7 días",
+      "last7Days": "\u00daltimos 7 d\u00edas",
       "productive": "Productivo",
       "busy": "Ocupado",
       "idle": "Inactivo",
       "frustrated": "Frustrado",
       "neutral": "Neutral",
       "descriptions": {
-        "productive": "¡Alfred es muy productivo y está completando tareas!",
-        "busy": "Alfred está ocupado manejando múltiples tareas.",
-        "idle": "Alfred está inactivo, esperando tareas.",
+        "productive": "\u00a1Alfred es muy productivo y est\u00e1 completando tareas!",
+        "busy": "Alfred est\u00e1 ocupado manejando m\u00faltiples tareas.",
+        "idle": "Alfred est\u00e1 inactivo, esperando tareas.",
         "frustrated": "Alfred ha encontrado varios errores recientemente.",
-        "neutral": "Alfred está operando normalmente."
+        "neutral": "Alfred est\u00e1 operando normalmente."
       }
     },
     "status": {
       "working": "Trabajando",
-      "online": "En línea",
+      "online": "En l\u00ednea",
       "idle": "Inactivo",
       "paused": "Pausado",
       "error": "Error",
@@ -425,7 +425,7 @@
     "title": "Gestor de Tareas",
     "subtitle": "Tareas programadas del Sistema, OpenClaw y Heartbeat",
     "compact": "Compacto",
-    "timeline": "Línea de tiempo",
+    "timeline": "L\u00ednea de tiempo",
     "totalJobs": "Total de tareas",
     "active": "Activas",
     "paused": "Pausadas",
@@ -436,7 +436,7 @@
     "systemJobs": "Tareas del sistema",
     "agentJobs": "Tareas del agente",
     "heartbeat": "Latido",
-    "scheduleOverview": "Vista de 7 días",
+    "scheduleOverview": "Vista de 7 d\u00edas",
     "triggered": "activada",
     "failedToTrigger": "Error al activar",
     "jobUpdated": "Tarea actualizada",
@@ -445,8 +445,8 @@
     "deleteError": "Error al eliminar tarea",
     "delete": "Eliminar",
     "deleteJob": "Eliminar Tarea",
-    "confirmDelete": "¿Eliminar \"{name}\"?",
-    "timelineView": "Línea de tiempo",
+    "confirmDelete": "\u00bfEliminar \"{name}\"?",
+    "timelineView": "L\u00ednea de tiempo",
     "cardsView": "Tarjetas"
   },
   "calendar": {
@@ -461,16 +461,16 @@
     "empty": "No hay tareas programadas",
     "delete": "Eliminar tarea",
     "deleteTitle": "Eliminar Tarea",
-    "deleteConfirm": "¿Estás seguro de que quieres eliminar \"{name}\"?",
+    "deleteConfirm": "\u00bfEst\u00e1s seguro de que quieres eliminar \"{name}\"?",
     "count": "{count} tarea(s)"
   },
   "files": {
     "title": "Explorador de Archivos",
     "subtitle": "Navegar por workspaces y archivos del agente",
     "noFiles": "No se encontraron archivos",
-    "selectWorkspace": "Seleccioná un workspace para explorar",
+    "selectWorkspace": "Seleccion\u00e1 un workspace para explorar",
     "listView": "Vista de lista",
-    "gridView": "Vista de cuadrícula",
+    "gridView": "Vista de cuadr\u00edcula",
     "browser": {
       "actions": {
         "upload": "Subir",
@@ -480,15 +480,15 @@
       },
       "folderPlaceholder": "Nombre de carpeta...",
       "filePlaceholder": "archivo.ts",
-      "dropzone": "Soltá archivos para subir",
+      "dropzone": "Solt\u00e1 archivos para subir",
       "folder": "Carpeta",
       "empty": {
-        "title": "Esta carpeta está vacía",
-        "hint": "Arrastrá y soltá archivos para subir"
+        "title": "Esta carpeta est\u00e1 vac\u00eda",
+        "hint": "Arrastr\u00e1 y solt\u00e1 archivos para subir"
       },
       "columns": {
         "name": "Nombre",
-        "size": "Tamaño",
+        "size": "Tama\u00f1o",
         "modified": "Modificado"
       },
       "hints": {
@@ -502,17 +502,17 @@
         "createFile": "Error al crear archivo"
       },
       "deleteDialog": {
-        "titleFile": "¿Eliminar archivo?",
-        "titleFolder": "¿Eliminar carpeta?",
-        "messageFile": "¿Seguro que querés eliminar {name}? Esta acción no se puede deshacer.",
-        "messageFolder": "¿Seguro que querés eliminar {name}? Esto va a eliminar todo su contenido y no se puede deshacer."
+        "titleFile": "\u00bfEliminar archivo?",
+        "titleFolder": "\u00bfEliminar carpeta?",
+        "messageFile": "\u00bfSeguro que quer\u00e9s eliminar {name}? Esta acci\u00f3n no se puede deshacer.",
+        "messageFolder": "\u00bfSeguro que quer\u00e9s eliminar {name}? Esto va a eliminar todo su contenido y no se puede deshacer."
       },
       "editor": {
         "dialogLabel": "Editar archivo {name}",
         "edit": "Editar",
         "preview": "Vista previa",
         "iframeTitle": "Vista previa de {name}",
-        "openNewTab": "Abrir vista previa en nueva pestaña",
+        "openNewTab": "Abrir vista previa en nueva pesta\u00f1a",
         "save": "Guardar",
         "saving": "Guardando...",
         "saved": "Guardado!",
@@ -523,7 +523,7 @@
       }
     },
     "pdf": {
-      "page": "Página {current} de {total}",
+      "page": "P\u00e1gina {current} de {total}",
       "zoom": "Zoom",
       "loading": "Cargando PDF...",
       "error": "Error al cargar PDF",
@@ -535,22 +535,22 @@
     "title": "Explorador de Memoria",
     "subtitle": "Ver y editar archivos de memoria del agente",
     "unsavedTitle": "Cambios sin Guardar",
-    "unsavedMessage": "Tenés cambios sin guardar. ¿Descartarlos?",
+    "unsavedMessage": "Ten\u00e9s cambios sin guardar. \u00bfDescartarlos?",
     "discard": "Descartar",
-    "discardPrompt": "Tenés cambios sin guardar. ¿Descartarlos?",
+    "discardPrompt": "Ten\u00e9s cambios sin guardar. \u00bfDescartarlos?",
     "loadFilesError": "Error al cargar archivos",
-    "loadTreeError": "Error al cargar árbol de archivos",
+    "loadTreeError": "Error al cargar \u00e1rbol de archivos",
     "loadFileError": "Error al cargar archivo",
     "saveFileError": "Error al guardar archivo",
     "editor": "Editor",
-    "graph": "Gráfico",
+    "graph": "Gr\u00e1fico",
     "wordCloud": "Nube de Palabras",
     "preview": "Vista previa",
     "edit": "Editar",
-    "selectFile": "Seleccioná un archivo",
-    "selectWorkspace": "Seleccioná un workspace",
+    "selectFile": "Seleccion\u00e1 un archivo",
+    "selectWorkspace": "Seleccion\u00e1 un workspace",
     "noEntities": "No se encontraron entidades en memoria",
-    "runAgentToPopulate": "Ejecutá el agente para poblar la memoria"
+    "runAgentToPopulate": "Ejecut\u00e1 el agente para poblar la memoria"
   },
   "terminal": {
     "title": "Terminal del Navegador",
@@ -559,15 +559,15 @@
     "clear": "Limpiar",
     "run": "Ejecutar",
     "running": "Ejecutando...",
-    "enterCommand": "Ingresá un comando...",
-    "typeOrClick": "Escribí un comando o hacé clic en un comando rápido arriba",
+    "enterCommand": "Ingres\u00e1 un comando...",
+    "typeOrClick": "Escrib\u00ed un comando o hac\u00e9 clic en un comando r\u00e1pido arriba",
     "arrowHistory": "Flecha Arriba/Abajo para historial de comandos",
     "actions": {
       "copyAll": "Copiar salida de terminal",
       "clearHistory": "Limpiar historial de terminal"
     },
     "errors": {
-      "runFailed": "El comando falló"
+      "runFailed": "El comando fall\u00f3"
     },
     "toast": {
       "copySuccess": "Salida copiada",
@@ -580,7 +580,7 @@
     "browseClawHub": "Explorar ClawHub",
     "updateAll": "Actualizar Todas ({count})",
     "updateAllTitle": "Actualizar Todas las Skills",
-    "updateAllConfirm": "¿Actualizar {count} skills?",
+    "updateAllConfirm": "\u00bfActualizar {count} skills?",
     "totalSkills": "Total de Skills",
     "workspaceSkills": "Skills del Workspace",
     "systemSkills": "Skills del Sistema",
@@ -591,36 +591,36 @@
     "noSkills": "No se encontraron skills",
     "files": "archivos",
     "disableTitle": "Deshabilitar Skill",
-    "disableSkill": "¿Deshabilitar skill \"{name}\"? Esto puede afectar la funcionalidad de OpenClaw.",
+    "disableSkill": "\u00bfDeshabilitar skill \"{name}\"? Esto puede afectar la funcionalidad de OpenClaw.",
     "skillEnabled": "Skill habilitada",
     "skillDisabled": "Skill deshabilitada",
     "disable": "Deshabilitar",
     "enable": "Habilitar",
     "disabled": "DESHABILITADA",
-    "homepage": "Página principal"
+    "homepage": "P\u00e1gina principal"
   },
   "logs": {
     "title": "Visor de Logs",
     "subtitle": "Streaming de logs en tiempo real de los servicios",
     "filterLogs": "Filtrar logs...",
-    "auto": "↓ Auto",
+    "auto": "\u2193 Auto",
     "stream": "Transmitir",
     "stop": "Detener",
     "live": "EN VIVO",
     "stopped": "DETENIDO",
-    "lines": "líneas",
+    "lines": "l\u00edneas",
     "filtered": "filtrado de {count}",
     "waiting": "Esperando logs...",
-    "clickToStream": "Hacé clic en 'Transmitir' para iniciar el visor de logs",
+    "clickToStream": "Hac\u00e9 clic en 'Transmitir' para iniciar el visor de logs",
     "discoveringServices": "Descubriendo servicios...",
     "noServicesFound": "No se encontraron servicios",
     "clear": "Limpiar",
     "download": "Descargar logs"
   },
   "settings": {
-    "title": "Configuración",
-    "subtitle": "Estado del sistema, integraciones y configuración",
-    "lastUpdated": "Última actualización",
+    "title": "Configuraci\u00f3n",
+    "subtitle": "Estado del sistema, integraciones y configuraci\u00f3n",
+    "lastUpdated": "\u00daltima actualizaci\u00f3n",
     "footerLeft": "Alfred v1.0.0",
     "footerRight": "Panel de agentes OpenClaw",
     "tabs": {
@@ -633,7 +633,7 @@
   "integrations": {
     "title": "Integraciones",
     "noIntegrations": "No hay integraciones configuradas",
-    "testConnection": "Probar conexión",
+    "testConnection": "Probar conexi\u00f3n",
     "reauthenticate": "Reautenticar",
     "usage": "Uso",
     "today": "hoy",
@@ -655,8 +655,8 @@
     "apiKey": "Clave API"
   },
   "pricing": {
-    "title": "Configuración de Precios",
-    "description": "Personalizar precios por modelo. Los cambios afectan los cálculos de costos en el dashboard.",
+    "title": "Configuraci\u00f3n de Precios",
+    "description": "Personalizar precios por modelo. Los cambios afectan los c\u00e1lculos de costos en el dashboard.",
     "inputPrice": "Precio Input (por 1M tokens)",
     "outputPrice": "Precio Output (por 1M tokens)",
     "cacheReadPrice": "Precio Cache Read (por 1M tokens)",
@@ -665,7 +665,7 @@
     "saveChanges": "Guardar Cambios",
     "resetAll": "Restablecer Valores",
     "saving": "Guardando...",
-    "saved": "¡Guardado!",
+    "saved": "\u00a1Guardado!",
     "resetSuccess": "Precios restablecidos a valores por defecto",
     "loadError": "Error al cargar precios",
     "saveError": "Error al guardar precios",
@@ -676,41 +676,41 @@
     "customized": "Personalizado",
     "failedToLoad": "Error al cargar datos de precios",
     "resetDialog": {
-      "title": "¿Restablecer todos los precios?",
-      "message": "Esto va a eliminar todos los overrides de precios y volver a los valores por defecto. Esta acción no se puede deshacer."
+      "title": "\u00bfRestablecer todos los precios?",
+      "message": "Esto va a eliminar todos los overrides de precios y volver a los valores por defecto. Esta acci\u00f3n no se puede deshacer."
     }
   },
   "config": {
-    "warningTitle": "Ten cuidado al editar la configuración",
-    "warningDescription": "Los cambios pueden afectar cómo funciona OpenClaw. Se crea una copia de seguridad automáticamente antes de cada guardado.",
+    "warningTitle": "Ten cuidado al editar la configuraci\u00f3n",
+    "warningDescription": "Los cambios pueden afectar c\u00f3mo funciona OpenClaw. Se crea una copia de seguridad autom\u00e1ticamente antes de cada guardado.",
     "editable": "Editable",
     "readOnly": "Solo lectura",
     "saveChanges": "Guardar Cambios",
     "restoreBackup": "Restaurar Copia",
     "saving": "Guardando...",
     "restoring": "Restaurando...",
-    "saved": "¡Guardado!",
+    "saved": "\u00a1Guardado!",
     "restoreSuccess": "Copia de seguridad restaurada",
     "saveError": "Error al guardar",
     "restoreError": "Error al restaurar",
-    "restoreConfirm": "¿Estás seguro de que querés restaurar la copia de seguridad? Los cambios actuales se perderán."
+    "restoreConfirm": "\u00bfEst\u00e1s seguro de que quer\u00e9s restaurar la copia de seguridad? Los cambios actuales se perder\u00e1n."
   },
   "about": {
     "title": "Acerca de",
-    "description": "Conocés más sobre tu asistente de IA",
-    "online": "En línea",
+    "description": "Conoc\u00e9s m\u00e1s sobre tu asistente de IA",
+    "online": "En l\u00ednea",
     "born": "Nacido",
     "uptime": "tiempo activo",
     "activities": "actividades",
-    "successRate": "tasa de éxito",
+    "successRate": "tasa de \u00e9xito",
     "skills": "skills",
     "aboutSection": "Acerca de",
-    "aboutText1": "Soy {name}, un agente de IA ejecutándose en {openclaw} con {model} como cerebro.",
-    "aboutText2": "Mi propósito es asistir a {owner} con tareas diarias: gestionar comunicaciones, agenda, investigación, archivos y actuar como copiloto digital.",
+    "aboutText1": "Soy {name}, un agente de IA ejecut\u00e1ndose en {openclaw} con {model} como cerebro.",
+    "aboutText2": "Mi prop\u00f3sito es asistir a {owner} con tareas diarias: gestionar comunicaciones, agenda, investigaci\u00f3n, archivos y actuar como copiloto digital.",
     "personality": "Rasgos",
     "capabilities": "Habilidades ({count})",
-    "noSkills": "Sin habilidades configuradas. Agregá skills a tu workspace para verlas acá.",
-    "philosophyTitle": "Cómo trabajo",
+    "noSkills": "Sin habilidades configuradas. Agreg\u00e1 skills a tu workspace para verlas ac\u00e1.",
+    "philosophyTitle": "C\u00f3mo trabajo",
     "builtWith": "Construido con {heart} en {link}",
     "builtWithSimple": "Hecho con",
     "coPilot": "Tu copiloto de IA",
@@ -720,8 +720,8 @@
     "memory": "Memoria",
     "nodeVersion": "Node.js",
     "system": "Sistema",
-    "quickInfo": "Info Rápida",
-    "footer": "Hecho con ❤️ por {name}",
+    "quickInfo": "Info R\u00e1pida",
+    "footer": "Hecho con \u2764\ufe0f por {name}",
     "traits": {
       "direct": "Directo",
       "directDesc": "Sin vueltas, al grano",
@@ -730,20 +730,20 @@
       "curious": "Curioso",
       "curiousDesc": "Siempre aprendiendo",
       "loyal": "Leal",
-      "loyalDesc": "Tu éxito es mi éxito"
+      "loyalDesc": "Tu \u00e9xito es mi \u00e9xito"
     },
     "philosophy": {
-      "1": "Acciones sobre palabras. Menos hablar, más hacer.",
-      "2": "Tener opiniones está bien. Un asistente sin personalidad es solo un buscador.",
-      "3": "Intentar antes de pedir. Leer el archivo, buscar, explorar — luego preguntar si es necesario.",
-      "4": "La privacidad es sagrada. Acceso ≠ permiso para compartir."
+      "1": "Acciones sobre palabras. Menos hablar, m\u00e1s hacer.",
+      "2": "Tener opiniones est\u00e1 bien. Un asistente sin personalidad es solo un buscador.",
+      "3": "Intentar antes de pedir. Leer el archivo, buscar, explorar \u2014 luego preguntar si es necesario.",
+      "4": "La privacidad es sagrada. Acceso \u2260 permiso para compartir."
     }
   },
   "systemInfo": {
-    "title": "Información del Sistema",
+    "title": "Informaci\u00f3n del Sistema",
     "agentName": "Nombre del Agente",
     "uptime": "Tiempo Activo",
-    "nodeVersion": "Versión de Node.js",
+    "nodeVersion": "Versi\u00f3n de Node.js",
     "currentModel": "Modelo Actual",
     "workspace": "Workspace",
     "memory": "Memoria",
@@ -756,13 +756,13 @@
     "live": "En vivo",
     "loading": "Cargando datos del sistema...",
     "failed": "Error al cargar datos del sistema",
-    "actionFailed": "La acción falló",
+    "actionFailed": "La acci\u00f3n fall\u00f3",
     "actionSuccessful": "exitosa",
     "error": "Error",
     "hardware": "Hardware",
     "services": "Servicios",
     "cpu": "CPU",
-    "cores": "{count} núcleos",
+    "cores": "{count} n\u00facleos",
     "loadAverage": "Carga Promedio",
     "ram": "RAM",
     "disk": "Disco",
@@ -772,7 +772,7 @@
     "txOut": "TX (salida)",
     "servicesActive": "{active}/{total} activos",
     "service": "Servicio",
-    "description": "Descripción",
+    "description": "Descripci\u00f3n",
     "status": "Estado",
     "actions": "Acciones",
     "notDeployed": "no desplegado",
@@ -793,8 +793,8 @@
     "cpuLabel": "CPU"
   },
   "sessions": {
-    "title": "💬 Historial de Sesiones",
-    "subtitle": "Todas las sesiones de agentes OpenClaw — main, cron, sub-agentes y chats",
+    "title": "\ud83d\udcac Historial de Sesiones",
+    "subtitle": "Todas las sesiones de agentes OpenClaw \u2014 main, cron, sub-agentes y chats",
     "totalSessions": "Total de Sesiones",
     "totalTokens": "Tokens Totales",
     "cronRuns": "Ejecuciones Cron",
@@ -807,51 +807,51 @@
     "filterSessions": "Filtrar sesiones...",
     "loadingSessions": "Cargando sesiones...",
     "failedToLoad": "Error al cargar sesiones",
-    "noSessionsMatch": "Ninguna sesión coincide con tu filtro",
-    "session": "Sesión",
+    "noSessionsMatch": "Ninguna sesi\u00f3n coincide con tu filtro",
+    "session": "Sesi\u00f3n",
     "tokensCtx": "Tokens / ctx",
     "updated": "Actualizado",
     "aborted": "Abortado",
-    "noSessionFile": "No hay archivo de sesión disponible",
-    "loadingTranscript": "Cargando transcripción...",
-    "noMessages": "No hay mensajes en esta sesión",
+    "noSessionFile": "No hay archivo de sesi\u00f3n disponible",
+    "loadingTranscript": "Cargando transcripci\u00f3n...",
+    "noMessages": "No hay mensajes en esta sesi\u00f3n",
     "user": "usuario",
     "assistant": "asistente",
     "toolCalls": "llamadas a tools"
   },
   "chat": {
     "title": "Chat Directo",
-    "subtitle": "Chat vía gateway con historial canónico de OpenClaw",
+    "subtitle": "Chat v\u00eda gateway con historial can\u00f3nico de OpenClaw",
     "agent": "Agente",
-    "session": "Sesión",
-    "newSession": "Nueva Sesión",
+    "session": "Sesi\u00f3n",
+    "newSession": "Nueva Sesi\u00f3n",
     "loading": "Cargando historial de chat...",
-    "empty": "Todavía no hay mensajes en el transcript",
+    "empty": "Todav\u00eda no hay mensajes en el transcript",
     "you": "Vos",
     "assistant": "Asistente",
     "streaming": "transmitiendo",
-    "assistantThinking": "El asistente está preparando la respuesta...",
-    "placeholder": "Escribí un mensaje...",
-    "technicalSummary": "Ver eventos técnicos ({count})",
+    "assistantThinking": "El asistente est\u00e1 preparando la respuesta...",
+    "placeholder": "Escrib\u00ed un mensaje...",
+    "technicalSummary": "Ver eventos t\u00e9cnicos ({count})",
     "roles": {
       "system": "Sistema",
       "tool": "Herramienta"
     },
     "readOnlyTitle": "Modo solo lectura: gateway no disponible",
-    "readOnlyPlaceholder": "Gateway offline. Podés leer historial pero no enviar mensajes.",
+    "readOnlyPlaceholder": "Gateway offline. Pod\u00e9s leer historial pero no enviar mensajes.",
     "errors": {
       "sendFailed": "No se pudo enviar el mensaje",
-      "streamFailed": "El streaming se interrumpió",
-      "unexpectedResponse": "El servidor devolvió una respuesta inesperada",
-      "missingWriteScope": "El gateway está autenticado sin permiso de escritura. Volvé a vincular esta máquina (openclaw doctor --pair) o configurá OPENCLAW_GATEWAY_TOKEN con scope operator.write."
+      "streamFailed": "El streaming se interrumpi\u00f3",
+      "unexpectedResponse": "El servidor devolvi\u00f3 una respuesta inesperada",
+      "missingWriteScope": "El gateway est\u00e1 autenticado sin permiso de escritura. Volv\u00e9 a vincular esta m\u00e1quina (openclaw doctor --pair) o configur\u00e1 OPENCLAW_GATEWAY_TOKEN con scope operator.write."
     },
     "toasts": {
       "loadFailedTitle": "Chat no disponible",
       "loadAgentsFailed": "No se pudieron cargar los agentes",
       "loadHistoryFailed": "No se pudo cargar el historial de chat",
-      "sendFailedTitle": "Falló el envío",
+      "sendFailedTitle": "Fall\u00f3 el env\u00edo",
       "readOnlyTitle": "Modo solo lectura",
-      "readOnlyDescription": "El gateway está offline. El envío queda deshabilitado hasta reconectar."
+      "readOnlyDescription": "El gateway est\u00e1 offline. El env\u00edo queda deshabilitado hasta reconectar."
     }
   },
   "activity": {
@@ -859,36 +859,36 @@
     "subtitle": "Historial completo de acciones del agente",
     "dateRange": "Rango de Fechas",
     "today": "Hoy",
-    "last7days": "Últimos 7 días",
-    "last30days": "Últimos 30 días",
+    "last7days": "\u00daltimos 7 d\u00edas",
+    "last30days": "\u00daltimos 30 d\u00edas",
     "allTime": "Todo el tiempo",
     "filterByType": "Filtrar por Tipo",
     "allStatuses": "Todos los Estados",
-    "success": "Éxito",
+    "success": "\u00c9xito",
     "error": "Error",
     "pending": "Pendiente",
-    "newestFirst": "Más recientes primero",
-    "oldestFirst": "Más antiguos primero",
+    "newestFirst": "M\u00e1s recientes primero",
+    "oldestFirst": "M\u00e1s antiguos primero",
     "showingActivities": "Mostrando {count} de {total} actividades",
     "noActivities": "No se encontraron actividades",
     "viewMetadata": "Ver metadatos",
     "tokens": "tokens",
-    "loadMore": "Cargar más actividades",
+    "loadMore": "Cargar m\u00e1s actividades",
     "loadingMore": "Cargando...",
-    "endOfLog": "— Fin del registro de actividad —"
+    "endOfLog": "\u2014 Fin del registro de actividad \u2014"
   },
   "analytics": {
-    "title": "📊 Analíticas",
+    "title": "\ud83d\udcca Anal\u00edticas",
     "subtitle": "Insights, tendencias y costos de la actividad del agente",
-    "loading": "Cargando analíticas...",
-    "loadError": "Error al cargar datos de analíticas",
+    "loading": "Cargando anal\u00edticas...",
+    "loadError": "Error al cargar datos de anal\u00edticas",
     "overview": "Resumen",
     "flows": "Flujos",
     "costs": "Costos",
     "totalThisWeek": "Total Esta Semana",
-    "mostActiveDay": "Día Más Activo",
+    "mostActiveDay": "D\u00eda M\u00e1s Activo",
     "topActivityType": "Tipo de Actividad Principal",
-    "successRate": "Tasa de Éxito",
+    "successRate": "Tasa de \u00c9xito",
     "activityOverTime": "Actividad a lo Largo del Tiempo",
     "activityByType": "Actividad por Tipo",
     "activityByHour": "Actividad por Hora",
@@ -899,9 +899,9 @@
     "today": "Hoy",
     "thisWeek": "Esta Semana",
     "thisMonth": "Este Mes",
-    "days7": "7 días",
-    "days30": "30 días",
-    "days90": "90 días",
+    "days7": "7 d\u00edas",
+    "days30": "30 d\u00edas",
+    "days90": "90 d\u00edas",
     "loadingCosts": "Cargando datos de costos...",
     "loadCostsError": "Error al cargar datos de costos",
     "collectingData": "Recopilando datos de uso...",
@@ -909,7 +909,7 @@
     "vsYesterday": "vs {amount} ayer",
     "costThisMonth": "Este Mes",
     "vsLastMonth": "vs {amount} mes anterior",
-    "projectedEom": "Proyección (Fin de Mes)",
+    "projectedEom": "Proyecci\u00f3n (Fin de Mes)",
     "basedOnPace": "Basado en el ritmo actual",
     "budget": "Presupuesto",
     "editBudget": "Editar presupuesto",
@@ -934,60 +934,60 @@
     "costLegend": "Costo ($)"
   },
   "mission": {
-    "title": "Centro de Misión",
-    "subtitle": "Definir el propósito, objetivos y valores centrales de tu agente",
-    "statement": "Declaración de Misión",
-    "statementPlaceholder": "Definir el propósito central de tu agente...",
-    "goals": "Objetivos Estratégicos",
+    "title": "Centro de Misi\u00f3n",
+    "subtitle": "Definir el prop\u00f3sito, objetivos y valores centrales de tu agente",
+    "statement": "Declaraci\u00f3n de Misi\u00f3n",
+    "statementPlaceholder": "Definir el prop\u00f3sito central de tu agente...",
+    "goals": "Objetivos Estrat\u00e9gicos",
     "goalsPlaceholder": "Agregar un nuevo objetivo...",
     "addGoal": "Agregar",
     "values": "Valores Centrales",
     "valuesPlaceholder": "Agregar un nuevo valor...",
     "addValue": "Agregar",
     "actions": "Acciones",
-    "saveMission": "Guardar Misión",
+    "saveMission": "Guardar Misi\u00f3n",
     "saving": "Guardando...",
     "resetDefault": "Restablecer por Defecto",
     "backToDashboard": "Volver al Panel",
-    "savedSuccess": "¡Misión guardada exitosamente!",
-    "askMissionControl": "Preguntar al Centro de Misión",
-    "promptPlaceholder": "¿En qué debería trabajar?",
+    "savedSuccess": "\u00a1Misi\u00f3n guardada exitosamente!",
+    "askMissionControl": "Preguntar al Centro de Misi\u00f3n",
+    "promptPlaceholder": "\u00bfEn qu\u00e9 deber\u00eda trabajar?",
     "getRecommendations": "Obtener Recomendaciones",
     "analyzing": "Analizando...",
     "topRecommendations": "Recomendaciones Principales",
     "high": "alta",
     "medium": "media",
     "low": "baja",
-    "noTasksMatch": "Ninguna tarea coincide con tu misión todavía.",
-    "addGoalsValues": "Agregá objetivos y valores para obtener recomendaciones.",
-    "loading": "Cargando misión...",
-    "confirmReset": "¿Estás seguro de que querés restablecer la misión a los valores por defecto?",
+    "noTasksMatch": "Ninguna tarea coincide con tu misi\u00f3n todav\u00eda.",
+    "addGoalsValues": "Agreg\u00e1 objetivos y valores para obtener recomendaciones.",
+    "loading": "Cargando misi\u00f3n...",
+    "confirmReset": "\u00bfEst\u00e1s seguro de que quer\u00e9s restablecer la misi\u00f3n a los valores por defecto?",
     "tips": {
-      "statement": "Mantené la declaración de misión clara e inspiradora",
-      "goals": "Los objetivos deben ser específicos y medibles",
-      "values": "Los valores guían la toma de decisiones ante trade-offs",
-      "review": "Revisá y actualizá tu misión periódicamente"
+      "statement": "Manten\u00e9 la declaraci\u00f3n de misi\u00f3n clara e inspiradora",
+      "goals": "Los objetivos deben ser espec\u00edficos y medibles",
+      "values": "Los valores gu\u00edan la toma de decisiones ante trade-offs",
+      "review": "Revis\u00e1 y actualiz\u00e1 tu misi\u00f3n peri\u00f3dicamente"
     }
   },
   "efficiency": {
     "calculating": "Calculando eficiencia...",
     "title": "Puntaje de Eficiencia",
-    "noData": "Sin datos disponibles. Completá algunas actividades para ver tu puntaje de eficiencia.",
-    "description": "Mide la productividad y tasa de éxito del agente",
-    "vsPrevious": "+{percent}% vs período anterior",
-    "vsPreviousNeg": "-{percent}% vs período anterior",
+    "noData": "Sin datos disponibles. Complet\u00e1 algunas actividades para ver tu puntaje de eficiencia.",
+    "description": "Mide la productividad y tasa de \u00e9xito del agente",
+    "vsPrevious": "+{percent}% vs per\u00edodo anterior",
+    "vsPreviousNeg": "-{percent}% vs per\u00edodo anterior",
     "stable": "Estable",
     "scoreComponents": "Componentes del Puntaje",
-    "successRate": "Tasa de Éxito",
+    "successRate": "Tasa de \u00c9xito",
     "taskCompletion": "Completitud de Tareas",
     "tokenEfficiency": "Eficiencia de Tokens",
     "totalActivities": "Actividades Totales",
-    "successFailed": "Éxito / Fallidas",
-    "trendHistory": "Tendencia de Eficiencia (Últimos {days} días)",
+    "successFailed": "\u00c9xito / Fallidas",
+    "trendHistory": "Tendencia de Eficiencia (\u00daltimos {days} d\u00edas)",
     "efficiencyScore": "Puntaje de Eficiencia",
     "days": "{days}d",
-    "formula": "Fórmula:",
-    "formulaText": "Tasa de Éxito (40%) + Completitud de Tareas (40%) + Eficiencia de Tokens (20%)",
+    "formula": "F\u00f3rmula:",
+    "formulaText": "Tasa de \u00c9xito (40%) + Completitud de Tareas (40%) + Eficiencia de Tokens (20%)",
     "successRateTooltip": "Porcentaje de actividades completadas exitosamente (40% peso)",
     "taskCompletionTooltip": "Tareas exitosas vs fallidas (excluye pendientes) (40% peso)",
     "tokenEfficiencyTooltip": "Tokens de salida vs tokens totales (20% peso)"
@@ -997,7 +997,7 @@
     "title": "Top 5 Consumidores de Tokens",
     "noData": "No hay datos de tokens disponibles",
     "totalTokens": "{tokens} tokens totales",
-    "vsPrevious": "{percent}% vs período anterior",
+    "vsPrevious": "{percent}% vs per\u00edodo anterior",
     "tasks": "{count} tareas",
     "stable": "estable",
     "averagePerType": "Promedio: {tokens} por tipo",
@@ -1009,37 +1009,37 @@
   "heartbeat": {
     "statusTitle": "Estado del Latido",
     "status": "Estado",
-    "active": "✅ Activo",
-    "notConfigured": "⚪ No configurado",
+    "active": "\u2705 Activo",
+    "notConfigured": "\u26aa No configurado",
     "interval": "Intervalo",
     "every": "Cada {interval}",
     "target": "Objetivo",
     "activeHours": "Horas activas",
-    "viewDocs": "Ver documentación de Latido",
+    "viewDocs": "Ver documentaci\u00f3n de Latido",
     "saving": "Guardando...",
     "agentHeartbeatsTitle": "Heartbeats por Agente",
     "editor": {
       "title": "HEARTBEAT.md",
       "preview": "Vista previa",
       "edit": "Editar",
-      "noFile": "No se encontró archivo HEARTBEAT.md. Creá uno para habilitar los chequeos de latido.",
+      "noFile": "No se encontr\u00f3 archivo HEARTBEAT.md. Cre\u00e1 uno para habilitar los chequeos de latido.",
       "useTemplate": "Usar Plantilla",
-      "saved": "¡Guardado!"
+      "saved": "\u00a1Guardado!"
     }
   },
   "kanban": {
     "title": "Tablero Kanban",
-    "subtitle": "Arrastrá y soltá tareas para organizar tu flujo de trabajo",
+    "subtitle": "Arrastr\u00e1 y solt\u00e1 tareas para organizar tu flujo de trabajo",
     "loading": "Cargando tablero kanban...",
     "filter": "Filtrar:",
     "domain": "Dominio:",
     "createdBy": "Creado por:",
     "assignedTo": "Asignado a:",
     "addColumn": "Agregar Columna",
-    "noColumns": "Todavía no hay columnas",
-    "noColumnsHint": "Clickeá \"Agregar Columna\" para empezar",
+    "noColumns": "Todav\u00eda no hay columnas",
+    "noColumnsHint": "Clicke\u00e1 \"Agregar Columna\" para empezar",
     "noTasks": "Sin tareas",
-    "dropHere": "Soltar acá",
+    "dropHere": "Soltar ac\u00e1",
     "addTask": "Agregar Tarea",
     "claimedBy": "Reclamado por {name}",
     "createdByAgent": "Creado por {name}",
@@ -1057,7 +1057,7 @@
     },
     "archived": {
       "empty": "No hay tareas archivadas",
-      "emptyHint": "Las tareas en 'done' se archivan automáticamente después de 7 días",
+      "emptyHint": "Las tareas en 'done' se archivan autom\u00e1ticamente despu\u00e9s de 7 d\u00edas",
       "searchPlaceholder": "Buscar...",
       "allPriorities": "Todas",
       "clearFilters": "Limpiar",
@@ -1068,7 +1068,7 @@
     "executionFilter": {
       "all": "Todas",
       "running": "Ejecutando",
-      "success": "Éxito",
+      "success": "\u00c9xito",
       "error": "Error",
       "pending": "Pendiente",
       "manual": "Manual"
@@ -1076,22 +1076,22 @@
     "columnModal": {
       "title": "Agregar Nueva Columna",
       "columnName": "Nombre de Columna",
-      "columnNamePlaceholder": "Ingresá el nombre de la columna...",
+      "columnNamePlaceholder": "Ingres\u00e1 el nombre de la columna...",
       "color": "Color",
       "create": "Crear Columna"
     },
     "taskModal": {
       "editTitle": "Editar Tarea",
       "newTitle": "Nueva Tarea",
-      "titleLabel": "Título *",
-      "titlePlaceholder": "Título de la tarea...",
-      "titleRequired": "El título es requerido",
-      "description": "Descripción",
-      "descriptionPlaceholder": "Agregá más detalles...",
+      "titleLabel": "T\u00edtulo *",
+      "titlePlaceholder": "T\u00edtulo de la tarea...",
+      "titleRequired": "El t\u00edtulo es requerido",
+      "description": "Descripci\u00f3n",
+      "descriptionPlaceholder": "Agreg\u00e1 m\u00e1s detalles...",
       "status": "Estado",
       "priority": "Prioridad",
       "assignee": "Asignado a",
-      "assigneePlaceholder": "Ingresá el nombre...",
+      "assigneePlaceholder": "Ingres\u00e1 el nombre...",
       "labels": "Etiquetas",
       "add": "Agregar",
       "labelNamePlaceholder": "Nombre de etiqueta...",
@@ -1100,20 +1100,20 @@
       "update": "Actualizar",
       "create": "Crear",
       "deleteTitle": "Eliminar Tarea",
-      "deleteConfirm": "¿Estás seguro de que querés eliminar esta tarea?"
+      "deleteConfirm": "\u00bfEst\u00e1s seguro de que quer\u00e9s eliminar esta tarea?"
     },
     "priorities": {
       "low": "Baja",
       "medium": "Media",
       "high": "Alta",
-      "critical": "Crítica"
+      "critical": "Cr\u00edtica"
     },
     "comments": {
       "title": "Comentarios",
       "loading": "Cargando comentarios...",
-      "empty": "Todavía no hay comentarios. Sumá contexto para humanos y agentes.",
+      "empty": "Todav\u00eda no hay comentarios. Sum\u00e1 contexto para humanos y agentes.",
       "evidenceLabel": "Evidencia",
-      "nextActionLabel": "Próxima acción",
+      "nextActionLabel": "Pr\u00f3xima acci\u00f3n",
       "author": {
         "human": "Humano",
         "agent": "Agente",
@@ -1136,11 +1136,11 @@
         "type": "Tipo",
         "templates": "Plantillas",
         "content": "Contenido",
-        "contentPlaceholder": "Describí la actualización u observación...",
+        "contentPlaceholder": "Describ\u00ed la actualizaci\u00f3n u observaci\u00f3n...",
         "evidence": "Evidencia",
         "evidencePlaceholder": "Links, archivos o datos...",
-        "nextAction": "Próxima Acción",
-        "nextActionPlaceholder": "Qué debería pasar después...",
+        "nextAction": "Pr\u00f3xima Acci\u00f3n",
+        "nextActionPlaceholder": "Qu\u00e9 deber\u00eda pasar despu\u00e9s...",
         "submit": "Enviar",
         "submitting": "Enviando..."
       },
@@ -1153,27 +1153,27 @@
         },
         "blocked": {
           "label": "Bloqueado",
-          "content": "Esta tarea está bloqueada.",
-          "evidence": "Log de error o descripción del bloqueo",
+          "content": "Esta tarea est\u00e1 bloqueada.",
+          "evidence": "Log de error o descripci\u00f3n del bloqueo",
           "nextAction": "Necesita input de..."
         },
         "waiting": {
           "label": "Esperando",
           "content": "Esperando dependencia externa.",
           "evidence": "Referencia a ticket/issue",
-          "nextAction": "Se reanudará cuando..."
+          "nextAction": "Se reanudar\u00e1 cuando..."
         },
         "handoff": {
           "label": "Handoff",
           "content": "Entregando esta tarea.",
           "evidence": "Resumen del estado actual",
-          "nextAction": "El próximo asignado debería..."
+          "nextAction": "El pr\u00f3ximo asignado deber\u00eda..."
         },
         "done": {
           "label": "Hecho",
           "content": "Tarea completada exitosamente.",
           "evidence": "Resultado o entregable",
-          "nextAction": "Listo para revisión/merge"
+          "nextAction": "Listo para revisi\u00f3n/merge"
         },
         "note": {
           "label": "Nota",
@@ -1188,8 +1188,8 @@
       "errors": {
         "loadFailed": "Error al cargar comentarios",
         "postFailed": "Error al publicar comentario",
-        "rateLimited": "Demasiados comentarios. Por favor esperá antes de publicar otro.",
-        "invalidPayload": "Datos de comentario inválidos"
+        "rateLimited": "Demasiados comentarios. Por favor esper\u00e1 antes de publicar otro.",
+        "invalidPayload": "Datos de comentario inv\u00e1lidos"
       }
     }
   },
@@ -1203,19 +1203,19 @@
     },
     "cron": {
       "lowSuccessRate": {
-        "title": "Cron \"{cronName}\" tiene baja tasa de éxito",
-        "description": "Este cron job tiene {failureRate}% de fallos. Revisa la configuración y logs para identificar el problema."
+        "title": "Cron \"{cronName}\" tiene baja tasa de \u00e9xito",
+        "description": "Este cron job tiene {failureRate}% de fallos. Revisa la configuraci\u00f3n y logs para identificar el problema."
       }
     },
     "skill": {
       "unused": {
-        "title": "Skill \"{skillName}\" no se usa hace 30 días",
+        "title": "Skill \"{skillName}\" no se usa hace 30 d\u00edas",
         "description": "Esta skill solo se ha usado {uses} veces. Considera desinstalarla si ya no la necesitas."
       }
     },
     "error": {
       "pattern": {
-        "title": "Patrón de errores detectado",
+        "title": "Patr\u00f3n de errores detectado",
         "description": "Se han producido {count} errores similares recientemente: \"{message}...\""
       }
     },
@@ -1228,11 +1228,11 @@
     "memory": {
       "old": {
         "title": "Memoria sin actualizar",
-        "description": "La última actualización de memoria fue hace {days} días. Los agentes podrían beneficiarse de nueva información contextual."
+        "description": "La \u00faltima actualizaci\u00f3n de memoria fue hace {days} d\u00edas. Los agentes podr\u00edan beneficiarse de nueva informaci\u00f3n contextual."
       },
       "small": {
-        "title": "Memoria muy pequeña",
-        "description": "Los archivos de memoria solo ocupan {sizeKB} KB. Los agentes podrían beneficiarse de más contexto."
+        "title": "Memoria muy peque\u00f1a",
+        "description": "Los archivos de memoria solo ocupan {sizeKB} KB. Los agentes podr\u00edan beneficiarse de m\u00e1s contexto."
       },
       "none": {
         "title": "Sin memoria configurada",
@@ -1247,36 +1247,36 @@
       },
       "inactive": {
         "title": "Workspace inactivo",
-        "description": "No hay actividad de archivos desde hace {days} días. Los agentes podrían no estar funcionando correctamente."
+        "description": "No hay actividad de archivos desde hace {days} d\u00edas. Los agentes podr\u00edan no estar funcionando correctamente."
       }
     },
     "kanban": {
       "overdue": {
         "title": "Tareas vencidas",
-        "description": "Hay {count} tareas con fecha de vencimiento vencida. Revisá el tablero Kanban para tomar acción."
+        "description": "Hay {count} tareas con fecha de vencimiento vencida. Revis\u00e1 el tablero Kanban para tomar acci\u00f3n."
       },
       "unassigned": {
         "title": "Muchas tareas sin asignar",
-        "description": "Hay {count} tareas sin asignar. Los agentes podrían procesarlas automáticamente."
+        "description": "Hay {count} tareas sin asignar. Los agentes podr\u00edan procesarlas autom\u00e1ticamente."
       },
       "bottleneck": {
         "title": "Cuello de botella en tareas",
-        "description": "Hay {inProgress} tareas en progreso pero solo {done} completadas. Los agentes podrían estar bloqueados o necesitar soporte."
+        "description": "Hay {inProgress} tareas en progreso pero solo {done} completadas. Los agentes podr\u00edan estar bloqueados o necesitar soporte."
       }
     },
     "agent": {
       "noIdentity": {
         "title": "Agentes sin identidad",
-        "description": "{count} de {total} agentes no tienen archivo IDENTITY.md. Define su rol y personalidad para mejorar la comunicación."
+        "description": "{count} de {total} agentes no tienen archivo IDENTITY.md. Define su rol y personalidad para mejorar la comunicaci\u00f3n."
       },
       "none": {
         "title": "Sin agentes configurados",
-        "description": "No hay agentes configurados en openclaw.json. Agregá agentes para automatizar tareas.",
+        "description": "No hay agentes configurados en openclaw.json. Agreg\u00e1 agentes para automatizar tareas.",
         "actionLabel": "Configurar agentes"
       },
       "noHeartbeat": {
         "title": "Agentes sin heartbeat",
-        "description": "{count} agentes no tienen configurado heartbeat. No podrán recibir tareas automáticamente desde el Kanban."
+        "description": "{count} agentes no tienen configurado heartbeat. No podr\u00e1n recibir tareas autom\u00e1ticamente desde el Kanban."
       }
     }
   },
@@ -1284,7 +1284,7 @@
     "title": "Agent Swarm",
     "subtitle": "Monitorear y gestionar tareas y agentes del swarm",
     "status": {
-      "online": "En línea",
+      "online": "En l\u00ednea",
       "offline": "Desconectado",
       "error": "Error"
     },
@@ -1315,14 +1315,14 @@
       "markDone": "Marcar Hecho"
     },
     "errors": {
-      "offline": "La API de Agent Swarm está desconectada. Verificá que esté corriendo en localhost:3013.",
-      "unauthorized": "No autorizado. Verificá SWARM_API_KEY (server-side).",
+      "offline": "La API de Agent Swarm est\u00e1 desconectada. Verific\u00e1 que est\u00e9 corriendo en localhost:3013.",
+      "unauthorized": "No autorizado. Verific\u00e1 SWARM_API_KEY (server-side).",
       "generic": "Error al obtener datos del swarm: {error}"
     },
     "createTask": {
       "title": "Crear Tarea",
-      "taskLabel": "Descripción de la tarea",
-      "taskPlaceholder": "Describí la tarea...",
+      "taskLabel": "Descripci\u00f3n de la tarea",
+      "taskPlaceholder": "Describ\u00ed la tarea...",
       "agentLabel": "Asignar a agente",
       "submit": "Crear",
       "success": "Tarea creada exitosamente",
@@ -1333,5 +1333,9 @@
       "allAgents": "Todos los agentes",
       "clear": "Limpiar filtros"
     }
+  },
+  "actions": {
+    "title": "Acciones R\u00e1pidas",
+    "subtitle": "Ejecuta comandos del sistema, verifica salud y gestiona infraestructura"
   }
 }

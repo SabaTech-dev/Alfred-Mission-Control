@@ -14,6 +14,7 @@ import {
   X,
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import { authFetch } from "@/lib/auth-fetch";
 
 interface Message {
   id: string;
@@ -44,7 +45,7 @@ export function TranscriptViewer({ sessionKey, onClose }: TranscriptViewerProps)
   useEffect(() => {
     const fetchTranscript = async () => {
       try {
-        const res = await fetch(`/api/sessions/${encodeURIComponent(sessionKey)}/transcript`);
+        const res = await authFetch(`/api/sessions/${encodeURIComponent(sessionKey)}/transcript`);
         const data = await res.json();
         setMessages(data.messages || []);
       } catch (error) {

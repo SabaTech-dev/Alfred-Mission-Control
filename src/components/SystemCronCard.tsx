@@ -11,6 +11,7 @@ import {
   X,
 } from "lucide-react";
 import type { SystemCronJob } from "@/app/api/cron/system/route";
+import { authFetch } from "@/lib/auth-fetch";
 
 interface SystemCronCardProps {
   job: SystemCronJob;
@@ -250,7 +251,7 @@ export function SystemCronLogsModal({
       const params = new URLSearchParams({ id: jobId });
       if (logPath) params.set("path", logPath);
 
-      const res = await fetch(`/api/cron/system-logs?${params.toString()}`);
+      const res = await authFetch(`/api/cron/system-logs?${params.toString()}`);
       const data = await res.json();
 
       if (data.error) {

@@ -6,6 +6,7 @@ import {
   AlertTriangle, CheckCircle2, ArrowRight, Loader2, X
 } from "lucide-react";
 import { MarkdownPreview } from "@/components/MarkdownPreview";
+import { authFetch } from "@/lib/auth-fetch";
 
 interface ReportEntry {
   date: string;
@@ -69,7 +70,7 @@ export default function CierreDelDiaView() {
       if (filterType !== "all") params.set("type", filterType);
       if (filterMonth !== "all") params.set("date", filterMonth);
       if (searchQuery) params.set("search", searchQuery);
-      const res = await fetch(`/api/reports/daily-close?${params}`);
+      const res = await authFetch(`/api/reports/daily-close?${params}`);
       if (!res.ok) throw new Error("Failed");
       const data = await res.json();
       setReports(data.reports);

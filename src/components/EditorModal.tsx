@@ -14,6 +14,7 @@ import {
 import { useI18n } from "@/i18n/provider";
 import { MarkdownPreview } from "./MarkdownPreview";
 import { getMonacoLanguage, isMarkdownFile, isHtmlFile } from "@/lib/file-utils";
+import { authFetch } from "@/lib/auth-fetch";
 
 // Lazy-load Monaco editor to avoid SSR issues
 const MonacoEditor = dynamic(() => import("@monaco-editor/react"), { ssr: false });
@@ -60,7 +61,7 @@ export function EditorModal({ workspace, filePath, fileName, initialViewMode = "
   useEffect(() => {
     const controller = new AbortController();
     setLoading(true);
-    fetch(`/api/browse?workspace=${encodeURIComponent(workspace)}&path=${encodeURIComponent(filePath)}&content=true`, { signal: controller.signal })
+    authFetch(`/api/browse?workspace=${encodeURIComponent(workspace)}&path=${encodeURIComponent(filePath)}&content=true`, { signal: controller.signal })
       .then((r) => {
         if (!r.ok) {
           throw new Error(t("files.browser.editor.errors.load"));
@@ -83,7 +84,7 @@ export function EditorModal({ workspace, filePath, fileName, initialViewMode = "
     setSaving(true);
     setError(null);
     try {
-      const res = await fetch("/api/files/write", {
+      const res = await authFetch("/api/files/write", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ workspace, path: filePath, content }),

@@ -1,4 +1,5 @@
 "use client";
+import { authFetch } from "@/lib/auth-fetch";
 import { getModelDisplayName } from "@/lib/model-utils";
 
 import { useEffect, useState } from "react";
@@ -64,10 +65,10 @@ export default function MorningPage() {
 
   useEffect(() => {
     Promise.all([
-      fetch('/api/morning/brief').then(r => r.json()),
-      fetch('/api/morning/system').then(r => r.json()),
-      fetch('/api/morning/agents').then(r => r.json()),
-      fetch('/api/cron-jobs').then(r => r.json()).catch(() => ({ jobs: [] })),
+      authFetch('/api/morning/brief').then(r => r.json()),
+      authFetch('/api/morning/system').then(r => r.json()),
+      authFetch('/api/morning/agents').then(r => r.json()),
+      authFetch('/api/cron-jobs').then(r => r.json()).catch(() => ({ jobs: [] })),
     ]).then(([briefData, systemData, agentsData, cronData]) => {
       setBrief(briefData);
       setSystem(systemData);

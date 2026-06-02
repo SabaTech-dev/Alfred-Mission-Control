@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { MarkdownPreview } from "@/components/MarkdownPreview";
 import { useToast } from "@/components/Toast";
+import { authFetch } from "@/lib/auth-fetch";
 
 interface DigestEntry {
   date: string;
@@ -72,7 +73,7 @@ export default function AiSocialDigestView() {
       if (filterMonth !== "all") params.set("date", filterMonth);
       if (searchQuery) params.set("search", searchQuery);
 
-      const res = await fetch(`/api/reports/ai-social-digest?${params}`);
+      const res = await authFetch(`/api/reports/ai-social-digest?${params}`);
       if (!res.ok) throw new Error("Failed to load");
       const data = await res.json();
       setDigests(data.digests);
@@ -91,7 +92,7 @@ export default function AiSocialDigestView() {
     abortRef.current = controller;
     try {
       setIsLoadingDetail(true);
-      const res = await fetch(
+      const res = await authFetch(
         `/api/reports/ai-social-digest?file=${encodeURIComponent(filename)}`,
         { signal: controller.signal }
       );

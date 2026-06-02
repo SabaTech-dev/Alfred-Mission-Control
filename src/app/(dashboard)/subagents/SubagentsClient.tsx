@@ -13,6 +13,7 @@ import {
   Filter,
 } from "lucide-react";
 import type { SubagentInfo, TimelineEvent, SubagentMetrics } from "@/operations/subagent-ops";
+import { authFetch } from "@/lib/auth-fetch";
 
 export interface SubagentsInitialData {
   subagents: SubagentInfo[];
@@ -36,7 +37,7 @@ export default function SubagentsClient({ initialData }: { initialData: Subagent
 
   const fetchData = async () => {
     try {
-      const res = await fetch("/api/subagents");
+      const res = await authFetch("/api/subagents");
       if (res.ok) {
         const json = await res.json();
         setData(json);

@@ -17,6 +17,7 @@ import {
 } from "@/lib/learning-types";
 
 import { EmptyState } from "./shared";
+import { authFetch } from "@/lib/auth-fetch";
 
 // ── Feature Tracker View ────────────────────────────────────────────────────
 
@@ -45,7 +46,7 @@ export function FeatureTrackerView({ data, loading, onStatusChange }: FeatureTra
   const handleStatusChange = async (id: string, newStatus: string) => {
     setChangingStatus(id);
     try {
-      await fetch("/api/learning/feature-tracker", {
+      await authFetch("/api/learning/feature-tracker", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id, status: newStatus }),

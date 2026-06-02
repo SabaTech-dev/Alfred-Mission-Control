@@ -12,6 +12,7 @@ import { SessionRow } from "./SessionRow";
 import { SessionsFilterTabs } from "./SessionsFilterTabs";
 import { SessionsStats } from "./SessionsStats";
 import { SessionsTableHeader } from "./SessionsTableHeader";
+import { authFetch } from "@/lib/auth-fetch";
 
 export default function SessionsClient({ initialSessions }: { initialSessions: SessionListItem[] }) {
   const { t } = useI18n();
@@ -25,7 +26,7 @@ export default function SessionsClient({ initialSessions }: { initialSessions: S
   const loadSessions = useCallback(async () => {
     try {
       setError(null);
-      const res = await fetch("/api/sessions");
+      const res = await authFetch("/api/sessions");
       const data = await res.json();
       setSessions(data.sessions || []);
     } catch {

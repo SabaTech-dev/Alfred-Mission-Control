@@ -19,6 +19,7 @@ import { ResearchPipeline } from "./ResearchPipeline";
 import { PipelineStageColumn } from "./PipelineStageColumn";
 import { PipelineWonLost } from "./PipelineWonLost";
 import { OpportunityPopupModal } from "./OpportunityPopupModal";
+import { authFetch } from "@/lib/auth-fetch";
 
 export default function PipelineClient() {
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
@@ -69,7 +70,7 @@ export default function PipelineClient() {
   const hasActiveFilters = Boolean(filterStage !== "all" || filterServiceType !== "all" || filterSourceType !== "business_opportunity" || filterDateFrom || filterDateTo);
   const fetchData = useCallback(async () => {
     try {
-      const res = await fetch("/api/pipeline");
+      const res = await authFetch("/api/pipeline");
       const data = await res.json();
       setOpportunities(data.opportunities || []);
       setKpis(data.kpis || null);
@@ -82,7 +83,7 @@ export default function PipelineClient() {
 
   const fetchResearchData = useCallback(async () => {
     try {
-      const res = await fetch("/api/pipeline/research");
+      const res = await authFetch("/api/pipeline/research");
       const data = await res.json();
       setResearchItems(data.items || []);
     } catch (err) {
@@ -105,7 +106,7 @@ export default function PipelineClient() {
 
     setLoadingTasks(prev => ({ ...prev, [oppId]: true }));
     try {
-      const res = await fetch("/api/kanban/tasks");
+      const res = await authFetch("/api/kanban/tasks");
       const data = await res.json();
       const allTasks = data.tasks || [];
       // Filter tasks that mention this company
@@ -135,7 +136,7 @@ export default function PipelineClient() {
   const handleSave = async () => {
     const method = editingId ? "PATCH" : "POST";
     const url = editingId ? `/api/pipeline/${editingId}` : "/api/pipeline";
-    await fetch(url, {
+    await authFetch(url, {
       method,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData),
@@ -170,12 +171,12 @@ export default function PipelineClient() {
 
   const handleDelete = async (id: string) => {
     if (!confirm("¿Eliminar esta oportunidad?")) return;
-    await fetch(`/api/pipeline/${id}`, { method: "DELETE" });
+    await authFetch(`/api/pipeline/${id}`, { method: "DELETE" });
     fetchData();
   };
 
   const handleStageChange = async (id: string, newStage: PipelineStage) => {
-    await fetch(`/api/pipeline/${id}`, {
+    await authFetch(`/api/pipeline/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ stage: newStage }),
@@ -187,7 +188,7 @@ export default function PipelineClient() {
     if (!confirm("¿Lanzar scrapping de leads? Esto buscará nuevas oportunidades en plataformas freelance.")) return;
     setScraping(true);
     try {
-      const res = await fetch("/api/pipeline/scrap", { method: "POST" });
+      const res = await authFetch("/api/pipeline/scrap", { method: "POST" });
       const data = await res.json();
       if (data.success) {
         alert("Scrapping completado. Recargando oportunidades...");
@@ -210,14 +211,14 @@ export default function PipelineClient() {
     if (!selectedOpp) return;
 
     if (action === "discard") {
-      await fetch(`/api/pipeline/${selectedOpp.id}`, { method: "DELETE" });
+      await authFetch(`/api/pipeline/${selectedOpp.id}`, { method: "DELETE" });
       setSelectedOpp(null);
       fetchData();
       return;
     }
 
     if (action === "wait") {
-      await fetch(`/api/pipeline/${selectedOpp.id}`, {
+      await authFetch(`/api/pipeline/${selectedOpp.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
@@ -232,7 +233,7 @@ export default function PipelineClient() {
 
     if (action === "investigate") {
       // Move to development stage and send to Alfred for investigation
-      await fetch(`/api/pipeline/${selectedOpp.id}`, {
+      await authFetch(`/api/pipeline/${selectedOpp.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 

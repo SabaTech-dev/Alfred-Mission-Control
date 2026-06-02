@@ -132,7 +132,7 @@ function IntegrationDetailModal({
     setTesting(true);
     setTestResult(null);
     try {
-      const res = await fetch(`/api/integrations/${integration.id}/test`, {
+      const res = await authFetch(`/api/integrations/${integration.id}/test`, {
         method: "POST",
       });
       const result = await res.json();
@@ -151,7 +151,7 @@ function IntegrationDetailModal({
   const handleToggleConfirm = async () => {
     setToggling(true);
     try {
-      const res = await fetch(`/api/integrations/${integration.id}/toggle`, {
+      const res = await authFetch(`/api/integrations/${integration.id}/toggle`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ enabled: !enabled }),
@@ -175,7 +175,7 @@ function IntegrationDetailModal({
   const loadStats = async () => {
     setLoadingStats(true);
     try {
-      const res = await fetch(`/api/integrations/${integration.id}/last-activity`);
+      const res = await authFetch(`/api/integrations/${integration.id}/last-activity`);
       const data = await res.json();
       setStats(data);
     } catch {
@@ -387,6 +387,7 @@ function IntegrationDetailModal({
 
 // Add ActivityStats icon import
 import { Activity } from "lucide-react";
+import { authFetch } from "@/lib/auth-fetch";
 
 export function IntegrationStatus({ integrations, onRefresh }: IntegrationStatusProps) {
   const { t } = useI18n();

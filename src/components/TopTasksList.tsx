@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { TrendingUp, TrendingDown, Minus, ExternalLink, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useI18n } from "@/i18n/provider";
+import { authFetch } from "@/lib/auth-fetch";
 
 interface TopTask {
   type: string;
@@ -82,7 +83,7 @@ export function TopTasksList() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch(`/api/costs/top-tasks?period=${period}`);
+        const res = await authFetch(`/api/costs/top-tasks?period=${period}`);
         if (res.ok) {
           const json = await res.json();
           setData(json);

@@ -11,6 +11,7 @@ import {
   Clock,
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import { authFetch } from "@/lib/auth-fetch";
 
 interface ApprovalMetadata {
   action?: string;
@@ -48,7 +49,7 @@ export function ApprovalCard({
     setError(null);
 
     try {
-      const res = await fetch(`/api/activities/${id}/approve`, {
+      const res = await authFetch(`/api/activities/${id}/approve`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ approved }),

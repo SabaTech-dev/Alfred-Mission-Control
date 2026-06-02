@@ -9,6 +9,7 @@ import {
   JournalFilters,
 } from "@/components/journal";
 import { OperationsJournalEntry, CreateJournalEntryInput, UpdateJournalEntryInput } from "@/lib/mission-types";
+import { authFetch } from "@/lib/auth-fetch";
 
 export interface JournalInitialData {
   entries: OperationsJournalEntry[];
@@ -37,7 +38,7 @@ export default function JournalClient({ initialData }: { initialData?: JournalIn
       if (endDate) params.set("endDate", endDate);
       params.set("limit", "50");
 
-      const res = await fetch(`/api/journal?${params}`);
+      const res = await authFetch(`/api/journal?${params}`);
       const data = await res.json();
       if (data.entries) {
         setEntries(data.entries as OperationsJournalEntry[]);
@@ -53,7 +54,7 @@ export default function JournalClient({ initialData }: { initialData?: JournalIn
     setSaving(true);
     try {
       if (editingEntry) {
-        const res = await fetch(`/api/journal/${editingEntry.id}`, {
+        const res = await authFetch(`/api/journal/${editingEntry.id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data),
@@ -65,7 +66,7 @@ export default function JournalClient({ initialData }: { initialData?: JournalIn
           );
         }
       } else {
-        const res = await fetch("/api/journal", {
+        const res = await authFetch("/api/journal", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data),
@@ -84,7 +85,7 @@ export default function JournalClient({ initialData }: { initialData?: JournalIn
 
   const handleDelete = async (id: string) => {
     try {
-      await fetch(`/api/journal/${id}`, { method: "DELETE" });
+      await authFetch(`/api/journal/${id}`, { method: "DELETE" });
       setEntries(entries.filter((e) => e.id !== id));
     } catch {
       // ignore

@@ -16,6 +16,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { LiveStatusIndicator } from "@/components/LiveStatusIndicator";
+import { authFetch } from "@/lib/auth-fetch";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -211,7 +212,7 @@ export default function LiveFeedPage() {
 
   const fetchData = useCallback(async () => {
     try {
-      const res = await fetch(`/api/live?filter=${filter}`);
+      const res = await authFetch(`/api/live?filter=${filter}`);
       const json = await res.json();
       setData(json);
       setError(null);

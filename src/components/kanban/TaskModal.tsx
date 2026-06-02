@@ -11,6 +11,7 @@ import { TaskLabelsEditor } from "@/components/kanban/TaskLabelsEditor";
 import { useTaskComments } from "@/hooks/useTaskComments";
 import type { TaskModalProps } from "@/lib/kanban-modal-types";
 import type { KanbanTask as KanbanTaskType, KanbanLabel } from "@/lib/kanban-db";
+import { authFetch } from "@/lib/auth-fetch";
 
 const INPUT_STYLE = {
   backgroundColor: "var(--card-elevated)",
@@ -74,13 +75,13 @@ export function TaskModal({
         priority, assignee: assignee.trim() || null, status, labels,
       };
       if (editingTask) {
-        const res = await fetch(`/api/kanban/tasks/${editingTask.id}`, {
+        const res = await authFetch(`/api/kanban/tasks/${editingTask.id}`, {
           method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(taskData),
         });
         if (!res.ok) { const data = await res.json(); throw new Error(data.error || "Failed to update task"); }
         onSave({ ...editingTask, ...taskData });
       } else {
-        const res = await fetch("/api/kanban/tasks", {
+        const res = await authFetch("/api/kanban/tasks", {
           method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(taskData),
         });
         if (!res.ok) { const data = await res.json(); throw new Error(data.error || "Failed to create task"); }
@@ -106,7 +107,7 @@ export function TaskModal({
     setError(null);
     try {
       const newArchived = !editingTask.archived;
-      const res = await fetch(`/api/kanban/tasks/${editingTask.id}`, {
+      const res = await authFetch(`/api/kanban/tasks/${editingTask.id}`, {
         method: "PUT", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ archived: newArchived }),
       });

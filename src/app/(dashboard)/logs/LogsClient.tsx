@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Terminal, Play, Square, Trash2, Download, Circle, Loader2 } from "lucide-react";
 import { useI18n } from "@/i18n/provider";
+import { authFetch } from "@/lib/auth-fetch";
 
 interface LogLine {
   line: string;
@@ -47,7 +48,7 @@ export default function LogsClient({ initialServices }: { initialServices: Servi
   useEffect(() => {
     async function fetchServices() {
       try {
-        const res = await fetch("/api/system/services");
+        const res = await authFetch("/api/system/services");
         if (!res.ok) throw new Error("Failed to fetch services");
         const data = await res.json();
         setServices(data.services || []);

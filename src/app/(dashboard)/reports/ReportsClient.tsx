@@ -11,6 +11,7 @@ import { useToast } from "@/components/Toast";
 import { useI18n } from "@/i18n/provider";
 import CierreDelDiaView from "./CierreDelDiaView";
 import AiSocialDigestView from "./AiSocialDigestView";
+import { authFetch } from "@/lib/auth-fetch";
 
 interface ReportFile {
   name: string;
@@ -89,7 +90,7 @@ export default function ReportsClient() {
       if (filterCategory !== "all") params.set("category", filterCategory);
       if (filterType !== "all") params.set("type", filterType);
       if (searchQuery) params.set("search", searchQuery);
-      const res = await fetch(`/api/reports/files?${params}`);
+      const res = await authFetch(`/api/reports/files?${params}`);
       if (!res.ok) throw new Error("Failed to load");
       const data = await res.json();
       setReports(data.reports);
@@ -108,7 +109,7 @@ export default function ReportsClient() {
     contentControllerRef.current = controller;
     try {
       setIsLoadingContent(true);
-      const res = await fetch(
+      const res = await authFetch(
         `/api/reports/files?path=${encodeURIComponent(filePath)}`,
         { signal: controller.signal }
       );

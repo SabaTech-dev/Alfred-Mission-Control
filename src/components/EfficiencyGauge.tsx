@@ -1,5 +1,6 @@
 "use client";
 
+import { authFetch } from "@/lib/auth-fetch";
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import {
@@ -35,7 +36,7 @@ export function EfficiencyGauge() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`/api/costs/efficiency?days=${period}`);
+        const res = await authFetch(`/api/costs/efficiency?days=${period}`);
         if (res.ok) {
           const json = await res.json();
           setData(json);

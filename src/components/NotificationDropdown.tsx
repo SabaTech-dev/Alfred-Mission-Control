@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { Bell, CheckCheck, Trash2 } from "lucide-react";
 
 import { NotificationItem, Notification } from "@/components/NotificationItem";
+import { authFetch } from "@/lib/auth-fetch";
 
 const iconButtonStyle: React.CSSProperties = {
   padding: "6px",
@@ -33,7 +34,7 @@ export function NotificationDropdown() {
   const fetchNotifications = async () => {
     try {
       setLoading(true);
-      const res = await fetch("/api/notifications");
+      const res = await authFetch("/api/notifications");
       const data = await res.json();
       setNotifications(data.notifications || []);
       setUnreadCount(data.unreadCount || 0);
@@ -68,7 +69,7 @@ export function NotificationDropdown() {
 
   const markAsRead = async (id: string) => {
     try {
-      await fetch("/api/notifications", {
+      await authFetch("/api/notifications", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id, read: true }),
@@ -81,7 +82,7 @@ export function NotificationDropdown() {
 
   const markAllAsRead = async () => {
     try {
-      await fetch("/api/notifications", {
+      await authFetch("/api/notifications", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "markAllRead" }),
@@ -94,7 +95,7 @@ export function NotificationDropdown() {
 
   const deleteNotification = async (id: string) => {
     try {
-      await fetch(`/api/notifications?id=${id}`, { method: "DELETE" });
+      await authFetch(`/api/notifications?id=${id}`, { method: "DELETE" });
       await fetchNotifications();
     } catch (error) {
       console.error("Failed to delete notification:", error);
@@ -103,7 +104,7 @@ export function NotificationDropdown() {
 
   const clearRead = async () => {
     try {
-      await fetch("/api/notifications?action=clearRead", { method: "DELETE" });
+      await authFetch("/api/notifications?action=clearRead", { method: "DELETE" });
       await fetchNotifications();
     } catch (error) {
       console.error("Failed to clear read notifications:", error);

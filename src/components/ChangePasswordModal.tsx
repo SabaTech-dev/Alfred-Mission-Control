@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { X, Key, Eye, EyeOff, Loader2, AlertCircle } from "lucide-react";
+import { authFetch } from "@/lib/auth-fetch";
 
 interface ChangePasswordModalProps {
   isOpen: boolean;
@@ -58,7 +59,7 @@ export function ChangePasswordModal({
     setLoading(true);
 
     try {
-      const res = await fetch("/api/system", {
+      const res = await authFetch("/api/system", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

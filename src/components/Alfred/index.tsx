@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import type { LucideIcon } from "lucide-react";
 import { Cpu, HardDrive, Activity, Shield, Wifi, WifiOff } from "lucide-react";
+import { authFetch } from "@/lib/auth-fetch";
 
 export { Dock } from "./Dock";
 export { TopBar } from "./TopBar";
@@ -71,7 +72,7 @@ export function StatusBar() {
 
     const fetchSystemData = async () => {
       try {
-        const res = await fetch("/api/system/monitor");
+        const res = await authFetch("/api/system/monitor");
         if (res.ok) {
           const data = await res.json();
           setSystemData(data);

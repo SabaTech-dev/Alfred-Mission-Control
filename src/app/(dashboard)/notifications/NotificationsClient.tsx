@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Bell, CheckCheck, Trash2, Filter } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import { authFetch } from "@/lib/auth-fetch";
 
 export interface Notification {
   id: string;
@@ -58,7 +59,7 @@ export default function NotificationsClient() {
       if (filter === "unread") params.set("unread", "true");
       params.set("limit", "100");
 
-      const res = await fetch(`/api/notifications?${params}`);
+      const res = await authFetch(`/api/notifications?${params}`);
       const data = await res.json();
       setNotifications(data.notifications || []);
     } catch {
@@ -74,7 +75,7 @@ export default function NotificationsClient() {
 
   const markAsRead = async (id: string) => {
     try {
-      await fetch("/api/notifications", {
+      await authFetch("/api/notifications", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id, read: true }),
@@ -87,7 +88,7 @@ export default function NotificationsClient() {
 
   const markAllAsRead = async () => {
     try {
-      await fetch("/api/notifications", {
+      await authFetch("/api/notifications", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "markAllRead" }),
@@ -100,7 +101,7 @@ export default function NotificationsClient() {
 
   const deleteNotification = async (id: string) => {
     try {
-      await fetch(`/api/notifications?id=${id}`, { method: "DELETE" });
+      await authFetch(`/api/notifications?id=${id}`, { method: "DELETE" });
       await fetchNotifications();
     } catch {
       // ignore
@@ -110,7 +111,7 @@ export default function NotificationsClient() {
   const clearRead = async () => {
     if (!confirm("¿Estás seguro de eliminar todas las notificaciones leídas?")) return;
     try {
-      await fetch("/api/notifications?action=clearRead", { method: "DELETE" });
+      await authFetch("/api/notifications?action=clearRead", { method: "DELETE" });
       await fetchNotifications();
     } catch {
       // ignore

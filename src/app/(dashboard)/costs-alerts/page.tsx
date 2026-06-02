@@ -1,5 +1,6 @@
 "use client";
 
+import { authFetch } from "@/lib/auth-fetch";
 import { useEffect, useState, useCallback } from "react";
 import {
   AlertTriangle,
@@ -86,8 +87,8 @@ export default function CostAlertsPage() {
   const fetchData = useCallback(async () => {
     try {
       const [usageRes, configRes] = await Promise.all([
-        fetch("/api/costs-alerts/usage"),
-        fetch("/api/costs-alerts/config"),
+        authFetch("/api/costs-alerts/usage"),
+        authFetch("/api/costs-alerts/config"),
       ]);
       const usageData = await usageRes.json();
       const configData = await configRes.json();
@@ -112,7 +113,7 @@ export default function CostAlertsPage() {
   const saveConfig = async () => {
     setSaving(true);
     try {
-      const res = await fetch("/api/costs-alerts/config", {
+      const res = await authFetch("/api/costs-alerts/config", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

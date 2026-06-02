@@ -11,6 +11,7 @@ import {
 } from "date-fns";
 import { ChevronLeft, ChevronRight, Calendar } from "lucide-react";
 import { useI18n } from "@/i18n/provider";
+import { authFetch } from "@/lib/auth-fetch";
 
 interface Task {
   id: string;
@@ -34,7 +35,7 @@ export function WeeklyCalendar() {
   );
 
   useEffect(() => {
-    fetch("/api/tasks")
+    authFetch("/api/tasks")
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
