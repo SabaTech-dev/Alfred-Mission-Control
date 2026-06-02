@@ -9,6 +9,7 @@ vi.mock("@/operations", () => ({
 
 vi.mock("@/lib/auth-helpers", () => ({
   requireAuth: vi.fn().mockResolvedValue({ authorized: true }),
+  requireAgentOrSessionAuth: vi.fn().mockResolvedValue({ authorized: true }),
 }));
 
 vi.mock("@/lib/telemetry/dashboard-snapshot", () => ({

@@ -8,6 +8,7 @@ import { MarkdownPreview } from "@/components/MarkdownPreview";
 import { MemoryWordCloud } from "@/components/MemoryWordCloud";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { useI18n } from "@/i18n/provider";
+import { authFetch } from "@/lib/auth-fetch";
 import type { WordFrequency } from "@/app/api/memories/word-cloud/route";
 
 type MainTab = "editor" | "wordcloud";
@@ -49,7 +50,7 @@ export default function MemoryClient({
   useEffect(() => {
     if (mainTab === "wordcloud" && wordCloudData.length === 0) {
       setWordCloudLoading(true);
-      fetch("/api/memories/word-cloud?source=all")
+      authFetch("/api/memories/word-cloud?source=all")
         .then((res) => res.json())
         .then((data) => setWordCloudData(data.words || []))
         .catch(console.error)
@@ -60,7 +61,7 @@ export default function MemoryClient({
   const loadFileTree = useCallback(async (workspace: string) => {
     try {
       setIsLoading(true);
-      const res = await fetch(`/api/files?workspace=${encodeURIComponent(workspace)}`);
+      const res = await authFetch(`/api/files?workspace=${encodeURIComponent(workspace)}`);
       if (!res.ok) throw new Error("Failed to load files");
       const data = await res.json();
       setFiles(data);
@@ -75,7 +76,7 @@ export default function MemoryClient({
   const loadFile = useCallback(async (workspace: string, path: string) => {
     try {
       setError(null);
-      const res = await fetch(
+      const res = await authFetch(
         `/api/files?workspace=${encodeURIComponent(workspace)}&path=${encodeURIComponent(path)}`
       );
       if (!res.ok) throw new Error("Failed to load file");
@@ -89,7 +90,7 @@ export default function MemoryClient({
 
   const saveFile = useCallback(async () => {
     if (!selectedWorkspace || !selectedPath) return;
-    const res = await fetch("/api/files", {
+    const res = await authFetch("/api/files", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ workspace: selectedWorkspace, path: selectedPath, content }),

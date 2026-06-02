@@ -1,5 +1,12 @@
+import { NextRequest } from "next/server";
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 import { GET } from "./route";
+
+vi.mock("@/lib/auth-helpers", () => ({
+  requireAgentOrSessionAuth: vi.fn().mockResolvedValue({ authorized: true, authType: "session" }),
+}));
+
+const mockRequest = new NextRequest(new URL("http://localhost/api/system/uptime"));
 
 describe("System Uptime API Route", () => {
   beforeEach(() => {
@@ -12,12 +19,12 @@ describe("System Uptime API Route", () => {
 
   describe("GET /api/system/uptime", () => {
     it("returns 200 OK", async () => {
-      const response = await GET();
+      const response = await GET(mockRequest);
       expect(response.status).toBe(200);
     });
 
     it("returns JSON response", async () => {
-      const response = await GET();
+      const response = await GET(mockRequest);
       const json = await response.json();
 
       expect(json).toBeDefined();
@@ -25,7 +32,7 @@ describe("System Uptime API Route", () => {
     });
 
     it("returns uptimePercentage field", async () => {
-      const response = await GET();
+      const response = await GET(mockRequest);
       const json = await response.json();
 
       expect(json).toHaveProperty("uptimePercentage");
@@ -34,7 +41,7 @@ describe("System Uptime API Route", () => {
     });
 
     it("uptimePercentage is between 0 and 100", async () => {
-      const response = await GET();
+      const response = await GET(mockRequest);
       const json = await response.json();
 
       expect(json.uptimePercentage).toBeGreaterThanOrEqual(0);
@@ -43,7 +50,7 @@ describe("System Uptime API Route", () => {
 
     it("uptimePercentage defaults to 100 when no logs", async () => {
       // If heartbeat logs don't exist or are empty, uptime is 100%
-      const response = await GET();
+      const response = await GET(mockRequest);
       const json = await response.json();
 
       // With no logs, the endpoint returns default uptime of 100%
@@ -51,7 +58,7 @@ describe("System Uptime API Route", () => {
     });
 
     it("returns lastHeartbeat field", async () => {
-      const response = await GET();
+      const response = await GET(mockRequest);
       const json = await response.json();
 
       expect(json).toHaveProperty("lastHeartbeat");
@@ -59,7 +66,7 @@ describe("System Uptime API Route", () => {
     });
 
     it("returns totalChecks field", async () => {
-      const response = await GET();
+      const response = await GET(mockRequest);
       const json = await response.json();
 
       expect(json).toHaveProperty("totalChecks");
@@ -68,14 +75,14 @@ describe("System Uptime API Route", () => {
     });
 
     it("totalChecks is non-negative", async () => {
-      const response = await GET();
+      const response = await GET(mockRequest);
       const json = await response.json();
 
       expect(json.totalChecks).toBeGreaterThanOrEqual(0);
     });
 
     it("returns successfulChecks field", async () => {
-      const response = await GET();
+      const response = await GET(mockRequest);
       const json = await response.json();
 
       expect(json).toHaveProperty("successfulChecks");
@@ -84,7 +91,7 @@ describe("System Uptime API Route", () => {
     });
 
     it("returns failedChecks field", async () => {
-      const response = await GET();
+      const response = await GET(mockRequest);
       const json = await response.json();
 
       expect(json).toHaveProperty("failedChecks");
@@ -93,7 +100,7 @@ describe("System Uptime API Route", () => {
     });
 
     it("returns downtimeEvents field", async () => {
-      const response = await GET();
+      const response = await GET(mockRequest);
       const json = await response.json();
 
       expect(json).toHaveProperty("downtimeEvents");
@@ -102,14 +109,14 @@ describe("System Uptime API Route", () => {
     });
 
     it("downtimeEvents is non-negative", async () => {
-      const response = await GET();
+      const response = await GET(mockRequest);
       const json = await response.json();
 
       expect(json.downtimeEvents).toBeGreaterThanOrEqual(0);
     });
 
     it("returns period field", async () => {
-      const response = await GET();
+      const response = await GET(mockRequest);
       const json = await response.json();
 
       expect(json).toHaveProperty("period");
@@ -118,7 +125,7 @@ describe("System Uptime API Route", () => {
     });
 
     it("period.start and period.end are valid ISO strings", async () => {
-      const response = await GET();
+      const response = await GET(mockRequest);
       const json = await response.json();
 
       expect(typeof json.period.start).toBe("string");
@@ -132,7 +139,7 @@ describe("System Uptime API Route", () => {
     });
 
     it("period represents reasonable time window (30 days back)", async () => {
-      const response = await GET();
+      const response = await GET(mockRequest);
       const json = await response.json();
 
       const startDate = new Date(json.period.start);
@@ -148,14 +155,14 @@ describe("System Uptime API Route", () => {
     });
 
     it("successfulChecks + failedChecks = totalChecks", async () => {
-      const response = await GET();
+      const response = await GET(mockRequest);
       const json = await response.json();
 
       expect(json.successfulChecks + json.failedChecks).toBe(json.totalChecks);
     });
 
     it("uptimePercentage = (successfulChecks / totalChecks) * 100 when totalChecks > 0", async () => {
-      const response = await GET();
+      const response = await GET(mockRequest);
       const json = await response.json();
 
       if (json.totalChecks > 0) {

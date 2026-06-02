@@ -10,6 +10,15 @@ This document provides essential information for AI coding agents working in the
 # Development server (with network access)
 npm run dev
 
+# Backend/API tests
+npm run test:backend
+
+# Full Vitest suite
+npm run test:run
+
+# E2E suite (requires app on 127.0.0.1:3000 and E2E_ADMIN_PASSWORD)
+E2E_ADMIN_PASSWORD=your_password npm run test:e2e
+
 # Production build
 npm run build
 
@@ -26,7 +35,14 @@ npm run lint -- src/lib/pricing.ts
 npx tsc --noEmit
 ```
 
-> **Note:** This project does not currently have a test suite configured. If tests are added, check `package.json` for the test command.
+> **Note:** This project ships with a Vitest suite plus Playwright E2E coverage. Keep the app running on `127.0.0.1:3000` for E2E, pass `E2E_ADMIN_PASSWORD`, and treat Chromium console errors as regressions.
+
+## Backend Test Workflow Notes
+
+- `npm run test:backend` executes the whole backend suite wired in `package.json`; to run a single file, use `npx vitest run <path>` instead.
+- Do **not** mock `@/lib/auth-helpers` globally in `vitest.setup.ts`; keep auth mocks local to the test file so `401`/unauthorized assertions still exercise the intended code path.
+- SQLite-backed test modules (`activities-db`, `kanban-db`, `pipeline-db`) should detect tests with `process.env.VITEST === "true"` in addition to `NODE_ENV === "test"`, and use in-memory databases during Vitest runs.
+- `src/lib/activity-logger.ts` is a legacy compatibility wrapper over `activities-db`; avoid collapsing it into a raw re-export without checking historical consumers and tests.
 
 ---
 
@@ -41,7 +57,7 @@ Alfred Mission Control is a real-time dashboard for OpenClaw AI agent instances.
 - **Charts:** Recharts
 - **Icons:** Lucide React
 - **Database:** SQLite (better-sqlite3) for usage tracking
-- **Runtime:** Node.js 18+ (tested with v22)
+- **Runtime:** Node.js 24.x (keep build/runtime aligned because `better-sqlite3` is native)
 
 ---
 

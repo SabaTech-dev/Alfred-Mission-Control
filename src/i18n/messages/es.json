@@ -118,6 +118,13 @@
     "agents": "Agentes",
     "kanban": "Kanban",
     "chat": "Chat",
+    "activity": "Actividad",
+    "cron": "Cron",
+    "journal": "Diario",
+    "notepad": "Notas",
+    "sessions": "Sesiones",
+    "wiki": "Wiki",
+    "workflows": "Flujos",
     "office": "Oficina",
     "live": "En Vivo",
     "handoffs": "Handoffs",
@@ -138,9 +145,12 @@
     "logs": "Logs",
     "analytics": "Analíticas",
     "costsAlerts": "Costes",
+    "costs-alerts": "Costes y Alertas",
+    "actions": "Acciones",
     "calendar": "Calendario",
     "system": "Sistema",
     "settings": "Config",
+    "swarm": "Swarm",
     "logout": "Salir"
   },
   "help": {
@@ -163,6 +173,34 @@
     "chat": {
       "title": "Chat Directo",
       "description": "Chateá con agentes de OpenClaw usando sesiones canónicas y streaming en vivo del gateway."
+    },
+    "activity": {
+      "title": "Actividad del Agente",
+      "description": "Flujo de actividad reciente, eventos del sistema y trazabilidad operativa de Alfred y sus agentes."
+    },
+    "cron": {
+      "title": "Gestor de Tareas",
+      "description": "Revisar y gestionar cron jobs, tareas del sistema y configuraciones de heartbeat."
+    },
+    "journal": {
+      "title": "Diario Operativo",
+      "description": "Consultar notas operativas, entradas cronológicas y contexto persistente de trabajo."
+    },
+    "notepad": {
+      "title": "Bloc de Notas",
+      "description": "Crear y editar notas rápidas dentro del dashboard para capturar ideas y follow-ups."
+    },
+    "sessions": {
+      "title": "Sesiones",
+      "description": "Explorar sesiones activas e históricas, inspeccionar mensajes y revisar transcripciones."
+    },
+    "wiki": {
+      "title": "Wiki Explorer",
+      "description": "Navegar la wiki, la memoria Hindsight y el grafo de conexiones documentales."
+    },
+    "workflows": {
+      "title": "Workflows",
+      "description": "Diseñar, revisar y ejecutar workflows y automatizaciones operativas del sistema."
     },
     "memory": {
       "title": "Explorador de Memoria",
@@ -255,6 +293,18 @@
     "calendar": {
       "title": "Calendario",
       "description": "Tareas programadas, timeline de cron jobs y próximos eventos."
+    },
+    "swarm": {
+      "title": "Agent Swarm",
+      "description": "Monitorear y gestionar tareas y agentes de Agent Swarm en tiempo real."
+    },
+    "actions": {
+      "title": "Acciones",
+      "description": "Acciones rápidas y atajos para tareas comunes del agente."
+    },
+    "costs-alerts": {
+      "title": "Costes y Alertas",
+      "description": "Seguimiento de presupuesto, anomalías de coste y alertas de gasto por modelo y agente."
     }
   },
   "topbar": {
@@ -1228,6 +1278,60 @@
         "title": "Agentes sin heartbeat",
         "description": "{count} agentes no tienen configurado heartbeat. No podrán recibir tareas automáticamente desde el Kanban."
       }
+    }
+  },
+  "swarm": {
+    "title": "Agent Swarm",
+    "subtitle": "Monitorear y gestionar tareas y agentes del swarm",
+    "status": {
+      "online": "En línea",
+      "offline": "Desconectado",
+      "error": "Error"
+    },
+    "tasks": {
+      "title": "Tareas",
+      "empty": "Sin tareas",
+      "count": "{count} tareas",
+      "columns": {
+        "task": "Tarea",
+        "status": "Estado",
+        "agent": "Agente",
+        "created": "Creado"
+      }
+    },
+    "agents": {
+      "title": "Agentes",
+      "empty": "Sin agentes",
+      "count": "{count} agentes",
+      "columns": {
+        "name": "Nombre",
+        "status": "Estado",
+        "tasks": "Tareas"
+      }
+    },
+    "actions": {
+      "refresh": "Actualizar",
+      "createTask": "Nueva Tarea",
+      "markDone": "Marcar Hecho"
+    },
+    "errors": {
+      "offline": "La API de Agent Swarm está desconectada. Verificá que esté corriendo en localhost:3013.",
+      "unauthorized": "No autorizado. Verificá SWARM_API_KEY (server-side).",
+      "generic": "Error al obtener datos del swarm: {error}"
+    },
+    "createTask": {
+      "title": "Crear Tarea",
+      "taskLabel": "Descripción de la tarea",
+      "taskPlaceholder": "Describí la tarea...",
+      "agentLabel": "Asignar a agente",
+      "submit": "Crear",
+      "success": "Tarea creada exitosamente",
+      "error": "Error al crear tarea"
+    },
+    "filters": {
+      "allStatuses": "Todos los estados",
+      "allAgents": "Todos los agentes",
+      "clear": "Limpiar filtros"
     }
   }
 }

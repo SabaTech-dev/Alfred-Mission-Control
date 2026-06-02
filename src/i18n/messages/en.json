@@ -118,6 +118,13 @@
     "agents": "Agents",
     "kanban": "Kanban",
     "chat": "Chat",
+    "activity": "Activity",
+    "cron": "Cron",
+    "journal": "Journal",
+    "notepad": "Notes",
+    "sessions": "Sessions",
+    "wiki": "Wiki",
+    "workflows": "Flows",
     "office": "Office",
     "live": "Live",
     "handoffs": "Handoffs",
@@ -138,9 +145,12 @@
     "logs": "Logs",
     "analytics": "Analytics",
     "costsAlerts": "Costs",
+    "costs-alerts": "Costs & Alerts",
+    "actions": "Actions",
     "calendar": "Calendar",
     "system": "System",
     "settings": "Settings",
+    "swarm": "Swarm",
     "logout": "Logout"
   },
   "help": {
@@ -163,6 +173,34 @@
     "chat": {
       "title": "Direct Chat",
       "description": "Chat directly with OpenClaw agents using canonical sessions and live gateway streaming."
+    },
+    "activity": {
+      "title": "Agent Activity",
+      "description": "Review recent activity, system events, and operational traceability across Alfred and its agents."
+    },
+    "cron": {
+      "title": "Task Manager",
+      "description": "Review and manage cron jobs, system tasks, and heartbeat configuration from one place."
+    },
+    "journal": {
+      "title": "Operations Journal",
+      "description": "Browse operational notes, chronological entries, and persistent working context."
+    },
+    "notepad": {
+      "title": "Notepad",
+      "description": "Create and edit quick notes inside the dashboard for ideas, reminders, and follow-ups."
+    },
+    "sessions": {
+      "title": "Sessions",
+      "description": "Inspect active and historical sessions, review messages, and open transcripts."
+    },
+    "wiki": {
+      "title": "Wiki Explorer",
+      "description": "Navigate the wiki, Hindsight memory, and the documentation graph connections."
+    },
+    "workflows": {
+      "title": "Workflows",
+      "description": "Design, review, and execute workflows and operational automations."
     },
     "memory": {
       "title": "Memory Browser",
@@ -255,6 +293,18 @@
     "calendar": {
       "title": "Calendar",
       "description": "Scheduled tasks, cron jobs timeline, and upcoming events view."
+    },
+    "swarm": {
+      "title": "Agent Swarm",
+      "description": "Monitor and manage Agent Swarm tasks and agents in real time."
+    },
+    "actions": {
+      "title": "Actions",
+      "description": "Quick actions and shortcuts for common agent tasks."
+    },
+    "costs-alerts": {
+      "title": "Costs & Alerts",
+      "description": "Budget tracking, cost anomalies, and spending alerts across models and agents."
     }
   },
   "topbar": {
@@ -1228,6 +1278,60 @@
         "title": "Agents without heartbeat",
         "description": "{count} agents don't have heartbeat configured. They won't be able to receive tasks automatically from Kanban."
       }
+    }
+  },
+  "swarm": {
+    "title": "Agent Swarm",
+    "subtitle": "Monitor and manage swarm tasks and agents",
+    "status": {
+      "online": "Online",
+      "offline": "Offline",
+      "error": "Error"
+    },
+    "tasks": {
+      "title": "Tasks",
+      "empty": "No tasks found",
+      "count": "{count} tasks",
+      "columns": {
+        "task": "Task",
+        "status": "Status",
+        "agent": "Agent",
+        "created": "Created"
+      }
+    },
+    "agents": {
+      "title": "Agents",
+      "empty": "No agents found",
+      "count": "{count} agents",
+      "columns": {
+        "name": "Name",
+        "status": "Status",
+        "tasks": "Tasks"
+      }
+    },
+    "actions": {
+      "refresh": "Refresh",
+      "createTask": "New Task",
+      "markDone": "Mark Done"
+    },
+    "errors": {
+      "offline": "Agent Swarm API is offline. Make sure it is running on localhost:3013.",
+      "unauthorized": "Unauthorized. Check SWARM_API_KEY (server-side).",
+      "generic": "Failed to fetch swarm data: {error}"
+    },
+    "createTask": {
+      "title": "Create Task",
+      "taskLabel": "Task description",
+      "taskPlaceholder": "Describe the task...",
+      "agentLabel": "Assign to agent",
+      "submit": "Create",
+      "success": "Task created successfully",
+      "error": "Failed to create task"
+    },
+    "filters": {
+      "allStatuses": "All statuses",
+      "allAgents": "All agents",
+      "clear": "Clear filters"
     }
   }
 }

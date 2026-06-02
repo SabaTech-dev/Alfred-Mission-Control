@@ -40,6 +40,7 @@ export interface CreateOpportunityInput {
   service_type?: Opportunity["service_type"];
   probability?: number;
   source?: string;
+  source_type?: Opportunity["source_type"];
   next_action?: string;
   next_action_date?: string;
   notes?: string;
@@ -58,6 +59,7 @@ export interface UpdateOpportunityInput {
   service_type?: Opportunity["service_type"];
   probability?: number | null;
   source?: string | null;
+  source_type?: Opportunity["source_type"];
   next_action?: string | null;
   next_action_date?: string | null;
   notes?: string | null;
@@ -65,42 +67,34 @@ export interface UpdateOpportunityInput {
 }
 
 
+const IS_TEST_ENV = process.env.VITEST === "true" || process.env.NODE_ENV === "test";
 
-const DB_PATH = process.env.NODE_ENV === "test"
+const DB_PATH = IS_TEST_ENV
   ? ":memory:"
   : path.join(process.cwd(), "data", "kanban.db");
 
 let _db: Database | null = null;
-let _isInitializing = false;
-let _initPromise: Promise<void> | null = null;
 
 function getDb(): Database {
   if (_db) {
     return _db;
   }
 
-  if (_isInitializing && _initPromise) {
-    // Wait for the ongoing initialization to complete.
-    // In a synchronous context, throw to let the caller retry or handle.
-    // If needed, restructure call sites to be async.
-    throw new Error("Database is initializing. Please retry momentarily.");
-  }
-
+  // Ensure data directory exists
   const dir = path.dirname(DB_PATH);
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-  const db = new Database(DB_PATH);
-  _db = db;
-  _isInitializing = true;
-  _initPromise = (async () => {
-    try {
-      db.pragma("journal_mode = WAL");
-      initPipelineTable(db);
-    } finally {
-      _isInitializing = false;
-      _initPromise = null;
-    }
-  })();
 
+  const db = new Database(DB_PATH);
+
+  // better-sqlite3 is synchronous — initialize schema before returning.
+  // Previously this ran inside an async IIFE, creating a race condition
+  // where the first caller got a db without tables created yet.
+  db.pragma("journal_mode = WAL");
+  db.pragma("synchronous = NORMAL");
+  db.pragma("busy_timeout = 5000");
+  initPipelineTable(db);
+
+  _db = db;
   return db;
 }
 
@@ -139,6 +133,16 @@ function initPipelineTable(db: Database) {
     db.exec(`ALTER TABLE opportunities ADD COLUMN progress REAL NOT NULL DEFAULT 0`);
     console.log("[pipeline-db] Added progress column to opportunities");
   }
+
+  // Idempotent migration: Add source_type column if it doesn't exist
+  const sourceTypeColumnExists = db
+    .prepare("SELECT 1 FROM pragma_table_info('opportunities') WHERE name = 'source_type'")
+    .get() as { "1": number } | undefined;
+
+  if (!sourceTypeColumnExists) {
+    db.exec(`ALTER TABLE opportunities ADD COLUMN source_type TEXT NOT NULL DEFAULT 'auto_sync'`);
+    console.log("[pipeline-db] Added source_type column to opportunities");
+  }
 }
 
 export function createOpportunity(input: CreateOpportunityInput): Opportunity {
@@ -160,6 +164,7 @@ export function createOpportunity(input: CreateOpportunityInput): Opportunity {
     service_type: input.service_type || "other",
     probability: input.probability ?? null,
     source: input.source || null,
+    source_type: input.source_type || "auto_sync",
     next_action: input.next_action || null,
     next_action_date: input.next_action_date || null,
     notes: input.notes || null,
@@ -170,12 +175,12 @@ export function createOpportunity(input: CreateOpportunityInput): Opportunity {
   };
 
   db.prepare(`
-    INSERT INTO opportunities (id, company, contact_name, contact_email, contact_linkedin, title, description, stage, value, currency, service_type, probability, source, next_action, next_action_date, notes, progress, created_at, updated_at, closed_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO opportunities (id, company, contact_name, contact_email, contact_linkedin, title, description, stage, value, currency, service_type, probability, source, source_type, next_action, next_action_date, notes, progress, created_at, updated_at, closed_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `).run(
     opp.id, opp.company, opp.contact_name, opp.contact_email, opp.contact_linkedin,
     opp.title, opp.description, opp.stage, opp.value, opp.currency, opp.service_type,
-    opp.probability, opp.source, opp.next_action, opp.next_action_date, opp.notes, opp.progress,
+    opp.probability, opp.source, opp.source_type, opp.next_action, opp.next_action_date, opp.notes, opp.progress,
     opp.created_at, opp.updated_at, opp.closed_at
   );
 
@@ -207,6 +212,7 @@ const ALLOWED_UPDATE_COLUMNS = [
   "service_type",
   "probability",
   "source",
+  "source_type",
   "next_action",
   "next_action_date",
   "notes",
@@ -327,7 +333,7 @@ export function findOpportunityByCompany(company: string): Opportunity | null {
  * Resets the in-memory DB so tests start clean.
  */
 export function clearAllPipelineDataForTesting(): void {
-  if (process.env.NODE_ENV !== "test") {
+  if (!IS_TEST_ENV) {
     throw new Error("clearAllPipelineDataForTesting is only for tests");
   }
   // Reset the DB singleton so next getDb() creates a fresh in-memory DB
@@ -351,6 +357,9 @@ export function getPipelineKPIs(): PipelineKPIs {
   }
 
   for (const opp of opps) {
+    // Skip opportunities with unknown stages (defensive guard)
+    if (!byStage[opp.stage]) continue;
+
     const prob = opp.probability ?? STAGE_PROBABILITY[opp.stage];
     byStage[opp.stage].count++;
     byStage[opp.stage].value += opp.value;

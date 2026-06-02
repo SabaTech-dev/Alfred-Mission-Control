@@ -15,8 +15,12 @@ interface Session {
   agent?: string;
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    const url = new URL(request.url);
+    const filterParam = url.searchParams.get('filter') || 'active'; // active | all | type:cron | type:spawn-child | type:direct
+    const maxAgeHours = filterParam === 'all' ? 9999 : 2; // Default: only last 2h
+
     // Get active sessions from OpenClaw
     const { stdout } = await execAsync("openclaw sessions --json 2>&1", {
       timeout: 30000,
@@ -52,13 +56,21 @@ export async function GET() {
       else if (idleMs < 60000) status = "responding";
       else if (idleMs < 120000) status = "tool_call";
 
-      // Extract agent name from session key
+      // Extract agent name and session type from session key
       const agentMatch = session.sessionKey?.match(/agent:([^:]+)/);
       const agent = agentMatch ? agentMatch[1] : "unknown";
+      
+      // Determine session kind
+      let kind = "direct";
+      if (session.sessionKey?.includes(":cron:")) kind = "cron";
+      else if (session.sessionKey?.includes(":subag")) kind = "spawn-child";
+      else if (session.sessionKey?.includes(":acp:")) kind = "spawn-child";
+      else if (session.sessionKey?.includes(":nocturno")) kind = "direct";
 
       return {
         sessionKey: session.sessionKey,
         agent,
+        kind,
         model: session.model || "unknown",
         startedAt: startedAt.toISOString(),
         lastActivityAt: lastActivityAt.toISOString(),
@@ -70,6 +82,7 @@ export async function GET() {
           ms: durationMs,
           formatted: durationMin > 0 ? `${durationMin}m ${durationSec}s` : `${durationSec}s`,
         },
+        idleMs, // for filtering
       };
     });
 
@@ -78,8 +91,26 @@ export async function GET() {
       new Date(b.lastActivityAt).getTime() - new Date(a.lastActivityAt).getTime()
     );
 
+    // Apply filter
+    let filtered = enrichedSessions;
+    if (filterParam === 'active') {
+      filtered = enrichedSessions.filter(s => s.idleMs < maxAgeHours * 3600000);
+    } else if (filterParam.startsWith('type:')) {
+      const type = filterParam.replace('type:', '');
+      filtered = enrichedSessions.filter(s => s.kind === type);
+    }
+    // Remove idleMs from output
+    const cleaned = filtered.map(({ idleMs, ...rest }) => rest);
+
+    // Group stats
+    const byKind: Record<string, number> = {};
+    enrichedSessions.forEach(s => { byKind[s.kind] = (byKind[s.kind] || 0) + 1; });
+
     return NextResponse.json({
-      sessions: enrichedSessions,
+      sessions: cleaned,
+      totalCount: enrichedSessions.length,
+      filteredCount: cleaned.length,
+      byKind,
       timestamp: new Date().toISOString(),
       hasActive: enrichedSessions.length > 0,
     });

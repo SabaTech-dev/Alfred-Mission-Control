@@ -51,6 +51,7 @@ function detectLocale(): Locale {
 }
 
 export function I18nProvider({ children }: { children: React.ReactNode }) {
+  // Always start with "en" to match SSR output, then detect client locale
   const [locale, setLocaleState] = useState<Locale>("en");
   const [hydrated, setHydrated] = useState(false);
   const initRef = useRef(false);
@@ -72,12 +73,16 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
     if (!initRef.current) {
       initRef.current = true;
       const detected = detectLocale();
-      requestAnimationFrame(() => {
+      // Schedule locale switch after hydration completes.
+      // requestAnimationFrame fires after React hydration but before paint,
+      // which still triggers a hydration mismatch warning.
+      // Using setTimeout(0) defers past the hydration comparison.
+      setTimeout(() => {
         if (detected !== locale) {
           setLocaleState(detected);
         }
         setHydrated(true);
-      });
+      }, 0);
     }
   }, [locale]);
 
@@ -94,13 +99,15 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
       locale,
       setLocale: handleSetLocale,
       t: (key: string, values?: Record<string, string | number>) => {
-        const raw = getByPath(messages, key) ?? getByPath(DICTIONARY.en, key) ?? key;
+        // Always use English until hydrated to match SSR output
+        const msgs = hydrated ? messages : DICTIONARY.en;
+        const raw = getByPath(msgs, key) ?? getByPath(DICTIONARY.en, key) ?? key;
         return typeof raw === "string" ? interpolate(raw, values) : key;
       },
       formatNumber: (value: number) => new Intl.NumberFormat(locale).format(value),
       formatDateTime: (value: Date | number | string) => new Intl.DateTimeFormat(locale, { hour: "2-digit", minute: "2-digit", second: "2-digit" }).format(new Date(value)),
     };
-  }, [locale, handleSetLocale]);
+  }, [locale, handleSetLocale, hydrated]);
 
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
 }

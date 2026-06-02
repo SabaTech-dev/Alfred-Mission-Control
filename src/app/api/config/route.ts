@@ -1,11 +1,17 @@
 import fs from "fs";
 import path from "path";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+
+import { requireAgentOrSessionAuth } from "@/lib/auth-helpers";
+import { jwtUtils } from "@/lib/jwt-utils";
 
 export const dynamic = "force-dynamic";
 
 const OPENCLAW_DIR = process.env.OPENCLAW_DIR || path.join(process.env.HOME || "/root", ".openclaw");
 const CONFIG_PATH = path.join(OPENCLAW_DIR, "openclaw.json");
+
+/** Agent IDs that are considered admin-level (full config access). */
+const ADMIN_AGENT_IDS = new Set(["main"]);
 
 interface ConfigSection {
   editable: boolean;
@@ -15,12 +21,18 @@ interface ConfigSection {
 interface ConfigResponse {
   sections: {
     meta: ConfigSection;
-    env: ConfigSection;
-    auth: ConfigSection;
-    models: ConfigSection;
-    wizard: ConfigSection;
+    env?: ConfigSection;
+    auth?: ConfigSection;
+    models?: ConfigSection;
+    wizard?: ConfigSection;
   };
-  raw: string;
+  raw?: string;
+}
+
+interface SanitizedConfigResponse {
+  sections: {
+    meta: ConfigSection;
+  };
 }
 
 function maskSensitive(key: string, value: string): string {
@@ -70,6 +82,80 @@ function maskRawJson(raw: string): string {
   }
 }
 
+/**
+ * Extract a safe list of agent IDs and names from the config.
+ * Strips workspace paths, heartbeat config, and other details.
+ */
+function extractAgentNames(config: Record<string, unknown>): Array<{ id: string; name: string }> {
+  const agents: Array<{ id: string; name: string }> = [];
+
+  // From agents.list
+  const list = config.agents as Record<string, unknown> | undefined;
+  if (list?.list && Array.isArray(list.list)) {
+    for (const agent of list.list as Array<Record<string, unknown>>) {
+      if (agent.id && agent.name) {
+        agents.push({ id: String(agent.id), name: String(agent.name) });
+      }
+    }
+  }
+
+  // From agents.defaults
+  const defaults = list?.defaults as Record<string, unknown> | undefined;
+  if (defaults?.id && defaults?.name && !agents.some((a) => a.id === defaults.id)) {
+    agents.push({ id: String(defaults.id), name: String(defaults.name) });
+  }
+
+  return agents;
+}
+
+/**
+ * Build a sanitized response for non-admin callers.
+ * Only includes: openclaw version, agent names/IDs, workspace paths.
+ * Excludes: providers, apiKeys, models, costs, plugins, skills, cron.
+ */
+function buildSanitizedResponse(config: Record<string, unknown>): SanitizedConfigResponse {
+  const meta = (config.meta as Record<string, unknown>) || {};
+
+  return {
+    sections: {
+      meta: {
+        editable: false,
+        data: {
+          version: meta.version || null,
+          openclawVersion: meta.openclawVersion || null,
+          agents: extractAgentNames(config),
+        },
+      },
+    },
+  };
+}
+
+/**
+ * Determine if the caller is an admin (agent "main" or session with role "admin").
+ */
+async function isCallerAdmin(request: NextRequest): Promise<boolean> {
+  const authResult = await requireAgentOrSessionAuth(request);
+
+  if (!authResult.authorized) {
+    return false;
+  }
+
+  // Agent auth: check if agent ID is in admin set
+  if (authResult.authType === "agent" && authResult.agentId) {
+    return ADMIN_AGENT_IDS.has(authResult.agentId);
+  }
+
+  // Session auth: check JWT role
+  if (authResult.authType === "session") {
+    const token = jwtUtils.getTokenFromRequest(request);
+    if (!token) return false;
+    const payload = await jwtUtils.verifyToken(token);
+    return payload?.role === "admin";
+  }
+
+  return false;
+}
+
 function buildConfigResponse(config: Record<string, unknown>, rawContent: string): ConfigResponse {
   return {
     sections: {
@@ -98,8 +184,18 @@ function buildConfigResponse(config: Record<string, unknown>, rawContent: string
   };
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    // Authenticate: agent OR session required
+    const authResult = await requireAgentOrSessionAuth(request);
+
+    if (!authResult.authorized) {
+      return authResult.error || NextResponse.json(
+        { error: "Unauthorized", message: "Authentication required" },
+        { status: 401 }
+      );
+    }
+
     if (!fs.existsSync(CONFIG_PATH)) {
       return NextResponse.json(
         {
@@ -114,9 +210,17 @@ export async function GET() {
     const rawContent = fs.readFileSync(CONFIG_PATH, "utf-8");
     const config = JSON.parse(rawContent);
 
-    const response = buildConfigResponse(config, rawContent);
+    // Admin (main agent or admin session) gets full config
+    const admin = await isCallerAdmin(request);
 
-    return NextResponse.json(response);
+    if (admin) {
+      const response = buildConfigResponse(config, rawContent);
+      return NextResponse.json(response);
+    }
+
+    // Non-admin: sanitized subset
+    const sanitized = buildSanitizedResponse(config);
+    return NextResponse.json(sanitized);
   } catch (error) {
     console.error("Failed to read config:", error);
     return NextResponse.json(

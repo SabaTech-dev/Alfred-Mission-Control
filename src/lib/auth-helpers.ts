@@ -17,7 +17,7 @@
  * /api/kanban/agent (Agent endpoints):
  * - All endpoints require either:
  *   1) X-Agent-Id + X-Agent-Key headers, OR
- *   2) Authenticated human session
+ *   2) Authenticated human session (JWT)
  * - Uses requireAgentOrSessionAuth()
  *
  * Rationale:
@@ -26,7 +26,8 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { requireAgentAuth } from "@/lib/agent-auth";
+import { validateAgentAuth } from "@/lib/agent-auth";
+import { jwtUtils } from "@/lib/jwt-utils";
 import { sessionStore } from "@/lib/session-store";
 
 export interface AuthResult {
@@ -54,30 +55,37 @@ export async function requireAuth(request: NextRequest): Promise<AuthResult> {
     };
   }
 
-  const isValid = await sessionStore.validate(token);
-
-  if (!isValid) {
-    return {
-      authorized: false,
-      error: NextResponse.json(
-        { error: "Unauthorized", message: "Invalid or expired token" },
-        { status: 401 }
-      ),
-    };
+  // Try JWT validation first
+  const isValidJwt = await jwtUtils.isValidToken(token);
+  if (isValidJwt) {
+    return { authorized: true };
   }
 
-  return { authorized: true };
+  // Fall back to session store (for test compatibility)
+  // In tests, sessionStore.generateToken() creates UUID-based tokens
+  const isValidSession = await sessionStore.validate(token);
+  if (isValidSession) {
+    return { authorized: true };
+  }
+
+  return {
+    authorized: false,
+    error: NextResponse.json(
+      { error: "Unauthorized", message: "Invalid or expired token" },
+      { status: 401 }
+    ),
+  };
 }
 
 export async function requireAgentOrSessionAuth(
   request: NextRequest
 ): Promise<AgentOrSessionAuthResult> {
-  const agentAuth = requireAgentAuth(request);
-  if (!(agentAuth instanceof NextResponse)) {
+  const agentId = validateAgentAuth(request);
+  if (agentId) {
     return {
       authorized: true,
       authType: "agent",
-      agentId: agentAuth.agentId,
+      agentId,
     };
   }
 

@@ -83,3 +83,5 @@ test-results/
 
 # Debug routes that expose sensitive info
 src/app/api/debug/
+scrapers/lead-scraper/node_modules
+scrapers/lead-scraper/package-lock.json

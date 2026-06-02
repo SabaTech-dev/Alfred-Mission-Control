@@ -61,11 +61,14 @@ function metricColor(changeColor: MetricCardProps["changeColor"]): string {
 }
 
 export function StatusBar() {
-  const [now, setNow] = useState(() => new Date());
+  const [now, setNow] = useState<Date | null>(null);
   const [systemData, setSystemData] = useState<SystemMonitorData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Set date on client only to avoid hydration mismatch
+    setNow(new Date());
+
     const fetchSystemData = async () => {
       try {
         const res = await fetch("/api/system/monitor");
@@ -164,7 +167,7 @@ export function StatusBar() {
         )}
       </div>
       
-      <span>{now.toLocaleString("es-ES")}</span>
+      <span>{now ? now.toLocaleString("es-ES") : ""}</span>
     </footer>
   );
 }

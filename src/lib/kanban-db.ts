@@ -28,7 +28,9 @@ import { initSchema } from "./kanban/kanban-schema";
 // ============================================================================
 
 // Use in-memory database for tests to avoid concurrency issues
-const DB_PATH = process.env.NODE_ENV === "test"
+const IS_TEST_ENV = process.env.VITEST === "true" || process.env.NODE_ENV === "test";
+
+const DB_PATH = IS_TEST_ENV
   ? ":memory:"
   : path.join(process.cwd(), "data", "kanban.db");
 
@@ -70,14 +72,11 @@ export function getDb(): Database {
 
   _db = new Database(DB_PATH);
 
-  // WAL mode for better concurrency
-  try {
-    _db.pragma("journal_mode = WAL");
-  } catch {
-    // WASM SQLite doesn't support WAL mode; fall back to DELETE (default)
-    _db.pragma("journal_mode = DELETE");
-  }
+  // WAL mode for better concurrency (better-sqlite3 supports it natively)
+  _db.pragma("journal_mode = WAL");
   _db.pragma("synchronous = NORMAL");
+  // busy_timeout prevents "database is locked" errors under concurrent access
+  _db.pragma("busy_timeout = 5000");
 
   // Initialize schema (tables, migrations, seeding)
   initSchema(_db);

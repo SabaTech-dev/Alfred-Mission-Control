@@ -35,6 +35,7 @@ import {
   Clock,
   BookOpen,
   FileText,
+  Bug,
 } from "lucide-react";
 
 interface DockItem {
@@ -101,6 +102,7 @@ function DockSections(): DockSection[] {
       items: [
         { href: "/live", labelKey: "dock.live", helpKey: "help.live", icon: Radio },
         { href: "/subagents", labelKey: "dock.subagents", helpKey: "help.subagents", icon: Bot },
+        { href: "/swarm", labelKey: "dock.swarm", helpKey: "help.swarm", icon: Bug },
         { href: "/git", labelKey: "dock.git", helpKey: "help.git", icon: GitBranch },
       ],
     },

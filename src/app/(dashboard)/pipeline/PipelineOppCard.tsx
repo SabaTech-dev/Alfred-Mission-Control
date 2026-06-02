@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowRight, Edit3, Trash2 } from "lucide-react";
-import { PipelineStage, type Opportunity } from "@/lib/pipeline-types";
+import { PipelineStage, type Opportunity, type SourceType } from "@/lib/pipeline-types";
 import { STAGE_COLORS, STAGE_LABELS } from "@/lib/pipeline-types";
 import { formatDate, formatCurrency, serviceLabels, STATUS_COLORS } from "./PipelineTypes";
 import type { KanbanTaskStatus } from "./PipelineTypes";
@@ -13,6 +13,7 @@ interface OppCardProps {
   onStageChange: (id: string, stage: PipelineStage) => void;
   onEdit: (opp: Opportunity) => void;
   onDelete: (id: string) => void;
+  onClick?: () => void;
   activeStages: PipelineStage[];
   kanbanTasks: any[];
   loadingTasks: boolean;
@@ -25,6 +26,7 @@ export function OppCard({
   onStageChange,
   onEdit,
   onDelete,
+  onClick,
   activeStages,
   kanbanTasks,
   loadingTasks,
@@ -57,6 +59,9 @@ export function OppCard({
       <div style={{ display: "flex", alignItems: "center", gap: "6px", marginTop: "6px" }}>
         <span style={{ fontSize: "10px", color: "var(--text-muted)", background: "var(--surface-elevated)", padding: "2px 6px", borderRadius: "3px" }}>
           {serviceLabels[opp.service_type] || opp.service_type}
+        </span>
+        <span style={{ fontSize: "10px", color: "#000", background: "#6b7280", padding: "2px 6px", borderRadius: "3px", fontWeight: 500 }}>
+          {opp.source_type === "business_opportunity" ? "💼 Negocio" : opp.source_type === "internal_report" ? "📋 Técnico" : opp.source_type === "manual" ? "✏️ Manual" : "🔄 Auto Sync"}
         </span>
         {opp.contact_name && (
           <span style={{ fontSize: "10px", color: "var(--text-muted)" }}>👤 {opp.contact_name}</span>

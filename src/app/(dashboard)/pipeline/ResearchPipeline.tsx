@@ -1,6 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { SOURCE_LABELS, RESEARCH_PHASES, type ResearchItem } from "./PipelineTypes";
+import { ResearchItemCard } from "./ResearchItemCard";
 
 interface ResearchPipelineProps {
   researchItems: ResearchItem[];
@@ -10,6 +12,8 @@ interface ResearchPipelineProps {
 }
 
 export function ResearchPipeline({ researchItems, researchLoading, showResearch, onToggle }: ResearchPipelineProps) {
+  const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({});
+
   if (!showResearch) {
     return (
       <button
@@ -70,51 +74,12 @@ export function ResearchPipeline({ researchItems, researchLoading, showResearch,
                     <div style={{ padding: "16px", textAlign: "center", color: "var(--text-muted)", fontSize: "11px" }}>Sin items</div>
                   ) : (
                     phaseItems.map((item) => (
-                      <div
+                      <ResearchItemCard
                         key={item.id}
-                        style={{
-                          padding: "8px 10px",
-                          borderRadius: "6px",
-                          border: "1px solid var(--border)",
-                          background: "var(--surface)",
-                          fontSize: "11px",
-                        }}
-                      >
-                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", gap: "6px" }}>
-                          <div style={{ flex: 1, fontWeight: 500, color: "var(--text-primary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                            {item.title}
-                          </div>
-                          <span
-                            style={{
-                              padding: "1px 5px",
-                              borderRadius: "3px",
-                              fontSize: "9px",
-                              fontWeight: 600,
-                              color: "#fff",
-                              background: SOURCE_LABELS[item.source].color,
-                              whiteSpace: "nowrap",
-                            }}
-                          >
-                            {SOURCE_LABELS[item.source].label}
-                          </span>
-                        </div>
-                        {item.description && (
-                          <div style={{ color: "var(--text-muted)", marginTop: "3px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                            {item.description}
-                          </div>
-                        )}
-                        <div style={{ display: "flex", gap: "6px", marginTop: "4px", alignItems: "center", flexWrap: "wrap" }}>
-                          {item.agent && (
-                            <span style={{ fontSize: "9px", color: "var(--text-muted)", background: "var(--surface-elevated)", padding: "1px 4px", borderRadius: "2px" }}>
-                              👤 {item.agent}
-                            </span>
-                          )}
-                          <span style={{ fontSize: "9px", color: item.priority === "high" ? "#ef4444" : item.priority === "medium" ? "#f59e0b" : "#6b7280" }}>
-                            {item.priority.toUpperCase()}
-                          </span>
-                          <span style={{ fontSize: "9px", color: "var(--text-muted)" }}>{item.date}</span>
-                        </div>
-                      </div>
+                        item={item}
+                        expanded={expandedItems[item.id] || false}
+                        onToggle={(id) => setExpandedItems((prev) => ({ ...prev, [id]: !prev[id] }))}
+                      />
                     ))
                   )}
                 </div>

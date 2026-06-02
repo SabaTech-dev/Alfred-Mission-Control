@@ -12,6 +12,7 @@ interface PipelineStageColumnProps {
   onStageChange: (id: string, newStage: PipelineStage) => void;
   onEdit: (opp: Opportunity) => void;
   onDelete: (id: string) => void;
+  onOppClick: (opp: Opportunity) => void;
   activeStages: PipelineStage[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   kanbanTasks: Record<string, any[]>;
@@ -26,6 +27,7 @@ export function PipelineStageColumn({
   onStageChange,
   onEdit,
   onDelete,
+  onOppClick,
   activeStages,
   kanbanTasks,
   loadingTasks,
@@ -80,6 +82,7 @@ export function PipelineStageColumn({
             onStageChange={onStageChange}
             onEdit={onEdit}
             onDelete={onDelete}
+            onClick={() => onOppClick(opp)}
             activeStages={activeStages}
             kanbanTasks={kanbanTasks[opp.id] || []}
             loadingTasks={loadingTasks[opp.id] || false}

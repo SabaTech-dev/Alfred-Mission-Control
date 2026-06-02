@@ -66,6 +66,13 @@ interface OpenClawModelsConfig {
 
 export const MODEL_PRICING: ModelPricing[] = MODEL_PRICING_CONSTANTS;
 
+function isPlaceholderCost(model: Pick<ModelPricing, "inputPricePerMillion" | "outputPricePerMillion" | "cacheReadPricePerMillion" | "cacheWritePricePerMillion">): boolean {
+  return model.inputPricePerMillion === 0
+    && model.outputPricePerMillion === 0
+    && (model.cacheReadPricePerMillion ?? 0) === 0
+    && (model.cacheWritePricePerMillion ?? 0) === 0;
+}
+
 /**
  * Normalize model ID (handle aliases and different formats)
  */
@@ -254,7 +261,24 @@ export function getMergedPricing(filterByUsedModels = false): ModelPricingEntry[
   
   // Override with OpenClaw config (OpenClaw wins)
   for (const model of openClawModels) {
-    mergedBaseMap.set(model.id, model);
+    const existing = mergedBaseMap.get(model.id);
+
+    if (!existing) {
+      mergedBaseMap.set(model.id, model);
+      continue;
+    }
+
+    const preserveExistingCosts = isPlaceholderCost(model) && !isPlaceholderCost(existing);
+
+    mergedBaseMap.set(model.id, {
+      ...existing,
+      ...model,
+      alias: model.alias ?? existing.alias,
+      inputPricePerMillion: preserveExistingCosts ? existing.inputPricePerMillion : model.inputPricePerMillion,
+      outputPricePerMillion: preserveExistingCosts ? existing.outputPricePerMillion : model.outputPricePerMillion,
+      cacheReadPricePerMillion: preserveExistingCosts ? existing.cacheReadPricePerMillion : model.cacheReadPricePerMillion,
+      cacheWritePricePerMillion: preserveExistingCosts ? existing.cacheWritePricePerMillion : model.cacheWritePricePerMillion,
+    });
   }
 
   const mergedBase = [...mergedBaseMap.values()];
@@ -299,9 +323,10 @@ export function calculateCost(
   cacheReadTokens?: number,
   cacheWriteTokens?: number
 ): number {
+  const normalizedId = normalizeModelId(modelId);
   const mergedPricing = getMergedPricing();
   const pricing = mergedPricing.find(
-    (p) => p.id === modelId || p.alias === modelId
+    (p) => p.id === normalizedId || p.alias === normalizedId
   );
 
   if (!pricing) {

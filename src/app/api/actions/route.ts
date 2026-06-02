@@ -7,6 +7,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { exec } from 'child_process';
 import { promisify } from 'util';
 import { logActivity } from '@/lib/activities-db';
+import { collectStackServiceChecks, formatStackHeartbeat } from '@/lib/stack-health';
 
 export const dynamic = "force-dynamic";
 
@@ -82,29 +83,8 @@ async function runAction(action: string): Promise<ActionResult> {
       }
 
       case 'heartbeat': {
-        // Check all critical services by port
-        const services = [
-          { name: 'alfred-mc', port: 3000 },
-          { name: 'openclaw-gateway', port: 18789 },
-          { name: 'postgresql', port: 5432 },
-          { name: 'hindsight', port: 9077 },
-          { name: 'ollama', port: 11434 },
-          { name: 'coolify', port: 8000 },
-          { name: 'n8n', port: 5678 },
-        ];
-        const results: string[] = [];
-
-        for (const svc of services) {
-          try {
-            const { stdout } = await execAsync(`ss -tlnp 2>/dev/null | grep :${svc.port} || echo ""`);
-            const running = stdout.trim().length > 0;
-            results.push(`${running ? '✅' : '❌'} ${svc.name}: ${running ? `listening on :${svc.port}` : 'down'}`);
-          } catch {
-            results.push(`❌ ${svc.name}: check failed`);
-          }
-        }
-
-        output = results.join('\n');
+        const checks = await collectStackServiceChecks();
+        output = formatStackHeartbeat(checks).join('\n');
         break;
       }
 

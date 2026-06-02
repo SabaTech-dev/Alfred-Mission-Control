@@ -6,7 +6,9 @@ import { OPENCLAW_WORKSPACE } from "@/lib/paths";
 export const dynamic = "force-dynamic";
 
 const WORKSPACE = path.resolve(OPENCLAW_WORKSPACE);
-const MEMORY_DIR = "memory";
+// Reports are stored in workspace/reports/central/active/, not in memory/
+const REPORTS_DIR = path.join(WORKSPACE, "reports", "central", "active");
+const MEMORY_DIR = "memory"; // legacy, kept for backward compatibility if needed
 
 /**
  * Validates that a resolved path is within the workspace root.
@@ -66,33 +68,33 @@ export async function GET(request: NextRequest) {
       if (!isPathWithinWorkspace(filePath)) {
         return NextResponse.json({ error: "Invalid path" }, { status: 400 });
       }
-      // Ensure path is within memory/ directory
-      if (!filePath.startsWith(MEMORY_DIR) && !filePath.startsWith("/" + MEMORY_DIR)) {
-        return NextResponse.json({ error: "Access denied: only memory/ directory allowed" }, { status: 403 });
+      // Ensure path is within reports directory
+      if (!filePath.startsWith("reports/") && !filePath.startsWith("/reports/")) {
+        return NextResponse.json({ error: "Access denied: only reports directory allowed" }, { status: 403 });
       }
       const fullPath = safePathJoin(filePath);
       const content = await fs.readFile(fullPath, "utf-8");
       return NextResponse.json({ path: filePath, content });
     }
 
-    // List report files from memory/ directory ONLY
-    const memoryPath = safePathJoin(MEMORY_DIR);
+    // List report files from reports/central/active/ directory
+    const reportsPath = path.isAbsolute(REPORTS_DIR) ? REPORTS_DIR : path.resolve(WORKSPACE, REPORTS_DIR);
     let files: string[] = [];
     try {
-      files = await fs.readdir(memoryPath);
+      files = await fs.readdir(reportsPath);
     } catch {
       return NextResponse.json([]);
     }
 
     const reports = [];
     for (const file of files) {
-      if (!file.endsWith(".md") || !isReportFile(file)) continue;
-      const fullPath = safePathJoin(MEMORY_DIR, file);
+      if (!file.endsWith(".md")) continue;
+      const fullPath = path.join(reportsPath, file);
       const stat = await fs.stat(fullPath);
       const content = await fs.readFile(fullPath, "utf-8");
       reports.push({
         name: file,
-        path: `${MEMORY_DIR}/${file}`,
+        path: `reports/central/active/${file}`,
         title: extractTitle(content),
         type: getReportType(file),
         size: stat.size,

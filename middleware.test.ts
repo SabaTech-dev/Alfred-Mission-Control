@@ -1,32 +1,21 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { NextRequest } from "next/server";
 
 import { middleware } from "./middleware";
-import { sessionStore } from "@/lib/session-store";
 import { resetAgentKeysCache } from "@/lib/agent-auth";
+import { jwtUtils } from "@/lib/jwt-utils";
 
-const previousAuthSecret = process.env.AUTH_SECRET;
 const previousAgentKeys = process.env.OPENCLAW_AGENT_KEYS;
+const AUTH_TOKEN = "browser-session-token";
 
 describe("middleware auth policy", () => {
-  let authToken = "";
-
-  beforeEach(async () => {
-    process.env.AUTH_SECRET = "test-secret-123456789012345678901234567890";
+  beforeEach(() => {
     process.env.OPENCLAW_AGENT_KEYS = "agent-a:key-agent-a";
     resetAgentKeysCache();
-    authToken = await sessionStore.generateToken();
+    vi.spyOn(jwtUtils, "isValidToken").mockResolvedValue(true);
   });
 
   afterEach(() => {
-    sessionStore.clearRevoked();
-
-    if (previousAuthSecret === undefined) {
-      delete process.env.AUTH_SECRET;
-    } else {
-      process.env.AUTH_SECRET = previousAuthSecret;
-    }
-
     if (previousAgentKeys === undefined) {
       delete process.env.OPENCLAW_AGENT_KEYS;
     } else {
@@ -34,6 +23,7 @@ describe("middleware auth policy", () => {
     }
 
     resetAgentKeysCache();
+    vi.restoreAllMocks();
   });
 
   it("allows public auth routes", async () => {
@@ -61,7 +51,7 @@ describe("middleware auth policy", () => {
 
   it("allows protected API routes with valid session", async () => {
     const request = new NextRequest(new URL("http://localhost/api/git"), {
-      headers: { Authorization: `Bearer ${authToken}` },
+      headers: { Authorization: `Bearer ${AUTH_TOKEN}` },
     });
 
     const response = await middleware(request);
@@ -73,6 +63,28 @@ describe("middleware auth policy", () => {
     const response = await middleware(request);
 
     expect(response.status).toBe(401);
+  });
+
+  it("allows authenticated browser sessions on dashboard operational APIs", async () => {
+    const routes = [
+      "/api/sessions",
+      "/api/config",
+      "/api/cron",
+      "/api/heartbeat",
+      "/api/subagents",
+      "/api/handoffs",
+      "/api/terminal",
+      "/api/collect-usage",
+    ];
+
+    for (const route of routes) {
+      const request = new NextRequest(new URL(`http://localhost${route}`), {
+        headers: { Authorization: `Bearer ${AUTH_TOKEN}` },
+      });
+
+      const response = await middleware(request);
+      expect(response.status, route).toBe(200);
+    }
   });
 
   it("allows agent routes with valid agent credentials", async () => {
@@ -89,7 +101,7 @@ describe("middleware auth policy", () => {
 
   it("does not allow session-only access to heartbeat agent route", async () => {
     const request = new NextRequest(new URL("http://localhost/api/heartbeat/tasks"), {
-      headers: { Authorization: `Bearer ${authToken}` },
+      headers: { Authorization: `Bearer ${AUTH_TOKEN}` },
     });
 
     const response = await middleware(request);
@@ -98,7 +110,7 @@ describe("middleware auth policy", () => {
 
   it("allows session access to kanban agent routes", async () => {
     const request = new NextRequest(new URL("http://localhost/api/kanban/agent/tasks"), {
-      headers: { Authorization: `Bearer ${authToken}` },
+      headers: { Authorization: `Bearer ${AUTH_TOKEN}` },
     });
 
     const response = await middleware(request);

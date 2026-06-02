@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import { useAutoRefresh } from "@/hooks/useAutoRefresh";
 import {
   FileBarChart, FileText, RefreshCw, Clock, HardDrive, Download, Share2, Plus,
   Loader2, Search, Filter, FolderOpen, Folder, Calendar, CalendarDays, Newspaper
@@ -145,6 +146,12 @@ export default function ReportsClient() {
     loadReports();
   }, [loadReports]);
 
+  // Auto-refresh reports every 10 minutes
+  const { refresh: refreshReports, isRefreshing } = useAutoRefresh(loadReports, {
+    intervalMs: 10 * 60 * 1000,
+    pauseWhenHidden: true,
+  });
+
   useEffect(() => {
     return () => {
       contentControllerRef.current?.abort();
@@ -249,12 +256,12 @@ export default function ReportsClient() {
             <span className="hidden sm:inline">Filters</span>
           </button>
           <button
-            onClick={() => { setSearchQuery(""); setFilterCategory("all"); setFilterType("all"); }}
+            onClick={() => refreshReports()}
             className="p-2 rounded-lg transition-colors hover:opacity-80"
             style={{ color: "var(--text-secondary)" }}
-            title="Reset filters"
+            title="Refresh reports"
           >
-            <RefreshCw className="w-4 h-4" />
+            <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
           </button>
         </div>
       </div>

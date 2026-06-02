@@ -2,20 +2,23 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { Plus } from "lucide-react";
+import { useAutoRefresh } from "@/hooks/useAutoRefresh";
 import {
   PIPELINE_STAGES,
   type PipelineStage,
   type Opportunity,
   type PipelineKPIs,
+  type SourceType,
 } from "@/lib/pipeline-types";
 import * as PipelineTypes from "./PipelineTypes";
-import { PipelineFilters } from "./PipelineFilters";
+import { PipelineFilters, OpportunityTypeBadge } from "./PipelineFilters";
 import { PipelineKpiCards } from "./PipelineKpiCards";
 import { PipelineModal } from "./PipelineModal";
 import { PipelineListView } from "./PipelineListView";
 import { ResearchPipeline } from "./ResearchPipeline";
 import { PipelineStageColumn } from "./PipelineStageColumn";
 import { PipelineWonLost } from "./PipelineWonLost";
+import { OpportunityPopupModal } from "./OpportunityPopupModal";
 
 export default function PipelineClient() {
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
@@ -30,6 +33,8 @@ export default function PipelineClient() {
   const [formData, setFormData] = useState<any>({});
   const [expandedCard, setExpandedCard] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<"pipeline" | "list">("pipeline");
+  const [scraping, setScraping] = useState(false);
+  const [selectedOpp, setSelectedOpp] = useState<Opportunity | null>(null);
 
   // Pipeline-Kanban Bridge: Store Kanban tasks for opportunities
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -39,6 +44,7 @@ export default function PipelineClient() {
   // Filters
   const [filterStage, setFilterStage] = useState<PipelineStage | "all">("all");
   const [filterServiceType, setFilterServiceType] = useState<string>("all");
+  const [filterSourceType, setFilterSourceType] = useState<SourceType | "all">("business_opportunity");
   const [filterDateFrom, setFilterDateFrom] = useState<string>("");
   const [filterDateTo, setFilterDateTo] = useState<string>("");
   const [showFilters, setShowFilters] = useState(false);
@@ -46,6 +52,7 @@ export default function PipelineClient() {
   const filteredOpportunities = opportunities.filter((o) => {
     if (filterStage !== "all" && o.stage !== filterStage) return false;
     if (filterServiceType !== "all" && o.service_type !== filterServiceType) return false;
+    if (filterSourceType !== "business_opportunity" && o.source_type !== filterSourceType) return false;
     if (filterDateFrom && o.created_at < filterDateFrom) return false;
     if (filterDateTo && o.created_at > filterDateTo + "T23:59:59") return false;
     return true;
@@ -54,11 +61,12 @@ export default function PipelineClient() {
   const clearFilters = () => {
     setFilterStage("all");
     setFilterServiceType("all");
+    setFilterSourceType("business_opportunity");
     setFilterDateFrom("");
     setFilterDateTo("");
   };
 
-  const hasActiveFilters = Boolean(filterStage !== "all" || filterServiceType !== "all" || filterDateFrom || filterDateTo);
+  const hasActiveFilters = Boolean(filterStage !== "all" || filterServiceType !== "all" || filterSourceType !== "business_opportunity" || filterDateFrom || filterDateTo);
   const fetchData = useCallback(async () => {
     try {
       const res = await fetch("/api/pipeline");
@@ -86,6 +94,9 @@ export default function PipelineClient() {
 
   useEffect(() => { fetchData(); }, [fetchData]);
   useEffect(() => { fetchResearchData(); }, [fetchResearchData]);
+
+  // Auto-refresh pipeline every 60s
+  useAutoRefresh(fetchData, { intervalMs: 60000, pauseWhenHidden: true });
 
   // Pipeline-Kanban Bridge: Fetch Kanban tasks when card is expanded
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -148,6 +159,7 @@ export default function PipelineClient() {
       service_type: opp.service_type,
       probability: opp.probability ?? undefined,
       source: opp.source || undefined,
+      source_type: opp.source_type || "manual",
       next_action: opp.next_action || undefined,
       next_action_date: opp.next_action_date || undefined,
       notes: opp.notes || undefined,
@@ -169,6 +181,74 @@ export default function PipelineClient() {
       body: JSON.stringify({ stage: newStage }),
     });
     fetchData();
+  };
+
+  const handleLaunchScraping = async () => {
+    if (!confirm("¿Lanzar scrapping de leads? Esto buscará nuevas oportunidades en plataformas freelance.")) return;
+    setScraping(true);
+    try {
+      const res = await fetch("/api/pipeline/scrap", { method: "POST" });
+      const data = await res.json();
+      if (data.success) {
+        alert("Scrapping completado. Recargando oportunidades...");
+        fetchData();
+      } else {
+        alert(`Error: ${data.error}`);
+      }
+    } catch (err) {
+      alert("Error al lanzar scrapping: " + (err as Error).message);
+    } finally {
+      setScraping(false);
+    }
+  };
+
+  const handleOppClick = (opp: Opportunity) => {
+    setSelectedOpp(opp);
+  };
+
+  const handleOppAction = async (action: "discard" | "wait" | "investigate") => {
+    if (!selectedOpp) return;
+
+    if (action === "discard") {
+      await fetch(`/api/pipeline/${selectedOpp.id}`, { method: "DELETE" });
+      setSelectedOpp(null);
+      fetchData();
+      return;
+    }
+
+    if (action === "wait") {
+      await fetch(`/api/pipeline/${selectedOpp.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          stage: "negotiating",
+          notes: `${selectedOpp.notes || ""}\n\nPuesta en espera por usuario - ${new Date().toISOString()}`
+        }),
+      });
+      setSelectedOpp(null);
+      fetchData();
+      return;
+    }
+
+    if (action === "investigate") {
+      // Move to development stage and send to Alfred for investigation
+      await fetch(`/api/pipeline/${selectedOpp.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          stage: "development",
+          next_action: "Investigación estratégica requerida",
+          notes: `${selectedOpp.notes || ""}\n\nUsuario solicitó investigación estratégica - ${new Date().toISOString()}`
+        }),
+      });
+      
+      // Here you could also trigger a workflow to create OpenSpec files
+      // For now, just update the stage
+      
+      setSelectedOpp(null);
+      fetchData();
+      alert(`Oportunidad "${selectedOpp.title}" movida a Desarrollo para investigación. Alfred generará plan estratégico y tareas.`);
+    }
   };
 
   if (loading) {
@@ -203,6 +283,22 @@ export default function PipelineClient() {
             {viewMode === "pipeline" ? "📋 Lista" : "📊 Pipeline"}
           </button>
           <button
+            onClick={handleLaunchScraping}
+            disabled={scraping}
+            style={{
+              padding: "6px 12px",
+              borderRadius: "6px",
+              border: scraping ? "1px solid var(--border)" : "1px solid #eab308",
+              background: scraping ? "var(--surface-disabled)" : "#eab308",
+              color: scraping ? "var(--text-disabled)" : "#000",
+              cursor: scraping ? "not-allowed" : "pointer",
+              fontSize: "12px",
+              fontWeight: 600,
+            }}
+          >
+            {scraping ? "⏳ Scraping..." : "🔍 Lanzar Scraping"}
+          </button>
+          <button
             onClick={() => { setFormData({ stage: "lead", value: 5000, currency: "EUR" }); setShowForm(true); setEditingId(null); }}
             style={{
               padding: "8px 16px",
@@ -227,6 +323,7 @@ export default function PipelineClient() {
       <PipelineFilters
         filterStage={filterStage}
         filterServiceType={filterServiceType}
+        filterSourceType={filterSourceType}
         filterDateFrom={filterDateFrom}
         filterDateTo={filterDateTo}
         showFilters={showFilters}
@@ -235,6 +332,7 @@ export default function PipelineClient() {
         totalOpportunitiesCount={opportunities.length}
         onFilterStageChange={setFilterStage}
         onFilterServiceTypeChange={setFilterServiceType}
+        onFilterSourceTypeChange={setFilterSourceType}
         onFilterDateFromChange={setFilterDateFrom}
         onFilterDateToChange={setFilterDateTo}
         onToggleFilters={() => setShowFilters(!showFilters)}
@@ -265,6 +363,7 @@ export default function PipelineClient() {
               onStageChange={handleStageChange}
               onEdit={handleEdit}
               onDelete={handleDelete}
+              onOppClick={handleOppClick}
               activeStages={activeStages}
               kanbanTasks={kanbanTasks}
               loadingTasks={loadingTasks}
@@ -295,6 +394,15 @@ export default function PipelineClient() {
         onFormDataChange={setFormData}
         onSave={handleSave}
       />
+
+      {/* Opportunity Popup Modal */}
+      {selectedOpp && (
+        <OpportunityPopupModal
+          opp={selectedOpp}
+          onClose={() => setSelectedOpp(null)}
+          onAction={handleOppAction}
+        />
+      )}
     </div>
   );
 }

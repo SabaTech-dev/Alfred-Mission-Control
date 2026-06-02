@@ -1,16 +1,10 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { sessionStore } from "@/lib/session-store";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(request: NextRequest) {
-  const token = request.cookies.get("auth_token")?.value;
-
-  if (token) {
-    sessionStore.invalidate(token);
-  }
-
+  // JWT is stateless — just clear the cookie
   const response = NextResponse.json({ success: true });
 
   response.cookies.set("auth_token", "", {

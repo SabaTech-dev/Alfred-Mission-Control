@@ -7,6 +7,7 @@
 
 import type { AgentWithDesk, AvatarState, AgentStatus, AgentConfig, AvatarAccessories } from "@/components/Office3D/agentsConfig";
 import { calculateDeskPosition, getGridDimensions } from "@/components/Office3D/desk-positions";
+import { fetchWithTimeout } from "@/lib/office-utils";
 
 /**
  * Raw API response types
@@ -61,14 +62,14 @@ const VALID_STATUSES: AgentStatus[] = ["idle", "working", "thinking", "error", "
 export async function fetchOfficeAgents(): Promise<AgentWithDesk[]> {
   try {
     // Fetch full agent data from /api/agents
-    const agentsRes = await fetch("/api/agents");
+    const agentsRes = await fetchWithTimeout("/api/agents");
     if (!agentsRes.ok) {
       throw new Error(`Failed to fetch agents: ${agentsRes.status}`);
     }
     const agentsData: AgentsApiResponse = await agentsRes.json();
 
     // Fetch dynamic statuses from /api/agents/status
-    const statusRes = await fetch("/api/agents/status");
+    const statusRes = await fetchWithTimeout("/api/agents/status");
     if (!statusRes.ok) {
       throw new Error(`Failed to fetch agent statuses: ${statusRes.status}`);
     }
@@ -121,7 +122,7 @@ export async function fetchOfficeAgents(): Promise<AgentWithDesk[]> {
     console.warn("[office-agents] Main API failed, trying config fallback:", error);
     // Fallback: try /api/agents/config which reads directly from openclaw.json
     try {
-      const configRes = await fetch("/api/agents/config");
+      const configRes = await fetchWithTimeout("/api/agents/config");
       if (configRes.ok) {
         const configData = await configRes.json();
         const agentsList = configData.agents || [];
@@ -169,7 +170,7 @@ export async function fetchOfficeAgents(): Promise<AgentWithDesk[]> {
  */
 export async function fetchAgentStatuses(): Promise<Map<string, ApiAgentStatus>> {
   try {
-    const statusRes = await fetch("/api/agents/status");
+    const statusRes = await fetchWithTimeout("/api/agents/status");
     if (!statusRes.ok) {
       throw new Error(`Failed to fetch agent statuses: ${statusRes.status}`);
     }
@@ -181,7 +182,10 @@ export async function fetchAgentStatuses(): Promise<Map<string, ApiAgentStatus>>
     }
     return statusMap;
   } catch (error) {
-    console.warn("[office-agents] fetchAgentStatuses API failed:", error);
+    const statusCode = (error as Error)?.message?.match(/\d{3}/)?.[0];
+    if (statusCode !== "401") {
+      console.warn("[office-agents] fetchAgentStatuses API failed:", error);
+    }
     return new Map();
   }
 }

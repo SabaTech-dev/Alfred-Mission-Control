@@ -1,8 +1,22 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { validateAgentAuth } from "@/lib/agent-auth";
-import { sessionStore } from "@/lib/session-store";
+import { jwtUtils } from "@/lib/jwt-utils";
 import { isAdminRoute, isAdminFromToken } from "@/lib/role-based-access";
+
+// Startup validation — ensures critical config is present
+(() => {
+  const secret = process.env.JWT_SECRET;
+  if (!secret || secret.length < 32) {
+    console.error(
+      "❌ CRITICAL: JWT_SECRET environment variable must be set and at least 32 characters long."
+    );
+    throw new Error(
+      "JWT_SECRET not configured correctly. This is required for secure JWT signing."
+    );
+  }
+  console.log("✅ JWT_SECRET validated (" + secret.length + " characters)");
+})();
 
 // Routes that never require authentication
 const PUBLIC_ROUTES = new Set(["/login"]);
@@ -14,24 +28,28 @@ const PUBLIC_API_ROUTES = new Set([
   "/api/health",
 ]);
 
-// API routes requiring agent credentials ONLY (no browser session)
+
+// API routes requiring agent credentials ONLY (no browser session).
+// Keep this list narrow and specific: several dashboard pages call the
+// operational APIs below via authenticated browser session.
 const AGENT_ONLY_API_PREFIXES = [
-  "/api/heartbeat",
+  "/api/heartbeat/tasks",
+];
+
+// API routes allowing agent credentials OR authenticated browser session
+const AGENT_OR_SESSION_API_PREFIXES = [
   "/api/config",
   "/api/cron",
   "/api/collect-usage",
   "/api/terminal",
   "/api/subagents",
   "/api/handoffs",
-  "/api/openclaw",
   "/api/logs",
-  "/api/files",
   "/api/sessions",
-];
-
-// API routes allowing agent credentials OR authenticated browser session
-const AGENT_OR_SESSION_API_PREFIXES = [
+  "/api/heartbeat",
   "/api/agents",
+  "/api/files",
+  "/api/openclaw",
   "/api/reports",
   "/api/wiki",
   "/api/skills",
@@ -69,6 +87,7 @@ const AGENT_OR_SESSION_API_PREFIXES = [
   "/api/git",
   "/api/live",
   "/api/hindsight",
+  "/api/swarm",
 ];
 
 function extractToken(request: NextRequest): string | null {
@@ -86,7 +105,7 @@ async function isAuthenticated(request: NextRequest): Promise<boolean> {
   if (!token) {
     return false;
   }
-  return sessionStore.validate(token);
+  return jwtUtils.isValidToken(token);
 }
 
 export async function middleware(request: NextRequest) {
@@ -101,6 +120,7 @@ export async function middleware(request: NextRequest) {
   if (PUBLIC_API_ROUTES.has(pathname)) {
     return NextResponse.next();
   }
+
 
   // Agent-only API routes must use explicit agent credentials
   if (AGENT_ONLY_API_PREFIXES.some((prefix) => pathname.startsWith(prefix))) {
@@ -157,7 +177,7 @@ export async function middleware(request: NextRequest) {
 
   // Check admin access for admin routes
   if (isAdminRoute(pathname)) {
-    const token = sessionStore.getTokenFromRequest(request);
+    const token = jwtUtils.getTokenFromRequest(request);
     if (!token) {
       return NextResponse.json(
         { error: "Forbidden", message: "Admin access required" },

@@ -1,13 +1,12 @@
 "use client";
 
-import { useState } from "react";
 import { Filter, X } from "lucide-react";
-import { PipelineStage } from "@/lib/pipeline-types";
-import { PIPELINE_STAGES, STAGE_LABELS } from "@/lib/pipeline-types";
+import { PipelineStage, SourceType, SOURCE_TYPE_LABELS, SOURCE_TYPE_COLORS, PIPELINE_STAGES, STAGE_LABELS } from "@/lib/pipeline-types";
 
 interface PipelineFiltersProps {
   filterStage: PipelineStage | "all";
   filterServiceType: string;
+  filterSourceType: SourceType | "all";
   filterDateFrom: string;
   filterDateTo: string;
   showFilters: boolean;
@@ -16,6 +15,7 @@ interface PipelineFiltersProps {
   totalOpportunitiesCount: number;
   onFilterStageChange: (stage: PipelineStage | "all") => void;
   onFilterServiceTypeChange: (type: string) => void;
+  onFilterSourceTypeChange: (type: SourceType | "all") => void;
   onFilterDateFromChange: (date: string) => void;
   onFilterDateToChange: (date: string) => void;
   onToggleFilters: () => void;
@@ -25,6 +25,7 @@ interface PipelineFiltersProps {
 export function PipelineFilters({
   filterStage,
   filterServiceType,
+  filterSourceType,
   filterDateFrom,
   filterDateTo,
   showFilters,
@@ -33,6 +34,7 @@ export function PipelineFilters({
   totalOpportunitiesCount,
   onFilterStageChange,
   onFilterServiceTypeChange,
+  onFilterSourceTypeChange,
   onFilterDateFromChange,
   onFilterDateToChange,
   onToggleFilters,
@@ -118,6 +120,20 @@ export function PipelineFilters({
               <option value="other">📋 Otro</option>
             </select>
           </div>
+          <div style={{ minWidth: "160px" }}>
+            <label style={{ fontSize: "11px", color: "var(--text-muted)", fontWeight: 500, display: "block", marginBottom: "4px" }}>Tipo Oportunidad</label>
+            <select
+              value={filterSourceType}
+              onChange={(e) => onFilterSourceTypeChange(e.target.value as SourceType | "all")}
+              style={{ width: "100%", padding: "6px 8px", borderRadius: "6px", border: "1px solid var(--border)", background: "var(--surface)", color: "var(--text-primary)", fontSize: "12px", boxSizing: "border-box" }}
+            >
+              <option value="all">Todos</option>
+              <option value="business_opportunity">💼 Oportunidad Negocio</option>
+              <option value="manual">✏️ Manual</option>
+              <option value="internal_report">📋 Reporte Técnico</option>
+              <option value="auto_sync">🔄 Auto Sync</option>
+            </select>
+          </div>
           <div style={{ minWidth: "140px" }}>
             <label style={{ fontSize: "11px", color: "var(--text-muted)", fontWeight: 500, display: "block", marginBottom: "4px" }}>Desde</label>
             <input
@@ -139,5 +155,30 @@ export function PipelineFilters({
         </div>
       )}
     </div>
+  );
+}
+
+// Helper component for opportunity type badge
+export function OpportunityTypeBadge({ type }: { type: SourceType }) {
+  const labels: Record<SourceType, string> = {
+    business_opportunity: "💼 Negocio",
+    manual: "✏️ Manual",
+    internal_report: "📋 Técnico",
+    auto_sync: "🔄 Auto Sync",
+  };
+
+  return (
+    <span
+      style={{
+        padding: "2px 6px",
+        borderRadius: "4px",
+        fontSize: "10px",
+        fontWeight: 500,
+        background: SOURCE_TYPE_COLORS[type],
+        color: type === "internal_report" ? "#000" : "#fff",
+      }}
+    >
+      {labels[type]}
+    </span>
   );
 }
