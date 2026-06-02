@@ -27,11 +27,27 @@ const REPORT_DIRS = [
   { base: "reports/cron/ai-social-digest", category: "cron", sub: "ai-social-digest" },
   { base: "reports/cron/cierre-del-dia", category: "cron", sub: "cierre-del-dia" },
   { base: "reports/cron/evening-agenda", category: "cron", sub: "evening-agenda" },
+  { base: "reports/cron/cleanup-diario", category: "cron", sub: "cleanup-diario" },
+  { base: "reports/cron/cleanup-semanal", category: "cron", sub: "cleanup-semanal" },
+  { base: "reports/cron/cleanup-mensual", category: "cron", sub: "cleanup-mensual" },
+  { base: "reports/cron/cron-digest", category: "cron", sub: "cron-digest" },
+  { base: "reports/cron/dreaming-custom", category: "cron", sub: "dreaming-custom" },
+  { base: "reports/cron/dreaming-rem-replay", category: "cron", sub: "dreaming-rem-replay" },
+  { base: "reports/cron/github-sync", category: "cron", sub: "github-sync" },
   { base: "reports/cron/hindsight-log-rotation", category: "cron", sub: "hindsight-log-rotation" },
+  { base: "reports/cron/lead-scraper", category: "cron", sub: "lead-scraper" },
   { base: "reports/cron/modo-autonomo-nocturno", category: "cron", sub: "modo-autonomo-nocturno" },
+  { base: "reports/cron/owasp-security", category: "cron", sub: "owasp-security" },
+  { base: "reports/cron/pdca-diario", category: "cron", sub: "pdca-diario" },
+  { base: "reports/cron/pg-backup", category: "cron", sub: "pg-backup" },
   { base: "reports/cron/resumen-matutino", category: "cron", sub: "resumen-matutino" },
+  { base: "reports/cron/scout-startups", category: "cron", sub: "scout-startups" },
   { base: "reports/cron/seguir-aprendiendo", category: "cron", sub: "seguir-aprendiendo" },
+  { base: "reports/cron/tech-radar", category: "cron", sub: "tech-radar" },
   { base: "reports/cron/weekly-self-improvement", category: "cron", sub: "weekly-self-improvement" },
+  { base: "reports/cron/wiki-ingest", category: "cron", sub: "wiki-ingest" },
+  { base: "reports/cron/wiki-lint", category: "cron", sub: "wiki-lint" },
+  { base: "reports/cron/wiki-sync", category: "cron", sub: "wiki-sync" },
 ];
 
 interface ReportFile {
@@ -56,12 +72,22 @@ function getReportType(filename: string, sub: string): string {
   if (sub.includes("ai-social-digest")) return "ai-digest";
   if (sub.includes("cierre-del-dia")) return "daily-close";
   if (sub.includes("evening-agenda")) return "evening-agenda";
+  if (sub.includes("cleanup")) return "cleanup";
+  if (sub.includes("cron-digest")) return "cron-digest";
+  if (sub.includes("dreaming")) return "dreaming";
+  if (sub.includes("github-sync")) return "github-sync";
   if (sub.includes("hindsight-log-rotation")) return "log-rotation";
+  if (sub.includes("lead-scraper")) return "lead-scraper";
   if (sub.includes("modo-autonomo-nocturno")) return "nocturnal";
+  if (sub.includes("owasp-security")) return "owasp-security";
+  if (sub.includes("pdca")) return "pdca";
+  if (sub.includes("pg-backup")) return "pg-backup";
   if (sub.includes("resumen-matutino")) return "morning-summary";
+  if (sub.includes("scout-startups")) return "scout-startups";
   if (sub.includes("seguir-aprendiendo")) return "learning";
+  if (sub.includes("tech-radar")) return "tech-radar";
   if (sub.includes("weekly-self-improvement")) return "self-improvement";
-  if (filename.includes("PDCA")) return "pdca";
+  if (sub.includes("wiki")) return "wiki";
   if (filename.includes("security") || filename.includes("audit")) return "security";
   if (filename.includes("performance")) return "performance";
   if (sub === "active") return "active";
