@@ -221,30 +221,70 @@ async function checkHindsightService(): Promise<StackServiceCheck> {
   };
 }
 
+async function checkHttpService(name: string, url: string, port: number): Promise<StackServiceCheck> {
+  const httpProbe = await probeHttp(url, 2000);
+  if (httpProbe.ok) {
+    return {
+      name,
+      status: "up",
+      details: `${url} responded ${httpProbe.detail.split(" ").pop()}`,
+    };
+  }
+
+  const reachable = await canConnectTcp("127.0.0.1", port, 1000);
+  if (reachable) {
+    return {
+      name,
+      status: "up",
+      details: `listening on port ${port}`,
+    };
+  }
+
+  return {
+    name,
+    status: "down",
+    details: `${url} unavailable (${httpProbe.detail})`,
+  };
+}
+
 export async function collectStackServiceChecks(): Promise<StackServiceCheck[]> {
   const dockerContainers = parseDockerContainers();
 
-  const [gateway, postgresql, hindsight, ollama, coolify, n8n] = await Promise.all([
+  const [gateway, postgresql, hindsight, ollama, coolify, n8n, browserless, langfuse, qmd, llamaGpu, llamaEmbed, searxng, engram, prAgent, osintNexus] = await Promise.all([
     checkGatewayService(),
     checkPostgresService(dockerContainers),
     checkHindsightService(),
     checkTcpService("ollama", 11434),
     checkTcpService("coolify", 8000),
     checkTcpService("n8n", 5678),
+    checkHttpService("browserless", "http://127.0.0.1:3002/pressure", 3002),
+    checkHttpService("langfuse", "http://127.0.0.1:3001", 3001),
+    checkTcpService("qmd-mcp", 8181),
+    checkTcpService("llama.cpp-gpu", 8001),
+    checkTcpService("llama.cpp-embed", 8002),
+    checkHttpService("searxng", "http://127.0.0.1:8081", 8081),
+    checkTcpService("engram", 7437),
+    checkTcpService("pr-agent", 3003),
+    checkTcpService("osint-nexus", 8420),
   ]);
 
   return [
-    {
-      name: "alfred-mc",
-      status: "up",
-      details: "API route responding",
-    },
+    { name: "alfred-mc", status: "up", details: "API route responding" },
     gateway,
     postgresql,
     hindsight,
     ollama,
     coolify,
     n8n,
+    browserless,
+    langfuse,
+    qmd,
+    llamaGpu,
+    llamaEmbed,
+    searxng,
+    engram,
+    prAgent,
+    osintNexus,
   ];
 }
 
