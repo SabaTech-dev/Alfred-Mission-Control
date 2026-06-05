@@ -16,6 +16,8 @@ interface DockerContainer {
   ports: string;
 }
 
+const LOCAL_IPS = ["127.0.0.1", "192.168.1.39"];
+
 async function canConnectTcp(host: string, port: number, timeoutMs: number): Promise<boolean> {
   return await new Promise<boolean>((resolve) => {
     const socket = new net.Socket();
@@ -39,6 +41,16 @@ async function canConnectTcp(host: string, port: number, timeoutMs: number): Pro
     socket.once("close", () => finish(false));
     socket.connect(port, host);
   });
+}
+
+async function canConnectTcpAny(port: number, timeoutMs: number): Promise<{ ok: boolean; host?: string }> {
+  for (const host of LOCAL_IPS) {
+    const reachable = await canConnectTcp(host, port, timeoutMs);
+    if (reachable) {
+      return { ok: true, host };
+    }
+  }
+  return { ok: false };
 }
 
 async function probeHttp(url: string, timeoutMs: number): Promise<{ ok: boolean; detail: string }> {
@@ -97,12 +109,14 @@ function firstNonEmptyLine(...values: string[]): string | null {
 }
 
 async function checkTcpService(name: string, port: number): Promise<StackServiceCheck> {
-  const reachable = await canConnectTcp("127.0.0.1", port, 1000);
+  const result = await canConnectTcpAny(port, 1000);
 
   return {
     name,
-    status: reachable ? "up" : "down",
-    details: reachable ? `listening on port ${port}` : `port ${port} not reachable`,
+    status: result.ok ? "up" : "down",
+    details: result.ok
+      ? `listening on port ${port} (${result.host})`
+      : `port ${port} not reachable (tried 127.0.0.1, 192.168.1.39)`,
   };
 }
 
@@ -231,12 +245,23 @@ async function checkHttpService(name: string, url: string, port: number): Promis
     };
   }
 
-  const reachable = await canConnectTcp("127.0.0.1", port, 1000);
-  if (reachable) {
+  // Try alternative local IPs for services bound to 192.168.1.39
+  const altUrl = url.replace("127.0.0.1", "192.168.1.39");
+  const altProbe = await probeHttp(altUrl, 2000);
+  if (altProbe.ok) {
     return {
       name,
       status: "up",
-      details: `listening on port ${port}`,
+      details: `${altUrl} responded ${altProbe.detail.split(" ").pop()}`,
+    };
+  }
+
+  const reachable = await canConnectTcpAny(port, 1000);
+  if (reachable.ok) {
+    return {
+      name,
+      status: "up",
+      details: `listening on port ${port} (${reachable.host})`,
     };
   }
 
