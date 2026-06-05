@@ -569,9 +569,11 @@
 | 11. Advanced Viz | ✅ | 100% |
 | 12. Collaboration | ✅ | 100% |
 | 13. UI/UX Improvements | ✅ | 100% |
-| 14. Mission Control Layer | ✅ | 100% (7/7 features completadas) |
+| 14. Mission Control Layer | ⏳ | **~88%** (6 items deferred) |
+| 15. Future Work | 🚀 | 0% (9 items planeados) |
 
-**Overall: 100% completado (Fase 14 completa)**
+**Overall: ~92% completado (14 fases, Fase 15 sin iniciar)**
+
 
 ---
 
@@ -592,7 +594,7 @@
 
 ---
 
-## Fase 14: Mission Control Layer 🎯 ⏳
+## Fase 14: Mission Control Layer 🎯 ⏳ ~85%
 > Transformar Alfred Mission Control de dashboard reactivo a orquestador autónomo alineado a misión
 >
 > **Inspiración:** `FUNCIO.md` - Panel maestro con Reverse Prompting, Projects, Agent Identities
@@ -601,6 +603,8 @@
 > - **Storage:** Extender `data/kanban.db` (no bases separadas)
 > - **UI:** Página dedicada `/mission` (no Settings tab)
 > - **Heartbeat:** Modo suggest + auto-execute con flag configurable
+>
+> **⚠️ Deuda técnica:** 6 items marcados como (deferred) pendientes. Dreaming Custom nocturno debe resolverlos progresivamente.
 
 ### 14.1 Foundation - Types & Schema ✅
 > Base de datos y tipos TypeScript
@@ -612,31 +616,31 @@
 - **Esfuerzo:** 2-3 horas
 - **Commit:** `4cc3433`
 
-### 14.2 Mission Statement System ✅
+### 14.2 Mission Statement System ✅ (~85%)
 > La "fuente de verdad" que alinea a todos los agentes
 
 - [x] API: `GET/PUT /api/mission` - Mission Statement CRUD
 - [x] Storage: `data/mission.json` con campos: statement, goals, values, lastUpdated
 - [x] UI: Página `/mission` con editor de misión
 - [x] UI: Mission display en dashboard home
-- [ ] UI: Mission card en HeartbeatStatus (deferred)
+- [ ] **⏳ UI: Mission card en HeartbeatStatus (deferred)** — Integrar misión en panel de heartbeat (est. ~2h)
 - **Archivos:** `src/app/api/mission/route.ts`, `src/app/(dashboard)/mission/page.tsx`, `src/components/MissionCard.tsx`
 - **Esfuerzo:** 3-4 horas
 - **Commit:** `4cc3433`
 
-### 14.3 Reverse Prompting Engine ✅
+### 14.3 Reverse Prompting Engine ✅ (~90%)
 > "¿Qué debo hacer hoy basado en mi misión?"
 
 - [x] API: `POST /api/mission/prompt` - Reverse Prompting endpoint
 - [x] Lógica: Scoring de tareas por alineación con misión (keyword matching)
 - [x] UI: Input "Ask Mission Control" en `/mission`
 - [x] UI: Panel de respuesta con prioridades sugeridas
-- [ ] Integración: Mission context en Suggestions Engine (deferido)
+- [ ] **⏳ Integración: Mission context en Suggestions Engine (deferido)** (est. ~3-4h)
 - **Archivos:** `src/app/api/mission/prompt/route.ts`, `src/lib/reverse-prompt-scorer.ts`, `src/app/(dashboard)/mission/page.tsx`
 - **Esfuerzo:** 4-5 horas
 - **Commit:** `aacc4f8`
 
-### 14.4 Projects System ✅
+### 14.4 Projects System ✅ (~90%)
 > Proyectos como entidad de primer orden con milestones
 
 - [x] API: CRUD completo `/api/projects`
@@ -646,20 +650,20 @@
 - [x] UI: Project filter en KanbanBoard
 - [x] UI: ProjectProgressCard con progress bars
 - [x] UI: OrphanTasksModal para reasignar tareas sin proyecto
-- [ ] UI: Página `/projects` dedicada (deferido)
+- [ ] **⏳ UI: Página `/projects` dedicada (deferido)** (est. ~4-5h)
 - **Archivos:** `src/app/api/projects/route.ts`, `src/app/api/projects/[id]/route.ts`, `src/components/kanban/ProjectProgressCard.tsx`, `src/components/kanban/OrphanTasksModal.tsx`
 - **Esfuerzo:** 4-5 horas
 - **Commit:** `25b1b98`
 
-### 14.5 Agent Identities ✅
+### 14.5 Agent Identities ✅ (~85%)
 > Personalidad, roles y avatares para agentes
 
 - [x] DB: `agent_identities` table (created in Phase 14.1)
 - [x] API: `GET/PUT /api/agents/[id]/identity`
 - [x] UI: Identity tab en AgentInspectPanel
 - [x] UI: Avatar + name en Overview header
-- [ ] Office 3D: Mostrar identidad en vez de solo model/estado (deferido)
-- [ ] Heartbeat: Agent identity visible en status (deferido)
+- [ ] **⏳ Office 3D: Mostrar identidad en vez de solo model/estado (deferido)** (est. ~2h)
+- [ ] **⏳ Heartbeat: Agent identity visible en status (deferido)** (est. ~2h)
 - **Archivos:** `src/app/api/agents/[id]/identity/route.ts`, `src/components/AgentInspectPanel.tsx`
 - **Esfuerzo:** 3-4 horas
 - **Commit:** `79d22ff`
@@ -680,19 +684,18 @@
 - **Esfuerzo:** 3-4 horas
 - **Commit:** `8f54cb6`
 
-### 14.7 Operations Journal ✅
+### 14.7 Operations Journal ✅ (~90%)
 > Diario narrativo de operaciones (no solo activity log)
 
 - [x] DB: `operations_journal` table (created in Phase 14.1)
 - [x] API: `GET/POST/PUT/DELETE /api/journal`
-- [ ] Lógica: Auto-generar entrada diaria desde activities (optional/deferido)
+- [ ] **⏳ Lógica: Auto-generar entrada diaria desde activities (deferred)** (est. ~3-4h)
 - [x] UI: Página `/journal` con timeline narrativo
 - [x] UI: Entry editor para añadir highlights manuales
 - **Archivos:** `src/app/api/journal/route.ts`, `src/app/api/journal/[id]/route.ts`, `src/app/(dashboard)/journal/page.tsx`, `src/lib/kanban-db.ts`, `src/components/journal/`
 - **Esfuerzo:** 2-3 horas
 - **Commit:** `1b82ab6`
 
----
 
 ## Fase 15: Future Work 🚀
 > Features para después de Mission Control

@@ -1,7 +1,7 @@
 #!/bin/bash
 # AMC Start Script — production server
 # Generated: 2026-05-26
-cd /home/ubuntu/.openclaw/workspace/Alfred-Mission-Control
+cd /home/joker/.openclaw/workspace/Alfred-Mission-Control
 
 # Critical env vars (from .env.local)
 export KANBAN_AGENT_KEYS="main:sk-main-alfred-2026,coder:sk-coder-alfred-2026,research:sk-research-alfred-2026,security:sk-security-alfred-2026,devops:sk-devops-alfred-2026,qa-tester:sk-qa-tester-alfred-2026"

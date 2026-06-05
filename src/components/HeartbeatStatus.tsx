@@ -1,23 +1,28 @@
 "use client";
 
 import { FileText, Edit3, Eye, Save, Loader2, CheckCircle2 } from "lucide-react";
+import { MissionCard } from "@/components/MissionCard";
 
 import { useI18n } from "@/i18n/provider";
 import { useHeartbeat, HEARTBEAT_TEMPLATE } from "@/hooks/useHeartbeat";
 import type { AgentHeartbeat } from "@/hooks/useHeartbeat";
 import { AgentHeartbeatList } from "@/components/AgentHeartbeatList";
+import type { Mission } from "@/lib/mission-types";
+
+interface HeartbeatData {
+  enabled: boolean;
+  every: string;
+  target: string;
+  activeHours: { start: string; end: string } | null;
+  heartbeatMd: string;
+  heartbeatMdPath: string;
+  configured: boolean;
+  agentHeartbeats?: AgentHeartbeat[];
+}
 
 interface HeartbeatStatusProps {
-  data: {
-    enabled: boolean;
-    every: string;
-    target: string;
-    activeHours: { start: string; end: string } | null;
-    heartbeatMd: string;
-    heartbeatMdPath: string;
-    configured: boolean;
-    agentHeartbeats?: AgentHeartbeat[];
-  };
+  data: HeartbeatData & { mission?: Mission | null };
+  onSaveMission: () => void;
   onSave: (content: string, agentId?: string) => Promise<void>;
 }
 
@@ -27,6 +32,14 @@ export function HeartbeatStatus({ data, onSave }: HeartbeatStatusProps) {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+      {/* Mission Card */}
+      {data.mission && (
+        <MissionCard
+          mission={data.mission}
+          onEdit={() => {}}
+        />
+      )}
+
       {/* Agent Heartbeats List */}
       {data.agentHeartbeats && data.agentHeartbeats.length > 0 && (
         <AgentHeartbeatList

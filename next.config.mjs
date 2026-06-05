@@ -18,6 +18,10 @@ const nextConfig = {
     "100.84.105.74",
     "127.0.0.1",
     "localhost",
+    "jokerserver.tail30eb25.ts.net",
+    "*.tail30eb25.ts.net",
+    "192.168.1.39",
+    "100.80.144.13",
   ],
   serverExternalPackages: ["better-sqlite3"],
   turbopack: {
