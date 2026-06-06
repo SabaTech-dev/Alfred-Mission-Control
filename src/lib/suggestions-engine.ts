@@ -24,6 +24,7 @@ import {
   analyzeAgents,
   invalidateStaleSuggestions,
 } from "./suggestions-scoring-workflow";
+import { analyzeMissionAlignment } from "./suggestions-scoring-mission";
 import type { Suggestion, UsageData } from "./suggestions-types";
 
 // Re-export types for backward compatibility
@@ -132,6 +133,7 @@ export function generateSuggestions(data?: Partial<UsageData>): Suggestion[] {
     ...analyzeFiles(fullData, dismissed),
     ...analyzeKanban(fullData, dismissed),
     ...analyzeAgents(fullData, dismissed),
+    ...analyzeMissionAlignment(fullData, dismissed),
   ].filter((s) => !validatedExistingIds.has(s.id) && !dismissed.has(s.id));
 
   if (newSuggestions.length > 0 || validatedExisting.length !== existing.length) {

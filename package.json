@@ -91,5 +91,10 @@
     "@asamuzakjp/css-color": "5.1.11",
     "basic-ftp": "6.0.1",
     "fast-xml-builder": "1.2.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "better-sqlite3"
+    ]
   }
 }

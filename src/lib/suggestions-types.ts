@@ -17,7 +17,8 @@ export type SuggestionCategory =
   | "memory"
   | "files"
   | "kanban"
-  | "agent";
+  | "agent"
+  | "mission";
 
 export interface Suggestion {
   id: string;
@@ -56,10 +57,22 @@ export interface UsageData {
   fileStats?: FileStats;
   kanbanStats?: KanbanStats;
   agentStats?: AgentStats;
+  missionStats?: MissionStats;
 }
 
 export type { MemoryStats, FileStats, KanbanStats, AgentStats } from "./suggestions-data";
 
 export function generateId(category: SuggestionCategory, key: string): string {
   return `${category}-${key}`;
+}
+
+export interface MissionStats {
+  hasMission: boolean;
+  goalsCount: number;
+  valuesCount: number;
+  lastUpdated: string | null;
+  missionAgeDays: number | null;
+  tasksAligned: number;
+  tasksTotal: number;
+  alignmentScore: number; // 0-100
 }
