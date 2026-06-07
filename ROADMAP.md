@@ -616,17 +616,17 @@
 - **Esfuerzo:** 2-3 horas
 - **Commit:** `4cc3433`
 
-### 14.2 Mission Statement System ✅ (~85%)
+### 14.2 Mission Statement System ✅
 > La "fuente de verdad" que alinea a todos los agentes
 
 - [x] API: `GET/PUT /api/mission` - Mission Statement CRUD
 - [x] Storage: `data/mission.json` con campos: statement, goals, values, lastUpdated
 - [x] UI: Página `/mission` con editor de misión
 - [x] UI: Mission display en dashboard home
-- [ ] **⏳ UI: Mission card en HeartbeatStatus (deferred)** — Integrar misión en panel de heartbeat (est. ~2h)
-- **Archivos:** `src/app/api/mission/route.ts`, `src/app/(dashboard)/mission/page.tsx`, `src/components/MissionCard.tsx`
+- [x] **✅ UI: Mission card en HeartbeatStatus** — Data flow completado (mission → heartbeat-ops → HeartbeatTab → component)
+- **Archivos:** `src/app/api/mission/route.ts`, `src/app/(dashboard)/mission/page.tsx`, `src/components/MissionCard.tsx`, `src/operations/heartbeat-ops.ts`, `src/app/(dashboard)/cron/HeartbeatTab.tsx`
 - **Esfuerzo:** 3-4 horas
-- **Commit:** `4cc3433`
+- **Commit:** `4cc3433`, `44fc839`
 
 ### 14.3 Reverse Prompting Engine ✅ (~95%)
 > "¿Qué debo hacer hoy basado en mi misión?"
