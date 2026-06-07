@@ -14,6 +14,7 @@ export interface CronPageData {
   openclawJobs: OpenClawCronJob[];
   systemJobs: SystemCronJob[];
   heartbeat: HeartbeatStatusType | null;
+  mission?: import("@/lib/mission-types").Mission | null;
 }
 
 export function useCronJobs(initialData: CronPageData) {

@@ -41,6 +41,7 @@ export function CronClient({ initialData }: { initialData: CronPageData }) {
     handleRun, handleSystemRun, handleEdit, handleCreateNew,
     handleSave, handleHeartbeatSave, handleCloseModal,
   } = useCronJobs(initialData);
+  const mission = heartbeat?.mission ?? null;
 
   const showSystem = activeTab === "all" || activeTab === "system";
   const showOpenclaw = activeTab === "all" || activeTab === "openclaw";
@@ -197,7 +198,7 @@ export function CronClient({ initialData }: { initialData: CronPageData }) {
           }} />
         </div>
       ) : activeTab === "heartbeat" ? (
-        heartbeat ? <HeartbeatTab data={heartbeat} onSave={handleHeartbeatSave} /> : null
+        heartbeat ? <HeartbeatTab data={heartbeat} mission={mission} onSave={handleHeartbeatSave} /> : null
       ) : systemJobs.length === 0 && jobs.length === 0 ? (
         <div style={{ textAlign: "center", padding: "4rem 0" }}>
           <Clock className="w-8 h-8 mx-auto mb-4" style={{ color: "var(--text-muted)" }} />

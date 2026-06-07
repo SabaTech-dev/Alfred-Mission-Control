@@ -3,6 +3,7 @@
  */
 import { readFileSync, existsSync } from "fs";
 import { join } from "path";
+import { getMission } from "@/lib/mission-storage";
 
 const OPENCLAW_DIR = process.env.OPENCLAW_DIR || "/home/joker/.openclaw";
 
@@ -25,6 +26,7 @@ export interface HeartbeatStatus {
   heartbeatMdPath: string;
   configured: boolean;
   agentHeartbeats: AgentHeartbeat[];
+  mission?: import("@/lib/mission-types").Mission | null;
 }
 
 function getAllAgents(): { id: string; name: string; workspace: string; heartbeat?: Record<string, unknown> }[] {
@@ -116,11 +118,14 @@ export async function getHeartbeatStatus(): Promise<HeartbeatStatus> {
     }
   }
 
+  const mission = getMission();
+
   return {
     ...config,
     heartbeatMd,
     heartbeatMdPath,
     configured: heartbeatMd.length > 0,
     agentHeartbeats,
+    mission,
   };
 }
