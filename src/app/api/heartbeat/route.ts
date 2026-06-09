@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from "fs";
 import { join, dirname } from "path";
 import { requireAgentOrSessionAuth } from "@/lib/auth-helpers";
+import { getAgentIdentity } from "@/lib/kanban/kanban-agents";
 
 export const dynamic = "force-dynamic";
 
@@ -15,6 +16,11 @@ export interface AgentHeartbeat {
   every: string;
   target: string;
   activeHours: { start: string; end: string } | null;
+  identity?: {
+    name: string;
+    role: string;
+    avatar: string | null;
+  } | null;
 }
 
 export interface HeartbeatStatus {
@@ -62,15 +68,19 @@ function getAgentHeartbeats(): AgentHeartbeat[] {
   
   return agents
     .filter((agent) => agent.heartbeat)
-    .map((agent) => ({
-      agentId: agent.id,
-      agentName: agent.name,
-      workspace: agent.workspace,
-      enabled: !!(agent.heartbeat as Record<string, unknown>).every,
-      every: ((agent.heartbeat as Record<string, unknown>).every as string) || "30m",
-      target: ((agent.heartbeat as Record<string, unknown>).target as string) || "none",
-      activeHours: (agent.heartbeat as Record<string, unknown>).activeHours as { start: string; end: string } | null || null,
-    }));
+    .map((agent) => {
+      const identity = getAgentIdentity(agent.id);
+      return {
+        agentId: agent.id,
+        agentName: agent.name,
+        workspace: agent.workspace,
+        enabled: !!(agent.heartbeat as Record<string, unknown>).every,
+        every: ((agent.heartbeat as Record<string, unknown>).every as string) || "30m",
+        target: ((agent.heartbeat as Record<string, unknown>).target as string) || "none",
+        activeHours: (agent.heartbeat as Record<string, unknown>).activeHours as { start: string; end: string } | null || null,
+        identity: identity ? { name: identity.name, role: identity.role, avatar: identity.avatar } : null,
+      };
+    });
 }
 
 /**

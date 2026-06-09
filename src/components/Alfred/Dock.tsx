@@ -37,6 +37,8 @@ import {
   BookOpen,
   FileText,
   Bug,
+  Monitor,
+  Cpu,
 } from "lucide-react";
 
 interface DockItem {
@@ -57,6 +59,7 @@ function DockSections(): DockSection[] {
       key: "core",
       items: [
         { href: "/", labelKey: "dock.dashboard", helpKey: "help.dashboard", icon: Home },
+        { href: "/agent-os", labelKey: "dock.agentOS", helpKey: "help.agentOS", icon: Monitor },
         { href: "/agents", labelKey: "dock.agents", helpKey: "help.agents", icon: Users },
         { href: "/kanban", labelKey: "dock.kanban", helpKey: "help.kanban", icon: LayoutGrid },
         { href: "/chat", labelKey: "dock.chat", helpKey: "help.chat", icon: MessagesSquare },

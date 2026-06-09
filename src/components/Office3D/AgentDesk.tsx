@@ -96,20 +96,22 @@ export default function AgentDesk({
     }
   };
 
+  const identityLabel = agentRole ? `${agentEmoji ? agentEmoji + ' ' : ''}${agentName} · ${agentRole}` : `${agentEmoji ? agentEmoji + ' ' : ''}${agentName}`;
+
   const getMonitorLines = () => {
     switch (avatarState) {
       case 'working':
         return [
-          '> npm run build',
-          'Compiling...',
+          `> ${currentTask || 'processing...'}`,
+          identityLabel,
           '████████░░ 80%',
           '',
-          '✓ modules: 1234',
+          '✓ working...',
         ];
       case 'thinking':
         return [
           'Analyzing context...',
-          '',
+          identityLabel,
           'function solve() {',
           '  // thinking...',
           '}',
@@ -117,7 +119,7 @@ export default function AgentDesk({
       case 'error':
         return [
           'Error!',
-          '',
+          identityLabel,
           'TypeError: undefined',
           'at line 42',
           'Retrying...',
@@ -125,26 +127,26 @@ export default function AgentDesk({
       case 'online':
         return [
           'Ready',
-          '',
-          `Agent: ${agentName}`,
+          identityLabel,
           'Listening events...',
+          '',
           '',
         ];
       case 'offline':
         return [
           'Standby mode',
-          '',
-          `Agent: ${agentName}`,
+          identityLabel,
           'Status: offline',
+          '',
           '',
         ];
       case 'idle':
       default:
         return [
           'Ready',
-          '',
-          `Agent: ${agentName}`,
+          identityLabel,
           'Status: idle',
+          '',
           '',
         ];
     }
@@ -312,6 +314,32 @@ export default function AgentDesk({
           <circleGeometry args={[1.5, 32]} />
           <meshBasicMaterial color={agentColor} transparent opacity={0.3} />
         </mesh>
+      )}
+
+      {/* Floating identity label */}
+      <Text
+        position={[0, 2.2, 0]}
+        fontSize={0.18}
+        color="white"
+        anchorX="center"
+        anchorY="bottom"
+        outlineWidth={0.02}
+        outlineColor="#000000"
+      >
+        {agentEmoji ? `${agentEmoji} ` : ''}{agentName}
+      </Text>
+      {agentRole && (
+        <Text
+          position={[0, 2.0, 0]}
+          fontSize={0.12}
+          color={agentColor}
+          anchorX="center"
+          anchorY="bottom"
+          outlineWidth={0.01}
+          outlineColor="#000000"
+        >
+          {agentRole}
+        </Text>
       )}
     </group>
   );

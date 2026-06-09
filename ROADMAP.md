@@ -662,8 +662,8 @@
 - [x] API: `GET/PUT /api/agents/[id]/identity`
 - [x] UI: Identity tab en AgentInspectPanel
 - [x] UI: Avatar + name en Overview header
-- [ ] **⏳ Office 3D: Mostrar identidad en vez de solo model/estado (deferido)** (est. ~2h)
-- [ ] **⏳ Heartbeat: Agent identity visible en status (deferido)** (est. ~2h)
+- [x] **Office 3D: Mostrar identidad en vez de solo model/estado** ✅ (2026-06-09: floating labels + monitor identity lines)
+- [x] **Heartbeat: Agent identity visible en status** ✅ (already implemented: name + role + avatar in AgentHeartbeatList)
 - **Archivos:** `src/app/api/agents/[id]/identity/route.ts`, `src/components/AgentInspectPanel.tsx`
 - **Esfuerzo:** 3-4 horas
 - **Commit:** `79d22ff`

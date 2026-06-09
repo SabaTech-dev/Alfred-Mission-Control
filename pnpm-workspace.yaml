@@ -1,9 +1,9 @@
 allowBuilds:
-  agent-browser: set this to true or false
+  agent-browser: true
   better-sqlite3: true
-  edgedriver: set this to true or false
-  geckodriver: set this to true or false
-  puppeteer: set this to true or false
+  edgedriver: true
+  geckodriver: true
+  puppeteer: true
   sharp: true
   unrs-resolver: true
 onlyBuiltDependencies: '["better-sqlite3"]'

@@ -89,8 +89,13 @@ export function AgentHeartbeatList({
                     }}
                   />
                   <span style={{ color: "var(--text-primary)", fontWeight: 600 }}>
-                    {agent.agentName}
+                    {agent.identity?.name || agent.agentName}
                   </span>
+                  {agent.identity?.role && (
+                    <span style={{ color: "var(--text-muted)", fontSize: "0.75rem" }}>
+                      {agent.identity.role}
+                    </span>
+                  )}
                 </div>
                 <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
                   <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
@@ -192,10 +197,40 @@ export function AgentHeartbeatList({
                       backgroundColor: agent.enabled ? "var(--success)" : "var(--text-muted)",
                     }}
                   />
-                  <User className="w-4 h-4" style={{ color: selectedAgentId === agent.agentId ? "#000" : "var(--text-secondary)" }} />
-                  <span style={{ color: selectedAgentId === agent.agentId ? "#000" : "var(--text-primary)", fontWeight: 500 }}>
-                    {agent.agentName}
-                  </span>
+                  {agent.identity?.avatar ? (
+                    <img
+                      src={agent.identity.avatar}
+                      alt={agent.identity.name}
+                      style={{ width: "24px", height: "24px", borderRadius: "50%", objectFit: "cover" }}
+                    />
+                  ) : (
+                    <div
+                      style={{
+                        width: "24px",
+                        height: "24px",
+                        borderRadius: "50%",
+                        backgroundColor: selectedAgentId === agent.agentId ? "rgba(0,0,0,0.2)" : "var(--accent)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: "0.7rem",
+                        fontWeight: 700,
+                        color: selectedAgentId === agent.agentId ? "#000" : "#000",
+                      }}
+                    >
+                      {(agent.identity?.name || agent.agentName).charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                  <div style={{ display: "flex", flexDirection: "column" }}>
+                    <span style={{ color: selectedAgentId === agent.agentId ? "#000" : "var(--text-primary)", fontWeight: 500, lineHeight: 1.2 }}>
+                      {agent.identity?.name || agent.agentName}
+                    </span>
+                    {agent.identity?.role && (
+                      <span style={{ color: selectedAgentId === agent.agentId ? "rgba(0,0,0,0.6)" : "var(--text-muted)", fontSize: "0.7rem", lineHeight: 1.2 }}>
+                        {agent.identity.role}
+                      </span>
+                    )}
+                  </div>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}>

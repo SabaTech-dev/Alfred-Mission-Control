@@ -35,6 +35,8 @@ import {
   ShieldCheck,
   ChevronDown,
   ChevronRight,
+  Monitor,
+  Cpu,
 } from "lucide-react";
 import { useAdminRole } from "@/hooks/useAdminRole";
 
@@ -57,11 +59,11 @@ const baseNavGroups: NavGroup[] = [
     title: "Main",
     items: [
       { href: "/", label: "Dashboard", icon: LayoutDashboard },
+      { href: "/agent-os", label: "🖥️ Agent OS", icon: Monitor, highlight: true },
       { href: "/agents", label: "Agents", icon: Users },
       { href: "/subagents", label: "Sub-Agents", icon: Bot },
       { href: "/office", label: "🎮 Office", icon: Gamepad2, highlight: true },
     ],
-  },
   {
     title: "Mission Control",
     items: [
