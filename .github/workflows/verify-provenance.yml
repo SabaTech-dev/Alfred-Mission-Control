@@ -25,7 +25,8 @@ jobs:
       - name: Verify attestation
         run: |
           # List attestations for this commit
-          gh attestation verify "${{ github.sha }}" \
+          BASE_SHA=$(git rev-parse origin/${{ github.base_ref }})
+          gh attestation verify "$BASE_SHA" \
             --owner ${{ github.repository_owner }} \
             --predicate-type https://slsa.dev/provenance/v1
         env:
