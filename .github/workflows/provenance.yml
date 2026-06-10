@@ -1,0 +1,61 @@
+# =============================================================================
+# SLSA L1 — Provenance Attestation for npm (OWASP A03: Supply Chain)
+# Generates signed provenance for npm packages
+# =============================================================================
+
+name: SLSA Provenance Attestation
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  id-token: write   # Required for OIDC signing
+  attestations: write
+
+env:
+  NODE_VERSION: "20"
+
+jobs:
+  provenance:
+    name: Generate npm Provenance
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          registry-url: https://registry.npmjs.org
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build package
+        run: npm run build
+
+      - name: Package tarball
+        run: npm pack
+
+      - name: Get package name and version
+        id: pkg
+        run: |
+          PKG_NAME=$(node -p "require('./package.json').name")
+          PKG_VERSION=$(node -p "require('./package.json').version")
+          echo "name=$PKG_NAME" >> $GITHUB_OUTPUT
+          echo "version=$PKG_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: ${{ steps.pkg.outputs.name }}-${{ steps.pkg.outputs.version }}.tgz
+
+      - name: Upload provenance artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: provenance
+          path: .attestation/
+          retention-days: 90
