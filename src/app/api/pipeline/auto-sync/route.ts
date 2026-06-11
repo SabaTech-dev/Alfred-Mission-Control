@@ -7,6 +7,7 @@ import {
   getOpportunity,
   updateOpportunity,
   getPipelineKPIs,
+  findOpportunityByCompany,
   type CreateOpportunityInput,
 } from "@/lib/pipeline-db";
 import {
@@ -139,10 +140,17 @@ function syncReportsToPipeline(): SyncResult {
           continue;
         }
 
-        const existingOpp = getOpportunity(parsed.reportId);
+        // Dedup: find existing by company (same company = same deal)
+        // Previously used getOpportunity(parsed.reportId) which NEVER matched
+        // because createOpportunity generates a random UUID, not the reportId.
+        const existingOpp = findOpportunityByCompany(parsed.target);
 
         if (existingOpp) {
-          updateOpportunity(parsed.reportId, {
+          // UPDATE: keep max value, append notes
+          const newValue = getEstimatedValue(parsed.serviceType);
+          const maxValue = Math.max(existingOpp.value, newValue);
+          updateOpportunity(existingOpp.id, {
+            value: maxValue,
             notes: [
               `Updated from report: ${file}`,
               `Confidence: ${parsed.confidence}%`,
