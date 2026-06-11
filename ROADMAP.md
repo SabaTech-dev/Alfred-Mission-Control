@@ -594,7 +594,7 @@
 
 ---
 
-## Fase 14: Mission Control Layer 🎯 ⏳ ~85%
+## Fase 14: Mission Control Layer 🎯 ✅ 100%
 > Transformar Alfred Mission Control de dashboard reactivo a orquestador autónomo alineado a misión
 >
 > **Inspiración:** `FUNCIO.md` - Panel maestro con Reverse Prompting, Projects, Agent Identities
@@ -650,7 +650,7 @@
 - [x] UI: Project filter en KanbanBoard
 - [x] UI: ProjectProgressCard con progress bars
 - [x] UI: OrphanTasksModal para reasignar tareas sin proyecto
-- [ ] **⏳ UI: Página `/projects` dedicada (deferido)** (est. ~4-5h)
+- [x] **UI: Página `/projects` dedicada** (ya implementada: CRUD completo, filtros, modales, progress bars)
 - **Archivos:** `src/app/api/projects/route.ts`, `src/app/api/projects/[id]/route.ts`, `src/components/kanban/ProjectProgressCard.tsx`, `src/components/kanban/OrphanTasksModal.tsx`
 - **Esfuerzo:** 4-5 horas
 - **Commit:** `25b1b98`
@@ -689,7 +689,7 @@
 
 - [x] DB: `operations_journal` table (created in Phase 14.1)
 - [x] API: `GET/POST/PUT/DELETE /api/journal`
-- [ ] **⏳ Lógica: Auto-generar entrada diaria desde activities (deferred)** (est. ~3-4h)
+- [x] **Lógica: Auto-generar entrada diaria desde activities** (API + botón UI con Sparkles)
 - [x] UI: Página `/journal` con timeline narrativo
 - [x] UI: Entry editor para añadir highlights manuales
 - **Archivos:** `src/app/api/journal/route.ts`, `src/app/api/journal/[id]/route.ts`, `src/app/(dashboard)/journal/page.tsx`, `src/lib/kanban-db.ts`, `src/components/journal/`

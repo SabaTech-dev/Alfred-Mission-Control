@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus } from "lucide-react";
+import { Plus, Sparkles } from "lucide-react";
 import {
   JournalTimeline,
   JournalEntryCard,
@@ -47,6 +47,23 @@ export default function JournalClient({ initialData }: { initialData?: JournalIn
       // ignore
     } finally {
       setLoading(false);
+    }
+  };
+
+  const [autoGenerating, setAutoGenerating] = useState(false);
+
+  const handleAutoGenerate = async () => {
+    setAutoGenerating(true);
+    try {
+      const res = await authFetch("/api/journal/auto-generate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({}) });
+      const data = await res.json();
+      if (data.entry) {
+        fetchEntries(); // Refresh list
+      }
+    } catch {
+      // silent
+    } finally {
+      setAutoGenerating(false);
     }
   };
 
@@ -128,14 +145,25 @@ export default function JournalClient({ initialData }: { initialData?: JournalIn
             Registra y revisa tus actividades diarias
           </p>
         </div>
-        <button
-          onClick={handleNewEntry}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors hover:opacity-80"
-          style={{ backgroundColor: "var(--accent)", color: "var(--text-primary)" }}
-        >
-          <Plus className="w-4 h-4" />
-          Nueva Entrada
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={handleAutoGenerate}
+            disabled={autoGenerating}
+            className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors hover:opacity-80 disabled:opacity-50"
+            style={{ backgroundColor: "var(--card-elevated)", color: "var(--text-primary)", border: "1px solid var(--border)" }}
+          >
+            <Sparkles className="w-4 h-4" />
+            {autoGenerating ? "Generando..." : "Auto-generar Hoy"}
+          </button>
+          <button
+            onClick={handleNewEntry}
+            className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors hover:opacity-80"
+            style={{ backgroundColor: "var(--accent)", color: "var(--text-primary)" }}
+          >
+            <Plus className="w-4 h-4" />
+            Nueva Entrada
+          </button>
+        </div>
       </div>
 
       {/* Filters */}

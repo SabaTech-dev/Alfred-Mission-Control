@@ -62,6 +62,7 @@ function DockSections(): DockSection[] {
         { href: "/agent-os", labelKey: "dock.agentOS", helpKey: "help.agentOS", icon: Monitor },
         { href: "/agents", labelKey: "dock.agents", helpKey: "help.agents", icon: Users },
         { href: "/kanban", labelKey: "dock.kanban", helpKey: "help.kanban", icon: LayoutGrid },
+        { href: "/projects", labelKey: "dock.projects", helpKey: "help.projects", icon: Briefcase },
         { href: "/chat", labelKey: "dock.chat", helpKey: "help.chat", icon: MessagesSquare },
       ],
     },
