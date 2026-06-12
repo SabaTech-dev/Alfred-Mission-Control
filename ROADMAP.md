@@ -710,14 +710,14 @@
 - [ ] **Quality Gates** - Aprobaciones obligatorias antes de ejecutar
 
 ### Polish
-- [ ] **Command Palette** - Quick actions con Cmd+K
+- [x] **Command Palette** - Quick actions con Cmd+K — *Commit: existing*
 - [ ] **Auto-categorization** - Detectar PRDs, specs, docs automáticamente
-- [ ] **Daily Standup** - Reportes automáticos de estado cada mañana
+- [x] **Daily Standup** - Reportes automáticos de estado cada mañana — *API `/api/standup` + UI `/standup`*
 
 ---
 
 *Creado: 2026-02-07*
-*Última actualización: 2026-03-03*
+*Última actualización: 2026-06-12*
 
 **NUEVO en 2026-03-03:**
 > Fase 14 redefinida basada en análisis de `FUNCIO.md`

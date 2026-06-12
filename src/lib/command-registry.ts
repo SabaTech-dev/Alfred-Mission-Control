@@ -18,6 +18,7 @@ import {
   Settings,
   Plus,
   RefreshCw,
+  Sun,
   type LucideIcon,
 } from "lucide-react";
 
@@ -211,6 +212,14 @@ export const NAV_COMMANDS: Command[] = [
  * Quick action commands for common operations
  */
 export const QUICK_ACTIONS: Command[] = [
+  {
+    id: "nav-standup",
+    label: "Daily Standup",
+    icon: Sun,
+    href: "/standup",
+    group: "Analytics",
+    keywords: ["standup", "daily", "report", "morning", "resumen"],
+  },
   {
     id: "action-new-session",
     label: "New Session",
