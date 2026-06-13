@@ -689,7 +689,7 @@
 
 - [x] DB: `operations_journal` table (created in Phase 14.1)
 - [x] API: `GET/POST/PUT/DELETE /api/journal`
-- [ ] **⏳ Lógica: Auto-generar entrada diaria desde activities (deferred)** (est. ~3-4h)
+- [x] **Lógica: Auto-generar entrada diaria desde activities** ✅ (commit cbf8a62, 2026-06-13)
 - [x] UI: Página `/journal` con timeline narrativo
 - [x] UI: Entry editor para añadir highlights manuales
 - **Archivos:** `src/app/api/journal/route.ts`, `src/app/api/journal/[id]/route.ts`, `src/app/(dashboard)/journal/page.tsx`, `src/lib/kanban-db.ts`, `src/components/journal/`
