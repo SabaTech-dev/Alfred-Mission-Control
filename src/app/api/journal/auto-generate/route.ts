@@ -1,26 +1,28 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getActivities } from "@/lib/activities-db";
-import { listJournalEntries, createJournalEntry } from "@/lib/kanban-db";
+import { createJournalEntry, listJournalEntries } from "@/lib/kanban-db";
 
 export const dynamic = "force-dynamic";
 
 /**
  * POST /api/journal/auto-generate
- * Auto-generates a journal entry from today's activities.
- * Body: { date?: string } // defaults to today (YYYY-MM-DD)
- *
- * Logic:
- * 1. Fetch activities for the given date
- * 2. Group by type and status
- * 3. Build a narrative summary
- * 4. Extract highlights (errors, notable events)
- * 5. Create journal entry if one doesn't already exist
+ * Auto-generates a journal entry from the day's activities.
+ * Body: { date: string (YYYY-MM-DD) }
+ * 
+ * Aggregates activities for the given date and creates a narrative
+ * summary with highlights. Skips if entry already exists.
  */
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json().catch(() => ({}));
-    const today = new Date().toISOString().split("T")[0];
-    const date = body?.date || today;
+    const body = await request.json();
+    const date = body.date;
+
+    if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      return NextResponse.json(
+        { error: "date is required (YYYY-MM-DD format)" },
+        { status: 400 }
+      );
+    }
 
     // Check if entry already exists for this date
     const existing = listJournalEntries({ startDate: date, endDate: date });
@@ -32,98 +34,98 @@ export async function POST(request: NextRequest) {
     }
 
     // Fetch activities for the date
-    const startDate = `${date}T00:00:00.000Z`;
-    const endDate = `${date}T23:59:59.999Z`;
     const result = getActivities({
-      startDate,
-      endDate,
-      sort: "oldest",
+      startDate: date,
+      endDate: date,
       limit: 500,
+      sort: "oldest",
     });
 
     const activities = result.activities;
+    const total = result.total;
 
-    if (activities.length === 0) {
+    if (total === 0) {
       return NextResponse.json(
-        { message: "No activities found for this date", date },
+        { message: "No activities found for this date", entry: null },
         { status: 200 }
       );
     }
 
-    // Group by type
-    const byType: Record<string, typeof activities> = {};
-    const byStatus: Record<string, number> = { success: 0, error: 0, pending: 0, running: 0, approved: 0, rejected: 0 };
+    // Build narrative from activities
+    const byType: Record<string, number> = {};
+    const byStatus: Record<string, number> = {};
+    const byAgent: Record<string, number> = {};
+    const errors: string[] = [];
+    const notableActions: string[] = [];
 
     for (const act of activities) {
-      const type = act.type || "other";
-      if (!byType[type]) byType[type] = [];
-      byType[type].push(act);
-      if (byStatus[act.status] !== undefined) byStatus[act.status]++;
-    }
-
-    // Build narrative
-    const total = activities.length;
-    const successCount = byStatus.success || 0;
-    const errorCount = byStatus.error || 0;
-    const typeSummaries = Object.entries(byType)
-      .map(([type, acts]) => `${acts.length} ${type}`)
-      .join(", ");
-
-    let narrative = `Resumen automático del ${date}: ${total} actividades registradas (${successCount} exitosas, ${errorCount} errores). Tipos: ${typeSummaries}.`;
-
-    // Add details for each type group (top 5 per type)
-    const typeDetails: string[] = [];
-    for (const [type, acts] of Object.entries(byType)) {
-      const top = acts.slice(0, 5);
-      for (const a of top) {
-        typeDetails.push(`- [${a.status.toUpperCase()}] ${a.type}: ${a.description}`);
+      byType[act.type] = (byType[act.type] || 0) + 1;
+      byStatus[act.status] = (byStatus[act.status] || 0) + 1;
+      if (act.agent) {
+        byAgent[act.agent] = (byAgent[act.agent] || 0) + 1;
       }
-      if (acts.length > 5) {
-        typeDetails.push(`  ... y ${acts.length - 5} más`);
+      if (act.status === "error") {
+        errors.push(`[${act.type}] ${act.description}`);
+      }
+      // Notable: security, build, or high-duration actions
+      if (act.type === "security" || act.type === "build" || (act.duration_ms && act.duration_ms > 60000)) {
+        notableActions.push(`${act.type}: ${act.description}`);
       }
     }
 
-    narrative += `\n\nDetalles:\n${typeDetails.join("\n")}`;
+    const successCount = (byStatus["success"] || 0) + (byStatus["approved"] || 0);
+    const errorCount = (byStatus["error"] || 0) + (byStatus["rejected"] || 0);
+    const successRate = total > 0 ? Math.round((successCount / total) * 100) : 100;
+    const agents = Object.entries(byAgent).sort((a, b) => b[1] - a[1]);
+    const types = Object.entries(byType).sort((a, b) => b[1] - a[1]);
 
-    // Extract highlights: errors and notable events
+    // Compose narrative
+    const lines: string[] = [];
+    lines.push(`Resumen de operaciones del ${date}: ${total} actividades registradas con ${successRate}% de tasa de éxito.`);
+    
+    if (agents.length > 0) {
+      const agentSummary = agents.map(([name, count]) => `${name} (${count})`).join(", ");
+      lines.push(`Agentes activos: ${agentSummary}.`);
+    }
+
+    if (types.length > 0) {
+      const typeSummary = types.slice(0, 5).map(([t, c]) => `${t}: ${c}`).join(", ");
+      lines.push(`Distribución: ${typeSummary}.`);
+    }
+
+    if (errorCount > 0) {
+      lines.push(`⚠️ ${errorCount} errores detectados.`);
+    }
+
+    if (notableActions.length > 0) {
+      lines.push(`Acciones destacadas: ${notableActions.slice(0, 5).join("; ")}.`);
+    }
+
+    // Total tokens if available
+    const totalTokens = activities.reduce((sum, a) => sum + (a.tokens_used || 0), 0);
+    if (totalTokens > 0) {
+      lines.push(`Tokens consumidos: ${totalTokens.toLocaleString()}.`);
+    }
+
+    const narrative = lines.join(" ");
+
+    // Build highlights
     const highlights: string[] = [];
+    if (successRate === 100) highlights.push("✅ 100% tasa de éxito");
+    if (errorCount > 0) highlights.push(`❌ ${errorCount} errores`);
+    if (total > 50) highlights.push(`🔥 ${total} actividades (día intenso)`);
+    if (agents.length > 1) highlights.push(`🤖 ${agents.length} agentes activos`);
+    if (totalTokens > 10000) highlights.push(`📊 ${Math.round(totalTokens / 1000)}K tokens`);
+    highlights.push(`📈 ${successRate}% éxito`);
 
-    // Errors as highlights
-    const errors = activities.filter((a) => a.status === "error");
-    if (errors.length > 0) {
-      highlights.push(`⚠️ ${errors.length} errores detectados`);
-      for (const e of errors.slice(0, 3)) {
-        highlights.push(`Error en ${e.type}: ${e.description}`);
-      }
-    }
-
-    // Most active types
-    const topTypes = Object.entries(byType)
-      .sort(([, a], [, b]) => b.length - a.length)
-      .slice(0, 3);
-    for (const [type, acts] of topTypes) {
-      if (acts.length >= 3) {
-        highlights.push(`📊 ${type}: ${acts.length} actividades`);
-      }
-    }
-
-    // Agents involved
-    const agents = new Set(activities.map((a) => a.agent).filter(Boolean));
-    if (agents.size > 0) {
-      highlights.push(`🤖 Agentes activos: ${Array.from(agents).join(", ")}`);
-    }
-
-    // Create the journal entry
+    // Create the entry
     const entry = createJournalEntry({
       date,
-      narrative: narrative.slice(0, 5000),
+      narrative,
       highlights: highlights.slice(0, 10),
     });
 
-    return NextResponse.json(
-      { message: "Journal entry auto-generated", entry, stats: { total, successCount, errorCount, types: Object.keys(byType) } },
-      { status: 201 }
-    );
+    return NextResponse.json({ entry, generated: true }, { status: 201 });
   } catch (error) {
     console.error("Failed to auto-generate journal entry:", error);
     return NextResponse.json(

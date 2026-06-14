@@ -701,7 +701,7 @@
 > Features para después de Mission Control
 
 ### Infrastructure
-- [ ] **Plugins System** - Extensions de terceros
+- [x] **Plugins System** - Extensions de terceros — *API `/api/plugins` + UI `/plugins`*
 - [ ] **Webhooks Outbound** - Notificaciones a servicios externos
 
 ### Integrations
@@ -717,7 +717,7 @@
 ---
 
 *Creado: 2026-02-07*
-*Última actualización: 2026-06-12*
+*Última actualización: 2026-06-14*
 
 **NUEVO en 2026-03-03:**
 > Fase 14 redefinida basada en análisis de `FUNCIO.md`
