@@ -702,7 +702,7 @@
 
 ### Infrastructure
 - [x] **Plugins System** - Extensions de terceros — *API `/api/plugins` + UI `/plugins`*
-- [ ] **Webhooks Outbound** - Notificaciones a servicios externos
+- [x] **Webhooks Outbound** — *API `/api/webhooks` + UI `/webhooks`* - Notificaciones a servicios externos
 
 ### Integrations
 - [ ] **GitHub Issues Sync** - Sincronizar issues como tasks
