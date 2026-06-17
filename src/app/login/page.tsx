@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Lock, AlertCircle } from "lucide-react";
 import { useI18n, I18nProvider } from "@/i18n/provider";
 
-function LoginForm() {
+export function LoginForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
