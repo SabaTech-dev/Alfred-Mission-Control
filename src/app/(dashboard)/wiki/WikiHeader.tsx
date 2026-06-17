@@ -1,6 +1,6 @@
 "use client";
 
-import { BookMarked, Search, RefreshCw, GitFork, FileText, Brain, Share2 } from "lucide-react";
+import { BookMarked, Search, RefreshCw, GitFork, FileText, Share2 } from "lucide-react";
 import { formatDate } from "./utils";
 import type { SyncStatus, WikiStats, SearchResult } from "./types";
 
@@ -19,8 +19,8 @@ export function WikiHeader({
   syncStatus,
   handleSync,
 }: {
-  activeTab: "wiki" | "hindsight" | "graph";
-  setActiveTab: (tab: "wiki" | "hindsight" | "graph") => void;
+  activeTab: "wiki" | "graph";
+  setActiveTab: (tab: "wiki" | "graph") => void;
   showSearch: boolean;
   setShowSearch: (show: boolean) => void;
   searchQuery: string;
@@ -66,25 +66,6 @@ export function WikiHeader({
               Wiki Explorer
             </button>
             <button
-              onClick={() => setActiveTab('hindsight')}
-              style={{
-                padding: "6px 12px",
-                borderRadius: "6px 6px 0 0",
-                border: "none",
-                backgroundColor: activeTab === 'hindsight' ? 'var(--card)' : 'transparent',
-                borderBottom: activeTab === 'hindsight' ? '2px solid var(--accent)' : '1px solid var(--border)',
-                cursor: 'pointer',
-                fontSize: '12px',
-                fontWeight: activeTab === 'hindsight' ? 600 : 400,
-                color: activeTab === 'hindsight' ? 'var(--text-primary)' : 'var(--text-secondary)',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px',
-              }}
-            >
-              Hindsight Memory
-            </button>
-            <button
               onClick={() => setActiveTab('graph')}
               style={{
                 padding: "6px 12px",
@@ -116,12 +97,11 @@ export function WikiHeader({
             }}
           >
             {activeTab === 'wiki' && <BookMarked style={{ width: "24px", height: "24px", color: "var(--accent)", marginRight: "8px", display: "inline", verticalAlign: "middle" }} />}
-            {activeTab === 'hindsight' && <Brain style={{ width: "24px", height: "24px", color: "var(--accent)", marginRight: "8px", display: "inline", verticalAlign: "middle" }} />}
             {activeTab === 'graph' && <Share2 style={{ width: "24px", height: "24px", color: "var(--accent)", marginRight: "8px", display: "inline", verticalAlign: "middle" }} />}
-            {activeTab === 'wiki' ? 'Wiki Explorer' : activeTab === 'hindsight' ? 'Hindsight Memory' : 'Grafo de Conexiones'}
+            {activeTab === 'wiki' ? 'Wiki Explorer' : 'Grafo de Conexiones'}
           </h1>
           <p style={{ fontFamily: "var(--font-body)", fontSize: "13px", color: "var(--text-secondary)" }}>
-            {activeTab === 'wiki' ? 'Segundo cerebro - Obsidian Vault' : activeTab === 'hindsight' ? 'Memoria semántica - Búsqueda vectorial y relaciones' : 'Visualización interactiva de backlinks entre notas'}
+            {activeTab === 'wiki' ? 'Segundo cerebro - Obsidian Vault' : 'Visualización interactiva de backlinks entre notas'}
           </p>
         </div>
 

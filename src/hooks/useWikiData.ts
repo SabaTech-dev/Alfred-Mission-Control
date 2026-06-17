@@ -8,9 +8,8 @@ import { useWikiTree } from "@/app/(dashboard)/wiki/hooks/useWikiTree";
 import { useWikiNote } from "@/app/(dashboard)/wiki/hooks/useWikiNote";
 import { useWikiSearch } from "@/app/(dashboard)/wiki/hooks/useWikiSearch";
 import { useWikiSync } from "@/app/(dashboard)/wiki/hooks/useWikiSync";
-import { useHindsight } from "@/app/(dashboard)/wiki/hooks/useHindsight";
 
-export type WikiTab = "wiki" | "hindsight" | "graph";
+export type WikiTab = "wiki" | "graph";
 
 export interface UseWikiDataResult {
   // Layout state
@@ -41,14 +40,6 @@ export interface UseWikiDataResult {
   syncStatus: ReturnType<typeof useWikiSync>["syncStatus"];
   isSyncing: boolean;
   handleSyncWithReload: () => Promise<void>;
-
-  // Hindsight
-  hindsightQuery: string;
-  hindsightResults: ReturnType<typeof useHindsight>["hindsightResults"];
-  hindsightStats: ReturnType<typeof useHindsight>["hindsightStats"];
-  isHindsightLoading: boolean;
-  handleHindsightSearch: (query: string) => Promise<void>;
-  formatDateTime: (isoString: string) => string;
 
   // Shared handlers
   handleSelectFile: (path: string) => Promise<void>;
@@ -89,16 +80,6 @@ export function useWikiData(): UseWikiDataResult {
     handleSyncStatus,
   } = useWikiSync();
 
-  const {
-    hindsightQuery,
-    hindsightResults,
-    hindsightStats,
-    isHindsightLoading,
-    handleHindsightSearch,
-    loadHindsightStats,
-    formatDateTime,
-  } = useHindsight();
-
   // Derived handlers
   const handleSelectFile = useCallback(
     async (path: string) => {
@@ -116,8 +97,7 @@ export function useWikiData(): UseWikiDataResult {
   useEffect(() => {
     loadFileTree();
     handleSyncStatus();
-    loadHindsightStats();
-  }, [loadFileTree, handleSyncStatus, loadHindsightStats]);
+  }, [loadFileTree, handleSyncStatus]);
 
   // Auto-select index.md on first load
   useEffect(() => {
@@ -158,14 +138,6 @@ export function useWikiData(): UseWikiDataResult {
     syncStatus,
     isSyncing,
     handleSyncWithReload,
-
-    // Hindsight
-    hindsightQuery,
-    hindsightResults,
-    hindsightStats,
-    isHindsightLoading,
-    handleHindsightSearch,
-    formatDateTime,
 
     // Shared handlers
     handleSelectFile,
