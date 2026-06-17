@@ -3,10 +3,16 @@ import { exec } from "child_process";
 import { promisify } from "util";
 import os from "os";
 import { readFileSync } from "fs";
+import { settleWithTimeout } from "@/lib/with-timeout";
 
 const execAsync = promisify(exec);
 
 export const dynamic = "force-dynamic";
+
+// Hard ceiling for any single shell probe. The dashboard polls this endpoint
+// every 5s; a hung `tailscale status` / `ufw status` / `df` must not be allowed
+// to stall the response (and cascade into sibling requests timing out).
+const PROBE_TIMEOUT_MS = 5000;
 
 const SYSTEM_SERVICES = [
   "alfred-mission-control",
@@ -68,7 +74,8 @@ const SERVICE_DESCRIPTIONS: Record<string, string> = {
 async function checkSystemdService(name: string): Promise<ServiceEntry> {
   try {
     const { stdout } = await execAsync(
-      `systemctl is-active ${name} 2>/dev/null || echo "unknown"`
+      `systemctl is-active ${name} 2>/dev/null || echo "unknown"`,
+      { timeout: PROBE_TIMEOUT_MS }
     );
     const status = stdout.trim();
     return {
@@ -93,7 +100,8 @@ async function checkSystemdService(name: string): Promise<ServiceEntry> {
 async function checkUserService(name: string): Promise<ServiceEntry> {
   try {
     const { stdout } = await execAsync(
-      `systemctl --user is-active ${name} 2>/dev/null || echo "unknown"`
+      `systemctl --user is-active ${name} 2>/dev/null || echo "unknown"`,
+      { timeout: PROBE_TIMEOUT_MS }
     );
     const status = stdout.trim();
     return {
@@ -126,7 +134,8 @@ interface DockerContainer {
 async function discoverDockerContainers(): Promise<ServiceEntry[]> {
   try {
     const { stdout } = await execAsync(
-      `docker ps --format '{{.Names}}\t{{.Status}}' 2>/dev/null || true`
+      `docker ps --format '{{.Names}}\t{{.Status}}' 2>/dev/null || true`,
+      { timeout: PROBE_TIMEOUT_MS }
     );
     const lines = stdout.trim().split("\n").filter(Boolean);
     return lines.map((line) => {
@@ -145,6 +154,102 @@ async function discoverDockerContainers(): Promise<ServiceEntry[]> {
   }
 }
 
+interface DiskStats {
+  total: number;
+  used: number;
+  free: number;
+}
+
+/**
+ * Disk usage of the root filesystem. Returns sane defaults if `df` fails.
+ */
+async function readDiskStats(): Promise<DiskStats> {
+  const { stdout } = await execAsync("df -BG / | tail -1", {
+    timeout: PROBE_TIMEOUT_MS,
+  });
+  const parts = stdout.trim().split(/\s+/);
+  return {
+    total: parseInt(parts[1].replace("G", "")) || 100,
+    used: parseInt(parts[2].replace("G", "")) || 0,
+    free: parseInt(parts[3].replace("G", "")) || 100,
+  };
+}
+
+interface TailscaleInfo {
+  active: boolean;
+  ip: string;
+  devices: TailscaleDevice[];
+}
+
+/**
+ * Tailscale VPN status. Skipped silently if `tailscale` is not installed.
+ */
+async function readTailscale(): Promise<TailscaleInfo> {
+  const info: TailscaleInfo = { active: false, ip: "", devices: [] };
+  try {
+    await execAsync("which tailscale", { timeout: PROBE_TIMEOUT_MS });
+  } catch {
+    return info; // not installed
+  }
+
+  const { stdout: tsStatus } = await execAsync("tailscale status 2>/dev/null || true", {
+    timeout: PROBE_TIMEOUT_MS,
+  });
+  const lines = tsStatus.trim().split("\n").filter(Boolean);
+
+  if (lines.length > 0 && !tsStatus.includes("not running")) {
+    info.active = true;
+    for (const line of lines) {
+      if (line.startsWith("#")) continue;
+      const parts = line.trim().split(/\s+/);
+      if (parts.length >= 3) {
+        info.devices.push({
+          ip: parts[0],
+          hostname: parts[1],
+          os: parts[3] || "",
+          online: line.includes("active") || line.includes("online"),
+        });
+      }
+    }
+    if (info.devices.length > 0) {
+      info.ip = info.devices[0].ip;
+    }
+  }
+  return info;
+}
+
+interface FirewallInfo {
+  active: boolean;
+  rules: FirewallRule[];
+}
+
+/**
+ * UFW firewall status.
+ */
+async function readFirewall(): Promise<FirewallInfo> {
+  const { stdout: ufwStatus } = await execAsync(
+    "ufw status numbered 2>/dev/null || true",
+    { timeout: PROBE_TIMEOUT_MS }
+  );
+  const rules: FirewallRule[] = [];
+  if (ufwStatus.includes("Status: active")) {
+    const lines = ufwStatus.split("\n");
+    for (const line of lines) {
+      const match = line.match(/\[\s*\d+\]\s+([\w/:]+)\s+(\w+)\s+(\S+)\s*(#?.*)$/);
+      if (match) {
+        rules.push({
+          port: match[1].trim(),
+          action: match[2].trim(),
+          from: match[3].trim(),
+          comment: match[4].replace("#", "").trim(),
+        });
+      }
+    }
+    return { active: true, rules };
+  }
+  return { active: false, rules };
+}
+
 export async function GET() {
   try {
     // ── CPU ──────────────────────────────────────────────────────────────────
@@ -157,20 +262,30 @@ export async function GET() {
     const freeMem = os.freemem();
     const usedMem = totalMem - freeMem;
 
-    // ── Disk ─────────────────────────────────────────────────────────────────
-    let diskTotal = 100;
-    let diskUsed = 0;
-    let diskFree = 100;
-    try {
-      const { stdout } = await execAsync("df -BG / | tail -1");
-      const parts = stdout.trim().split(/\s+/);
-      diskTotal = parseInt(parts[1].replace("G", ""));
-      diskUsed = parseInt(parts[2].replace("G", ""));
-      diskFree = parseInt(parts[3].replace("G", ""));
-    } catch (error) {
-      console.error("Failed to get disk stats:", error);
-    }
-    const diskPercent = (diskUsed / diskTotal) * 100;
+    // ── Disk / Tailscale / Firewall ─────────────────────────────────────────
+    // These shell probes are the slow ones (tailscale/ufw can hang on a missing
+    // daemon). Run them concurrently and bound each one with a hard timeout so a
+    // single hung probe can't stall the whole response — a timeout degrades the
+    // corresponding section to safe defaults instead of blocking.
+    const [diskSettled, tailscaleSettled, firewallSettled] = await Promise.all([
+      settleWithTimeout(readDiskStats(), PROBE_TIMEOUT_MS, "disk"),
+      settleWithTimeout(readTailscale(), PROBE_TIMEOUT_MS, "tailscale"),
+      settleWithTimeout(readFirewall(), PROBE_TIMEOUT_MS, "firewall"),
+    ]);
+
+    const disk =
+      diskSettled.ok && Number.isFinite(diskSettled.value.total)
+        ? diskSettled.value
+        : { total: 100, used: 0, free: 100 };
+    const diskPercent = disk.total > 0 ? (disk.used / disk.total) * 100 : 0;
+
+    const tailscale = tailscaleSettled.ok
+      ? tailscaleSettled.value
+      : { active: false, ip: "", devices: [] as TailscaleDevice[] };
+
+    const firewall = firewallSettled.ok
+      ? firewallSettled.value
+      : { active: false, rules: [] as FirewallRule[] };
 
     // ── Network (real stats from /proc/net/dev) ───────────────────────────────
     let network = { rx: 0, tx: 0 };
@@ -228,68 +343,6 @@ export async function GET() {
     services.push(...userResults);
     services.push(...dockerResults);
 
-    // ── Tailscale VPN ─────────────────────────────────────────────────────────
-    let tailscaleActive = false;
-    let tailscaleIp = "";
-    const tailscaleDevices: TailscaleDevice[] = [];
-
-    try {
-      await execAsync("which tailscale");
-
-      try {
-        const { stdout: tsStatus } = await execAsync("tailscale status 2>/dev/null || true");
-        const lines = tsStatus.trim().split("\n").filter(Boolean);
-
-        if (lines.length > 0 && !tsStatus.includes("not running")) {
-          tailscaleActive = true;
-          for (const line of lines) {
-            if (line.startsWith("#")) continue;
-            const parts = line.trim().split(/\s+/);
-            if (parts.length >= 3) {
-              tailscaleDevices.push({
-                ip: parts[0],
-                hostname: parts[1],
-                os: parts[3] || "",
-                online: line.includes("active") || line.includes("online"),
-              });
-            }
-          }
-          if (tailscaleDevices.length > 0) {
-            tailscaleIp = tailscaleDevices[0].ip;
-          }
-        }
-      } catch (error) {
-        console.error("Failed to get Tailscale status:", error);
-      }
-    } catch {
-      // Tailscale not installed
-    }
-
-    // ── Firewall (UFW) ────────────────────────────────────────────────────────
-    let firewallActive = false;
-    const firewallRulesList: FirewallRule[] = [];
-
-    try {
-      const { stdout: ufwStatus } = await execAsync("ufw status numbered 2>/dev/null || true");
-      if (ufwStatus.includes("Status: active")) {
-        firewallActive = true;
-        const lines = ufwStatus.split("\n");
-        for (const line of lines) {
-          const match = line.match(/\[\s*\d+\]\s+([\w/:]+)\s+(\w+)\s+(\S+)\s*(#?.*)$/);
-          if (match) {
-            firewallRulesList.push({
-              port: match[1].trim(),
-              action: match[2].trim(),
-              from: match[3].trim(),
-              comment: match[4].replace("#", "").trim(),
-            });
-          }
-        }
-      }
-    } catch (error) {
-      console.error("Failed to get firewall status:", error);
-    }
-
     return NextResponse.json({
       cpu: {
         usage: cpuUsage,
@@ -303,22 +356,22 @@ export async function GET() {
         cached: 0,
       },
       disk: {
-        total: diskTotal,
-        used: diskUsed,
-        free: diskFree,
+        total: disk.total,
+        used: disk.used,
+        free: disk.free,
         percent: diskPercent,
       },
       network,
       systemd: services, // kept field name for backwards compat with page.tsx
       tailscale: {
-        active: tailscaleActive,
-        ip: tailscaleIp,
-        devices: tailscaleDevices,
+        active: tailscale.active,
+        ip: tailscale.ip,
+        devices: tailscale.devices,
       },
       firewall: {
-        active: firewallActive,
-        rules: firewallRulesList,
-        ruleCount: firewallRulesList.length,
+        active: firewall.active,
+        rules: firewall.rules,
+        ruleCount: firewall.rules.length,
       },
       timestamp: new Date().toISOString(),
     });
