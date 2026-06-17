@@ -32,7 +32,7 @@ const ACTIONS: ActionDef[] = [
   {
     id: "heartbeat",
     label: "System Heartbeat",
-    description: "Run full stack health check — OpenClaw, Hindsight, GPU, DBs, services",
+    description: "Run full stack health check — OpenClaw, memory-core, GPU, DBs, services",
     icon: Heart,
     color: "#32D74B",
     category: "infra",
