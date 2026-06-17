@@ -30,34 +30,7 @@ export interface WikiStats {
   topLinked: string[];
 }
 
-export interface HindsightStats {
-  total_nodes: number;
-  total_links: number;
-  total_documents: number;
-  nodes_by_fact_type: {
-    world: number;
-    experience: number;
-    observation: number;
-  };
-  links_by_link_type: {
-    temporal: number;
-    semantic: number;
-    caused_by: number;
-    entity: number;
-  };
-  last_recall?: string;
-  top_categories: string[];
-}
 
-export interface HindsightMemory {
-  id: string;
-  text: string;
-  date: string;
-  fact_type: 'world' | 'experience' | 'observation';
-  entities: string;
-  tags: string[];
-  score?: number;
-}
 
 export interface SyncStatus {
   status: "green" | "yellow" | "red";

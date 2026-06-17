@@ -189,52 +189,6 @@ async function checkPostgresService(dockerContainers: DockerContainer[]): Promis
   };
 }
 
-async function checkHindsightService(): Promise<StackServiceCheck> {
-  const httpProbe = await probeHttp("http://127.0.0.1:9077/health", 2000);
-  if (httpProbe.ok) {
-    return {
-      name: "hindsight",
-      status: "up",
-      details: "HTTP health check OK on port 9077",
-    };
-  }
-
-  const portReachable = await canConnectTcp("127.0.0.1", 9077, 1000);
-  if (portReachable) {
-    return {
-      name: "hindsight",
-      status: "up",
-      details: "listening on port 9077",
-    };
-  }
-
-  const whichResult = safeExecFile("which", ["hindsight"], { timeout: 2000 });
-  if (whichResult.status === 0) {
-    const healthResult = safeExecFile("hindsight", ["health"], { timeout: 4000 });
-    if (healthResult.status === 0) {
-      return {
-        name: "hindsight",
-        status: "up",
-        details: firstNonEmptyLine(healthResult.stdout, healthResult.stderr) ?? "CLI health check OK",
-      };
-    }
-
-    return {
-      name: "hindsight",
-      status: "down",
-      details:
-        firstNonEmptyLine(healthResult.stdout, healthResult.stderr) ??
-        `CLI installed but API check failed (${httpProbe.detail})`,
-    };
-  }
-
-  return {
-    name: "hindsight",
-    status: "down",
-    details: `CLI not found and port 9077 unavailable (${httpProbe.detail})`,
-  };
-}
-
 async function checkHttpService(name: string, url: string, port: number): Promise<StackServiceCheck> {
   const httpProbe = await probeHttp(url, 2000);
   if (httpProbe.ok) {
@@ -272,13 +226,19 @@ async function checkHttpService(name: string, url: string, port: number): Promis
   };
 }
 
+/**
+ * Collect health checks for all monitored stack services.
+ *
+ * NOTE: Hindsight (port 9077) was removed — migrated to native memory-core
+ * (SQLite + Ollama nomic-embed). OSINT Nexus (port 8420) was also removed
+ * from health checks as it is not a core service.
+ */
 export async function collectStackServiceChecks(): Promise<StackServiceCheck[]> {
   const dockerContainers = parseDockerContainers();
 
-  const [gateway, postgresql, hindsight, ollama, coolify, n8n, browserless, langfuse, qmd, llamaGpu, llamaEmbed, searxng, engram, prAgent, osintNexus] = await Promise.all([
+  const [gateway, postgresql, ollama, coolify, n8n, browserless, langfuse, qmd, llamaGpu, llamaEmbed, searxng, engram, prAgent] = await Promise.all([
     checkGatewayService(),
     checkPostgresService(dockerContainers),
-    checkHindsightService(),
     checkTcpService("ollama", 11434),
     checkTcpService("coolify", 8000),
     checkTcpService("n8n", 5678),
@@ -290,14 +250,12 @@ export async function collectStackServiceChecks(): Promise<StackServiceCheck[]> 
     checkHttpService("searxng", "http://127.0.0.1:8081", 8081),
     checkTcpService("engram", 7437),
     checkTcpService("pr-agent", 3003),
-    checkTcpService("osint-nexus", 8420),
   ]);
 
   return [
     { name: "alfred-mc", status: "up", details: "API route responding" },
     gateway,
     postgresql,
-    hindsight,
     ollama,
     coolify,
     n8n,
@@ -309,7 +267,6 @@ export async function collectStackServiceChecks(): Promise<StackServiceCheck[]> 
     searxng,
     engram,
     prAgent,
-    osintNexus,
   ];
 }
 

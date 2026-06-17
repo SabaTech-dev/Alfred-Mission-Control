@@ -34,7 +34,6 @@ const REPORT_DIRS = [
   { base: "reports/cron/dreaming-custom", category: "cron", sub: "dreaming-custom" },
   { base: "reports/cron/dreaming-rem-replay", category: "cron", sub: "dreaming-rem-replay" },
   { base: "reports/cron/github-sync", category: "cron", sub: "github-sync" },
-  { base: "reports/cron/hindsight-log-rotation", category: "cron", sub: "hindsight-log-rotation" },
   { base: "reports/cron/lead-scraper", category: "cron", sub: "lead-scraper" },
   { base: "reports/cron/modo-autonomo-nocturno", category: "cron", sub: "modo-autonomo-nocturno" },
   { base: "reports/cron/owasp-security", category: "cron", sub: "owasp-security" },
@@ -76,7 +75,6 @@ function getReportType(filename: string, sub: string): string {
   if (sub.includes("cron-digest")) return "cron-digest";
   if (sub.includes("dreaming")) return "dreaming";
   if (sub.includes("github-sync")) return "github-sync";
-  if (sub.includes("hindsight-log-rotation")) return "log-rotation";
   if (sub.includes("lead-scraper")) return "lead-scraper";
   if (sub.includes("modo-autonomo-nocturno")) return "nocturnal";
   if (sub.includes("owasp-security")) return "owasp-security";

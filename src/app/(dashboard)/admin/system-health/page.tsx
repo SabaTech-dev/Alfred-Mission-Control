@@ -22,7 +22,6 @@ const serviceCategories: Record<string, CategoryName> = {
   "alfred-mc": "core",
   "openclaw-gateway": "core",
   "postgresql": "core",
-  "hindsight": "core",
   "ollama": "llm",
   "llama.cpp-gpu": "llm",
   "llama.cpp-embed": "llm",
@@ -34,7 +33,7 @@ const serviceCategories: Record<string, CategoryName> = {
   "qmd-mcp": "services",
   "engram": "services",
   "pr-agent": "dev",
-  "osint-nexus": "dev",
+  "memory-core": "core",
 };
 
 const categoryLabels: Record<CategoryName, string> = {

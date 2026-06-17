@@ -7,14 +7,10 @@ import { useWikiData } from "@/hooks/useWikiData";
 import { WikiHeader } from "./WikiHeader";
 import { FileTree } from "./FileTree";
 import { NotePreview } from "./NotePreview";
-import { HindsightTab } from "./HindsightTab";
 import { GraphTab } from "./GraphTab";
-
-import type { HindsightMemory } from "./types";
 
 export default function WikiClient() {
   const wiki = useWikiData();
-  const [selectedMemory, setSelectedMemory] = useState<HindsightMemory | null>(null);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
@@ -71,20 +67,6 @@ export default function WikiClient() {
                 onSelectBacklink={wiki.handleSelectFile}
               />
             </>
-          )}
-
-          {/* Hindsight Tab Content */}
-          {wiki.activeTab === "hindsight" && (
-            <HindsightTab
-              stats={wiki.hindsightStats}
-              query={wiki.hindsightQuery}
-              onSearch={wiki.handleHindsightSearch}
-              results={wiki.hindsightResults}
-              isLoading={wiki.isHindsightLoading}
-              selectedMemory={selectedMemory}
-              onMemoryClick={setSelectedMemory}
-              onMemoryClose={() => setSelectedMemory(null)}
-            />
           )}
 
           {/* Graph Tab Content */}
