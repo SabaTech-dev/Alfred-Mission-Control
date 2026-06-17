@@ -1,8 +1,14 @@
 import { NextResponse } from "next/server";
 import { exec } from "child_process";
 import { promisify } from "util";
+import { withTimeout } from "@/lib/with-timeout";
 
 const execAsync = promisify(exec);
+
+// Hard ceiling for the whole `openclaw sessions` probe. The browser fetch
+// budget is ~25s; we stay well under it so a hung subprocess can't stall this
+// endpoint (and cascade into sibling requests on the same Node process).
+const SESSIONS_PROBE_TIMEOUT_MS = 5000;
 
 interface Session {
   sessionKey: string;
@@ -21,12 +27,37 @@ export async function GET(request: Request) {
     const filterParam = url.searchParams.get('filter') || 'active'; // active | all | type:cron | type:spawn-child | type:direct
     const maxAgeHours = filterParam === 'all' ? 9999 : 2; // Default: only last 2h
 
-    // Get active sessions from OpenClaw
-    const { stdout } = await execAsync("openclaw sessions --json 2>&1", {
-      timeout: 30000,
-    });
+    // Get active sessions from OpenClaw. Bound the probe so a hung CLI can't
+    // block the response; the exec `timeout` reaps the child at the OS level
+    // and withTimeout guarantees we reject within the budget.
+    let stdout: string;
+    try {
+      const result = await withTimeout(
+        execAsync("openclaw sessions --json 2>&1", {
+          timeout: SESSIONS_PROBE_TIMEOUT_MS,
+        }),
+        SESSIONS_PROBE_TIMEOUT_MS,
+        "openclaw-sessions",
+      );
+      stdout = result.stdout;
+    } catch (probeError) {
+      // Probe timed out or failed — return an explicit empty snapshot instead
+      // of hanging the dashboard poller.
+      console.warn("[api/live] sessions probe failed, returning empty snapshot", {
+        error: probeError instanceof Error ? probeError.message : String(probeError),
+      });
+      return NextResponse.json({
+        sessions: [],
+        totalCount: 0,
+        filteredCount: 0,
+        byKind: {},
+        timestamp: new Date().toISOString(),
+        hasActive: false,
+        degraded: true,
+      });
+    }
 
-    // Clean Hindsight output - extract JSON object from mixed output
+    // Clean command output - extract JSON object from mixed stdout
     const jsonMatch = stdout.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
       return NextResponse.json({

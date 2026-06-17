@@ -196,7 +196,7 @@
     },
     "wiki": {
       "title": "Wiki Explorer",
-      "description": "Navigate the wiki, Hindsight memory, and the documentation graph connections."
+      "description": "Navigate the wiki, the memory-core memory, and the documentation graph connections."
     },
     "workflows": {
       "title": "Workflows",

@@ -186,7 +186,7 @@ function extractTags(text: string): string[] {
   const t = text.toLowerCase();
   const tagMap: Record<string, string> = {
     "docker": "docker", "mcp": "mcp", "dspy": "dspy", "gepa": "gepa",
-    "hindsight": "hindsight", "n8n": "n8n", "huawei": "huawei",
+    "memory-core": "memory-core", "n8n": "n8n", "huawei": "huawei",
     "android": "android", "playwright": "playwright", "benchmark": "benchmark",
     "ontology": "ontology", "graph": "graph", "recall": "recall",
     "openclaw": "openclaw", "skill": "skill", "cron": "cron",

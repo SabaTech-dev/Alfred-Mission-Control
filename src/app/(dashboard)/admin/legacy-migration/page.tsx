@@ -14,7 +14,7 @@ export default function LegacyMigrationPage() {
       { id: "1", name: "Session Store v2", from: "Cookie-based", to: "HMAC-signed tokens", progress: 100, status: "completed", startedAt: new Date(Date.now() - 2592000000).toISOString() },
       { id: "2", name: "API Routes v3", from: "Pages Router", to: "App Router", progress: 100, status: "completed", startedAt: new Date(Date.now() - 5184000000).toISOString() },
       { id: "3", name: "Agent Config", from: "JSON files", to: "Database-backed", progress: 65, status: "in_progress", startedAt: new Date(Date.now() - 86400000).toISOString() },
-      { id: "4", name: "Memory System", from: "File-based", to: "Engram + Hindsight", progress: 30, status: "in_progress", startedAt: new Date(Date.now() - 172800000).toISOString() },
+      { id: "4", name: "Memory System", from: "File-based", to: "Memory-Core + Engram", progress: 100, status: "completed", startedAt: new Date(Date.now() - 172800000).toISOString() },
       { id: "5", name: "Notification System", from: "Polling", to: "WebSocket push", progress: 0, status: "pending", startedAt: new Date().toISOString() },
     ]);
     setLoading(false);

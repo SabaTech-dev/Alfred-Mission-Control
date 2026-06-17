@@ -68,7 +68,7 @@ const STEPS: OnboardingStep[] = [
     id: "memory",
     title: "Memory System",
     description:
-      "Browse and manage the Hindsight memory banks. View memories, entities, and knowledge graphs across all agents.",
+      "Browse and manage the memory-core memory banks. View memories, entities, and knowledge graphs across all agents.",
     icon: <Brain className="h-8 w-8 text-pink-400" />,
     target: "/memory",
   },
