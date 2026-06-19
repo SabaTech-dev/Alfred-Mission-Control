@@ -2,7 +2,7 @@
  * Tests for stack-health.ts
  * 
  * Validates that:
- * 1. Deprecated Hindsight service is NOT checked
+ * 1. Deprecated legacy memory API is NOT checked
  * 2. Memory-Core (native) is reflected
  * 3. OSINT Nexus can be optionally excluded
  * 4. Overall status is correctly computed
@@ -50,11 +50,11 @@ describe("stack-health", () => {
   });
 
   describe("collectStackServiceChecks", () => {
-    it("should NOT include hindsight service (deprecated, migrated to memory-core)", async () => {
+    it("should NOT include legacy hindsight service (migrated to memory-core)", async () => {
       const { collectStackServiceChecks } = await import("@/lib/stack-health");
       const checks = await collectStackServiceChecks();
-      const hindsightCheck = checks.find(c => c.name === "hindsight");
-      expect(hindsightCheck).toBeUndefined();
+      const legacyCheck = checks.find(c => c.name === "hindsight");
+      expect(legacyCheck).toBeUndefined();
     });
 
     it("should include alfred-mc as first service", async () => {

@@ -85,3 +85,4 @@ test-results/
 src/app/api/debug/
 scrapers/lead-scraper/node_modules
 scrapers/lead-scraper/package-lock.json
+performance-history.json

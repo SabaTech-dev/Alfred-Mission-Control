@@ -229,9 +229,9 @@ async function checkHttpService(name: string, url: string, port: number): Promis
 /**
  * Collect health checks for all monitored stack services.
  *
- * NOTE: Hindsight (port 9077) was removed — migrated to native memory-core
- * (SQLite + Ollama nomic-embed). OSINT Nexus (port 8420) was also removed
- * from health checks as it is not a core service.
+ * NOTE: The legacy memory API (port 9077) was removed — migrated to native
+ * memory-core (SQLite + Ollama nomic-embed). OSINT Nexus (port 8420) was also
+ * removed from health checks as it is not a core service.
  */
 export async function collectStackServiceChecks(): Promise<StackServiceCheck[]> {
   const dockerContainers = parseDockerContainers();

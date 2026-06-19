@@ -172,7 +172,7 @@ function detectCategory(text: string): string {
   if (/ui|dashboard|visual|graf|chart|viewer|tab/.test(t)) return "ui";
   if (/test|qa|e2e|benchmark/.test(t)) return "testing";
   if (/deploy|docker|dns|subdomain|infra/.test(t)) return "infra";
-  if (/memory|hindsight|embedding|vector|graph/.test(t)) return "memory";
+  if (/memory|memory-core|embedding|vector|graph/.test(t)) return "memory";
   if (/mcp|skill|plugin|integration/.test(t)) return "integration";
   if (/security|audit|osint/.test(t)) return "security";
   if(/research|autoresearch|gepa|dspy|optim/.test(t)) return "research";
