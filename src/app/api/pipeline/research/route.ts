@@ -275,7 +275,10 @@ export async function GET() {
     });
   } catch (error) {
     console.error("Pipeline research GET error:", error);
-    const msg = error instanceof Error ? error.message : String(error);
-    return NextResponse.json({ error: "Failed to load research pipeline", detail: msg }, { status: 500 });
+    // Don't leak internal error details (paths, FS errors) to the client.
+    return NextResponse.json(
+      { error: "Failed to load research pipeline" },
+      { status: 500 }
+    );
   }
 }

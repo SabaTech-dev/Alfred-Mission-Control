@@ -45,6 +45,7 @@ const STAGE_STATUS_MAP: Record<PipelineStage, KanbanTask["status"]> = {
   negotiation: "in_progress",
   won: "in_progress",
   lost: "backlog",
+  done: "done",
 };
 
 /** Reverse map: when all tasks reach a status, advance opportunity stage */

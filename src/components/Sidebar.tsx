@@ -64,6 +64,7 @@ const baseNavGroups: NavGroup[] = [
       { href: "/subagents", label: "Sub-Agents", icon: Bot },
       { href: "/office", label: "🎮 Office", icon: Gamepad2, highlight: true },
     ],
+  },
   {
     title: "Mission Control",
     items: [

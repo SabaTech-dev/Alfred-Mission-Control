@@ -195,7 +195,10 @@ export function listOpportunities(): Opportunity[] {
 
 export function getOpportunity(id: string): Opportunity | null {
   const db = getDb();
-  return db.prepare("SELECT * FROM opportunities WHERE id = ?").get(id) as Opportunity | null;
+  // better-sqlite3 returns `undefined` for no-match; coerce to `null` so the
+  // function honours its declared `Opportunity | null` signature and callers
+  // can rely on a stable "not found" value (null, not undefined).
+  return (db.prepare("SELECT * FROM opportunities WHERE id = ?").get(id) as Opportunity | null) ?? null;
 }
 
 // Whitelist de columnas permitidas para SQL injection prevention

@@ -7,6 +7,7 @@
  * Format: OPENCLAW_AGENT_KEYS=boti:sk-key-1,leo:sk-key-2,memo:sk-key-3
  */
 import { NextRequest, NextResponse } from "next/server";
+import { timingSafeEqual } from "crypto";
 
 // ============================================================================
 // Types
@@ -59,6 +60,24 @@ export function resetAgentKeysCache(): void {
 // ============================================================================
 
 /**
+ * Compare two strings in constant time to mitigate timing side-channel attacks.
+ * Returns true if the strings are byte-equal. Length mismatch still consumes
+ * a comparison so that an attacker cannot use response-time differences to
+ * brute-force the key length or contents.
+ */
+function constantTimeEqual(a: string, b: string): boolean {
+  const aBuf = Buffer.from(a, "utf-8");
+  const bBuf = Buffer.from(b, "utf-8");
+  // If lengths differ, compare against itself to keep the call duration
+  // independent of the secret length, then return false.
+  if (aBuf.length !== bBuf.length) {
+    timingSafeEqual(aBuf, aBuf);
+    return false;
+  }
+  return timingSafeEqual(aBuf, bBuf);
+}
+
+/**
  * Validate agent authentication from request headers
  *
  * Required headers:
@@ -79,7 +98,7 @@ export function validateAgentAuth(request: NextRequest): string | null {
   const keys = getAgentKeys();
   const expectedKey = keys.get(agentId);
 
-  if (!expectedKey || expectedKey !== agentKey) {
+  if (!expectedKey || !constantTimeEqual(agentKey, expectedKey)) {
     return null;
   }
 
