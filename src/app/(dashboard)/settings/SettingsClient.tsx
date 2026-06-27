@@ -44,7 +44,10 @@ export default function SettingsClient({ initialSystemData }: SettingsClientProp
       setSystemData(data);
       setLastRefresh(new Date());
     } catch (error) {
-      console.error("Failed to fetch system data:", error);
+      // Swallow abort errors from page navigation
+      if (!(error instanceof TypeError && error.message === "Failed to fetch")) {
+        console.error("Failed to fetch system data:", error);
+      }
     } finally {
       setLoading(false);
     }

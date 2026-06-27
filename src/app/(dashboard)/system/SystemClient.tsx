@@ -35,7 +35,10 @@ export default function SystemClient({ initialData }: { initialData: SystemData 
           setLastUpdated(new Date());
         }
       } catch (error) {
-        console.error("Failed to fetch system data:", error);
+        // Swallow abort errors from page navigation
+        if (!(error instanceof TypeError && error.message === "Failed to fetch")) {
+          console.error("Failed to fetch system data:", error);
+        }
       } finally {
         setLoading(false);
       }

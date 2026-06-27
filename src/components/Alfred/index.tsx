@@ -78,7 +78,10 @@ export function StatusBar() {
           setSystemData(data);
         }
       } catch (error) {
-        console.error("Failed to fetch system monitor data:", error);
+        // Swallow abort errors from navigation — only log real failures
+        if (!(error instanceof TypeError && error.message === "Failed to fetch")) {
+          console.error("Failed to fetch system monitor data:", error);
+        }
       } finally {
         setLoading(false);
       }

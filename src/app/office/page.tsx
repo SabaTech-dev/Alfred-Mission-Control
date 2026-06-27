@@ -88,5 +88,5 @@ export default async function OfficePage() {
   // Load agents directly from openclaw.json (no HTTP, no API)
   const agents = await loadOfficeAgents();
 
-  return <Office3D initialAgents={agents} />;
+  return <Office3DClient initialAgents={agents} />;
 }
