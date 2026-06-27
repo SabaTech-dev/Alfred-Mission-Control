@@ -7,7 +7,7 @@
  * Format: OPENCLAW_AGENT_KEYS=boti:sk-key-1,leo:sk-key-2,memo:sk-key-3
  */
 import { NextRequest, NextResponse } from "next/server";
-import { timingSafeEqual } from "crypto";
+// Edge Runtime: no Node.js 'crypto' imports — use Web APIs only
 
 // ============================================================================
 // Types
@@ -66,15 +66,24 @@ export function resetAgentKeysCache(): void {
  * brute-force the key length or contents.
  */
 function constantTimeEqual(a: string, b: string): boolean {
-  const aBuf = Buffer.from(a, "utf-8");
-  const bBuf = Buffer.from(b, "utf-8");
-  // If lengths differ, compare against itself to keep the call duration
-  // independent of the secret length, then return false.
-  if (aBuf.length !== bBuf.length) {
-    timingSafeEqual(aBuf, aBuf);
-    return false;
+  // Edge-compatible: uses TextEncoder (Web API) + manual constant-time XOR.
+  // No Buffer, no node:crypto — works in Next.js Edge Runtime.
+  const encoder = new TextEncoder();
+  const aBuf = encoder.encode(a);
+  const bBuf = encoder.encode(b);
+
+  // Length-independent comparison: always iterate over the longer buffer
+  // so timing doesn't leak which string is the secret.
+  const maxLen = Math.max(aBuf.length, bBuf.length);
+  let result = aBuf.length ^ bBuf.length; // non-zero if lengths differ
+
+  for (let i = 0; i < maxLen; i++) {
+    const aByte = i < aBuf.length ? aBuf[i] : 0;
+    const bByte = i < bBuf.length ? bBuf[i] : 0;
+    result |= aByte ^ bByte;
   }
-  return timingSafeEqual(aBuf, bBuf);
+
+  return result === 0;
 }
 
 /**
