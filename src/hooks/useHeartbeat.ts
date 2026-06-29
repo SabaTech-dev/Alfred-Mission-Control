@@ -1,14 +1,10 @@
 import { useState, useEffect } from "react";
 
-export interface AgentHeartbeat {
-  agentId: string;
-  agentName: string;
-  workspace: string;
-  enabled: boolean;
-  every: string;
-  target: string;
-  activeHours: { start: string; end: string } | null;
-}
+// Re-export the shared type so existing imports (`import type { AgentHeartbeat }
+// from "@/hooks/useHeartbeat"`) keep working while the single source of truth
+// lives in src/lib/heartbeat-types.ts and is shared with the API route.
+export type { AgentHeartbeat } from "@/lib/heartbeat-types";
+import type { AgentHeartbeat } from "@/lib/heartbeat-types";
 
 export const HEARTBEAT_TEMPLATE = `# Heartbeat
 

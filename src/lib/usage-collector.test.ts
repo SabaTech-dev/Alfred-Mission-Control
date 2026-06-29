@@ -8,6 +8,7 @@ import {
   calculateSnapshot,
   initDatabase,
   saveSnapshot,
+  getRecentTokenHistoryByAgent,
   type SessionData,
   type UsageSnapshot,
   type OpenClawStatus,
@@ -506,6 +507,43 @@ describe("usage-collector", () => {
       expect(typeof snapshot.outputTokens).toBe("number");
       expect(typeof snapshot.totalTokens).toBe("number");
       expect(typeof snapshot.cost).toBe("number");
+    });
+  });
+
+  describe("getRecentTokenHistoryByAgent", () => {
+    it("returns empty object when database does not exist", () => {
+      const result = getRecentTokenHistoryByAgent("/nonexistent/path/missing.db");
+      expect(result).toEqual({});
+    });
+
+    it("returns recent token totals per agent ordered oldest first", () => {
+      const db = initDatabase(TEST_DB_PATH);
+      const base = Date.now();
+      const snapshots: UsageSnapshot[] = [
+        { timestamp: base, date: "2026-06-29", hour: 10, agentId: "coder", model: "m", inputTokens: 10, outputTokens: 0, totalTokens: 100, cost: 0 },
+        { timestamp: base + 1, date: "2026-06-29", hour: 11, agentId: "coder", model: "m", inputTokens: 10, outputTokens: 0, totalTokens: 200, cost: 0 },
+        { timestamp: base + 2, date: "2026-06-29", hour: 12, agentId: "coder", model: "m", inputTokens: 10, outputTokens: 0, totalTokens: 300, cost: 0 },
+        { timestamp: base, date: "2026-06-29", hour: 10, agentId: "research", model: "m", inputTokens: 0, outputTokens: 0, totalTokens: 50, cost: 0 },
+      ];
+      for (const s of snapshots) saveSnapshot(db, s);
+      db.close();
+
+      const result = getRecentTokenHistoryByAgent(TEST_DB_PATH, 3);
+
+      expect(result.coder).toEqual([100, 200, 300]);
+      expect(result.research).toEqual([50]);
+    });
+
+    it("limits to the requested number of points", () => {
+      const db = initDatabase(TEST_DB_PATH);
+      const base = Date.now();
+      for (let i = 0; i < 6; i++) {
+        saveSnapshot(db, { timestamp: base + i, date: "2026-06-29", hour: i, agentId: "coder", model: "m", inputTokens: 0, outputTokens: 0, totalTokens: i * 10, cost: 0 });
+      }
+      db.close();
+
+      const result = getRecentTokenHistoryByAgent(TEST_DB_PATH, 3);
+      expect(result.coder).toEqual([30, 40, 50]);
     });
   });
 });

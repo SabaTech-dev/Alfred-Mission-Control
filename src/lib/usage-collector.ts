@@ -380,3 +380,31 @@ export async function collectUsageFromFilesAndSave(
     db.close();
   }
 }
+
+/**
+ * Get recent token usage history per agent for sparkline rendering.
+ * Returns a map of agentId → array of total token counts (oldest first).
+ */
+export function getRecentTokenHistoryByAgent(dbPath: string, points = 12): Record<string, number[]> {
+  if (!fs.existsSync(dbPath)) {
+    return {};
+  }
+
+  const db = new Database(dbPath);
+  try {
+    const agents = db.prepare("SELECT DISTINCT agent_id FROM usage_snapshots ORDER BY agent_id").all() as { agent_id: string }[];
+    const result: Record<string, number[]> = {};
+
+    for (const { agent_id } of agents) {
+      const rows = db.prepare(
+        "SELECT total_tokens FROM usage_snapshots WHERE agent_id = ? ORDER BY timestamp DESC LIMIT ?"
+      ).all(agent_id, points) as { total_tokens: number }[];
+
+      result[agent_id] = rows.map((r) => r.total_tokens).reverse();
+    }
+
+    return result;
+  } finally {
+    db.close();
+  }
+}

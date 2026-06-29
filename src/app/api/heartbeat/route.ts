@@ -3,25 +3,16 @@ import { readFileSync, writeFileSync, existsSync, mkdirSync } from "fs";
 import { join, dirname } from "path";
 import { requireAgentOrSessionAuth } from "@/lib/auth-helpers";
 import { getAgentIdentity } from "@/lib/kanban/kanban-agents";
+import { enrichHeartbeats, type SessionUsageEntry, type StatusEntry } from "@/lib/heartbeat-metrics";
+import { collectUsageFromFiles, getRecentTokenHistoryByAgent } from "@/lib/usage-collector";
+import { getAgentStatusList } from "@/operations";
 
 export const dynamic = "force-dynamic";
 
 const OPENCLAW_DIR = process.env.OPENCLAW_DIR || "/home/joker/.openclaw";
 
-export interface AgentHeartbeat {
-  agentId: string;
-  agentName: string;
-  workspace: string;
-  enabled: boolean;
-  every: string;
-  target: string;
-  activeHours: { start: string; end: string } | null;
-  identity?: {
-    name: string;
-    role: string;
-    avatar: string | null;
-  } | null;
-}
+// Type re-exported from shared types for backwards compatibility
+export type { AgentHeartbeat } from "@/lib/heartbeat-types";
 
 export interface HeartbeatStatus {
   enabled: boolean;
@@ -139,7 +130,43 @@ export async function GET(request: NextRequest) {
     }
 
     // Get agent heartbeats with workspace info
-    const agentHeartbeats = getAgentHeartbeats();
+    const baseHeartbeats = getAgentHeartbeats();
+
+    // Enrich with runtime metrics (tokens, model, session status)
+    let agentHeartbeats = baseHeartbeats;
+    try {
+      // Gather session usage data
+      let sessions: SessionUsageEntry[] = [];
+      try {
+        sessions = collectUsageFromFiles();
+      } catch (e) {
+        console.error("[heartbeat] Usage collection failed:", e);
+      }
+
+      // Gather agent status (active sessions)
+      let statuses: StatusEntry[] = [];
+      try {
+        const statusResult = await getAgentStatusList();
+        if (statusResult.success && statusResult.data) {
+          statuses = statusResult.data;
+        }
+      } catch (e) {
+        console.error("[heartbeat] Status fetch failed:", e);
+      }
+
+      // Gather token history for sparklines
+      let tokenHistoryByAgent: Record<string, number[]> = {};
+      try {
+        const usageDbPath = join(OPENCLAW_DIR, "workspace", "amc-data", "usage-collector.db");
+        tokenHistoryByAgent = getRecentTokenHistoryByAgent(usageDbPath, 12);
+      } catch (e) {
+        console.error("[heartbeat] Token history fetch failed:", e);
+      }
+
+      agentHeartbeats = enrichHeartbeats(baseHeartbeats, sessions, statuses, tokenHistoryByAgent);
+    } catch (e) {
+      console.error("[heartbeat] Enrichment failed, returning base heartbeats:", e);
+    }
 
     // Determine which HEARTBEAT.md to read
     let heartbeatMd = "";
