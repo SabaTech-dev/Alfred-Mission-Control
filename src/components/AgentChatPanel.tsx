@@ -5,9 +5,11 @@ import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { AlertTriangle, Plus } from "lucide-react";
 
 import { useToast } from "@/components/Toast";
+import { AutoVoiceToggle } from "@/components/AutoVoiceToggle";
 import { ChatInputForm } from "@/components/ChatInputForm";
 import { ChatMessageList, MessageItem } from "@/components/ChatMessageList";
 import { useI18n } from "@/i18n/provider";
+import { useAutoVoice } from "@/hooks/useAutoVoice";
 import { authFetch } from "@/lib/auth-fetch";
 import { getErrorMessage, mapGatewayScopeError, processChatStream } from "@/lib/chat-stream";
 
@@ -59,6 +61,13 @@ export function AgentChatPanel() {
   const [input, setInput] = useState("");
   const appliedUrlParamsRef = useRef(false);
   const listRef = useRef<HTMLDivElement | null>(null);
+
+  // Auto-T: reproduce respuestas del asistente en voz automaticamente
+  const autoVoice = useAutoVoice(
+    messages
+      .filter((m) => !isTechnicalMessage(m))
+      .map((m) => ({ id: m.id, role: m.role, content: m.content }))
+  );
 
   useEffect(() => {
     const loadAgents = async () => {
@@ -205,6 +214,13 @@ export function AgentChatPanel() {
             </button>
           </div>
         </label>
+        <div className="flex items-end">
+          <AutoVoiceToggle
+            isEnabled={autoVoice.isEnabled}
+            isSpeaking={autoVoice.isSpeaking}
+            onToggle={autoVoice.toggle}
+          />
+        </div>
       </div>
 
       {readOnly && (
