@@ -1,11 +1,15 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 import { changePassword, clearActivityLog, getSystemData } from "@/operations/system-ops";
+import { requireAgentOrSessionAuth } from "@/lib/auth-helpers";
 
 export const dynamic = "force-dynamic";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    const auth = await requireAgentOrSessionAuth(request);
+    if (!auth.authorized) return auth.error;
+
     const systemInfo = await getSystemData();
     return NextResponse.json(systemInfo);
   } catch (error) {
@@ -14,8 +18,10 @@ export async function GET() {
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
+    const auth = await requireAgentOrSessionAuth(request);
+    if (!auth.authorized) return auth.error;
     const { action, data } = await request.json();
 
     if (action === "change_password") {

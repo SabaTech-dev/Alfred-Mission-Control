@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { fetchAndAnalyze } from "@/lib/seo/analyzer";
+import { isPrivateIP } from "@/lib/security/ssrf-guard";
 
 export const dynamic = "force-dynamic";
 
@@ -33,10 +34,27 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+    if (parsed.protocol !== "https:") {
       return NextResponse.json(
-        { error: "Only http and https URLs are supported." },
+        { error: "Only https URLs are supported." },
         { status: 400 },
+      );
+    }
+
+    // SSRF guard: block private/internal IPs and metadata endpoints
+    const hostname = parsed.hostname.toLowerCase();
+    if (isPrivateIP(hostname)) {
+      return NextResponse.json(
+        { error: "Internal addresses are not allowed." },
+        { status: 403 },
+      );
+    }
+
+    // Block cloud metadata endpoints
+    if (hostname === "169.254.169.254" || hostname === "metadata.google.internal") {
+      return NextResponse.json(
+        { error: "Internal addresses are not allowed." },
+        { status: 403 },
       );
     }
 
