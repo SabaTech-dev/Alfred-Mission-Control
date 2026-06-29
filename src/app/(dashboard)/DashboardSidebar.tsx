@@ -6,10 +6,12 @@ import {
   Brain,
   BookOpen,
   Calendar,
+  Code,
   Puzzle,
   Server,
   Terminal,
   TrendingUp,
+  Users,
 } from "lucide-react";
 
 import { MoodWidget } from "@/components/MoodWidget";
@@ -24,6 +26,8 @@ const QUICK_LINKS = [
   { href: "/skills", icon: Puzzle, labelKey: "dashboard.skills", color: "#4ade80" },
   { href: "/seo", icon: TrendingUp, labelKey: "dashboard.seo", color: "#fbbf24" },
   { href: "/notepad", icon: BookOpen, labelKey: "dashboard.notebook", color: "#f472b6" },
+  { href: "/cowork", icon: Users, labelKey: "dashboard.cowork.title", color: "#22d3ee" },
+  { href: "/code", icon: Code, labelKey: "dashboard.code.title", color: "#94a3b8" },
 ] as const;
 
 export function DashboardSidebar() {

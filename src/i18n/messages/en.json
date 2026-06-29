@@ -93,16 +93,16 @@
     "none": "None",
     "to": "to",
     "of": "of",
-    "endOfList": "\u2014 End of list \u2014",
+    "endOfList": "— End of list —",
     "noResults": "No results found",
-    "viewAll": "View all \u2192",
+    "viewAll": "View all →",
     "showing": "Showing {count} of {total}",
     "exportCsv": "Export CSV"
   },
   "language": {
     "label": "Language",
     "english": "English",
-    "spanish": "Espa\u00f1ol"
+    "spanish": "Español"
   },
   "login": {
     "subtitle": "Enter your password to access",
@@ -151,6 +151,8 @@
     "system": "System",
     "settings": "Settings",
     "swarm": "Swarm",
+    "cowork": "Cowork",
+    "code": "Code",
     "logout": "Logout"
   },
   "help": {
@@ -305,10 +307,18 @@
     "costs-alerts": {
       "title": "Costs & Alerts",
       "description": "Budget tracking, cost anomalies, and spending alerts across models and agents."
+    },
+    "cowork": {
+      "title": "Cowork",
+      "description": "Multi-agent collaboration panel. Run several agents side by side, watch their status, and coordinate tasks in real time."
+    },
+    "code": {
+      "title": "Code",
+      "description": "Lightweight code tools. Browse files, inspect content, compare diffs, and draft pull request descriptions."
     }
   },
   "topbar": {
-    "search": "Search... \u2318K",
+    "search": "Search... ⌘K",
     "logout": "Logout",
     "location": "Server"
   },
@@ -339,7 +349,7 @@
     "seo": "SEO",
     "quickActions": "Quick Actions",
     "openOffice": "Open Office",
-    "smartSuggestions": "\ud83d\udca1 Smart Suggestions",
+    "smartSuggestions": "💡 Smart Suggestions",
     "telemetry": {
       "loading": "Loading real telemetry...",
       "loadError": "Unable to load real telemetry",
@@ -347,6 +357,39 @@
       "stale": "Telemetry is stale ({seconds}s old)",
       "degradedTitle": "Telemetry degraded in {count} section(s)",
       "degradedItem": "{section}: {message}"
+    },
+    "code": {
+      "title": "title",
+      "subtitle": "subtitle",
+      "createPr": "createPr",
+      "browse": "browse",
+      "empty": "empty",
+      "viewer": "viewer",
+      "viewerPlaceholder": "viewerPlaceholder",
+      "diff": "diff",
+      "before": "before",
+      "beforePlaceholder": "beforePlaceholder",
+      "after": "after",
+      "afterPlaceholder": "afterPlaceholder",
+      "prTitle": "prTitle",
+      "prDescription": "prDescription",
+      "cancel": "cancel",
+      "copyPr": "copyPr",
+      "copied": "copied"
+    },
+    "cowork": {
+      "title": "Cowork",
+      "subtitle": "Multi-agent collaboration",
+      "startSession": "Start Session",
+      "endSession": "End Session",
+      "selectAgent": "Select Agent",
+      "status": "Status",
+      "task": "Task",
+      "log": "Log",
+      "idle": "Idle",
+      "running": "Running",
+      "error": "Error",
+      "empty": "No active session"
     }
   },
   "fleet": {
@@ -368,7 +411,7 @@
   "agents": {
     "title": "Agents",
     "loading": "Loading agents...",
-    "overview": "Multi-agent system overview \u2022 {count} agents configured",
+    "overview": "Multi-agent system overview • {count} agents configured",
     "cards": "Agent Cards",
     "organigrama": "Organigrama",
     "hierarchy": "Agent Hierarchy",
@@ -606,7 +649,7 @@
     "title": "Log Viewer",
     "subtitle": "Real-time log streaming from services",
     "filterLogs": "Filter logs...",
-    "auto": "\u2193 Auto",
+    "auto": "↓ Auto",
     "stream": "Stream",
     "stop": "Stop",
     "live": "LIVE",
@@ -715,7 +758,7 @@
     "noSkills": "No skills configured. Add skills to your workspace to see them here.",
     "philosophyTitle": "Working Philosophy",
     "builtWith": "Built with {heart} on {link}",
-    "builtWithSimple": "Built with \u2665 on",
+    "builtWithSimple": "Built with ♥ on",
     "coPilot": "Your AI co-pilot",
     "model": "Model",
     "workspace": "Workspace",
@@ -724,7 +767,7 @@
     "nodeVersion": "Node.js",
     "system": "System",
     "quickInfo": "Quick Info",
-    "footer": "Made with \u2764\ufe0f by {name}",
+    "footer": "Made with ❤️ by {name}",
     "traits": {
       "direct": "Direct",
       "directDesc": "No fluff, straight to the point",
@@ -738,8 +781,8 @@
     "philosophy": {
       "1": "Actions over words. Less talking, more doing.",
       "2": "Having opinions is fine. An assistant without personality is just a search engine.",
-      "3": "Try before asking. Read the file, search, explore \u2014 then ask if needed.",
-      "4": "Privacy is sacred. Access \u2260 permission to share."
+      "3": "Try before asking. Read the file, search, explore — then ask if needed.",
+      "4": "Privacy is sacred. Access ≠ permission to share."
     }
   },
   "systemInfo": {
@@ -796,8 +839,8 @@
     "cpuLabel": "CPU"
   },
   "sessions": {
-    "title": "\ud83d\udcac Session History",
-    "subtitle": "All OpenClaw agent sessions \u2014 main, cron, sub-agents, and chats",
+    "title": "💬 Session History",
+    "subtitle": "All OpenClaw agent sessions — main, cron, sub-agents, and chats",
     "totalSessions": "Total Sessions",
     "totalTokens": "Total Tokens",
     "cronRuns": "Cron Runs",
@@ -897,6 +940,55 @@
     "untitled": "Untitled",
     "saving": "Saving..."
   },
+  "cowork": {
+    "title": "Cowork",
+    "subtitle": "Run multiple agents side by side and coordinate their work",
+    "startSession": "Start Session",
+    "endSession": "End Session",
+    "empty": "Start a cowork session to collaborate",
+    "emptyHint": "Pick agents and launch a session to see them work together here.",
+    "panelCount": "Panels",
+    "selectAgent": "Select agent",
+    "noAgents": "No agents available",
+    "loadingAgents": "Loading agents...",
+    "status": "Status",
+    "statusIdle": "Idle",
+    "statusRunning": "Running",
+    "statusError": "Error",
+    "currentTask": "Current task",
+    "taskPlaceholder": "Describe the task this agent is working on...",
+    "log": "Log",
+    "logPlaceholder": "Agent output will appear here...",
+    "agent": "Agent",
+    "layoutSaved": "Layout saved"
+  },
+  "code": {
+    "title": "Code",
+    "subtitle": "Browse files, inspect content, and compare diffs",
+    "filePath": "Directory path",
+    "pathPlaceholder": "src/lib",
+    "browse": "Browse",
+    "files": "Files",
+    "noFiles": "No files found",
+    "selectFile": "Select a file to view",
+    "viewer": "Code viewer",
+    "codePlaceholder": "File content will appear here...",
+    "diff": "Diff viewer",
+    "before": "Before",
+    "after": "After",
+    "diffEmpty": "Enter before/after content to see the diff",
+    "createPr": "Create PR",
+    "prTitle": "PR title",
+    "prDescription": "PR description",
+    "prTitlePlaceholder": "feat: add new feature",
+    "prDescriptionPlaceholder": "Describe what this PR changes and why...",
+    "prBodyCopied": "PR body copied to clipboard",
+    "copyPrBody": "Copy PR body",
+    "cancel": "Cancel",
+    "added": "added",
+    "removed": "removed",
+    "lines": "lines"
+  },
   "routines": {
     "title": "Routines",
     "subtitle": "Preset workflows to kick off common operations",
@@ -939,10 +1031,10 @@
     "tokens": "tokens",
     "loadMore": "Load more activities",
     "loadingMore": "Loading...",
-    "endOfLog": "\u2014 End of activity log \u2014"
+    "endOfLog": "— End of activity log —"
   },
   "analytics": {
-    "title": "\ud83d\udcca Analytics",
+    "title": "📊 Analytics",
     "subtitle": "Insights, trends, and costs from agent activity",
     "loading": "Loading analytics...",
     "loadError": "Failed to load analytics data",
@@ -1073,8 +1165,8 @@
   "heartbeat": {
     "statusTitle": "Heartbeat Status",
     "status": "Status",
-    "active": "\u2705 Active",
-    "notConfigured": "\u26aa Not configured",
+    "active": "✅ Active",
+    "notConfigured": "⚪ Not configured",
     "interval": "Interval",
     "every": "Every {interval}",
     "target": "Target",

@@ -149,8 +149,10 @@
     "actions": "Acciones",
     "calendar": "Calendario",
     "system": "Sistema",
-    "settings": "Config",
+    "settings": "Ajustes",
     "swarm": "Swarm",
+    "cowork": "Cowork",
+    "code": "Código",
     "logout": "Salir"
   },
   "help": {
@@ -305,6 +307,14 @@
     "costs-alerts": {
       "title": "Costes y Alertas",
       "description": "Seguimiento de presupuesto, anomalías de coste y alertas de gasto por modelo y agente."
+    },
+    "cowork": {
+      "title": "Cowork",
+      "description": "Panel de colaboración multi-agente. Ejecuta varios agentes a la vez, observa su estado y coordina tareas en tiempo real."
+    },
+    "code": {
+      "title": "Código",
+      "description": "Herramientas ligeras de código. Explora archivos, inspecciona contenido, compara diffs y redacta descripciones de pull request."
     }
   },
   "topbar": {
@@ -347,7 +357,40 @@
       "degradedTitle": "Telemetría degradada en {count} sección(es)",
       "degradedItem": "{section}: {message}"
     },
-    "seo": "SEO"
+    "seo": "SEO",
+    "code": {
+      "title": "Code",
+      "subtitle": "Visor de código y diff",
+      "createPr": "Crear PR",
+      "browse": "Explorar",
+      "empty": "Sin archivos",
+      "viewer": "Visor",
+      "viewerPlaceholder": "Selecciona un archivo...",
+      "diff": "Diff",
+      "before": "Antes",
+      "beforePlaceholder": "Código original...",
+      "after": "Después",
+      "afterPlaceholder": "Código modificado...",
+      "prTitle": "Título del PR",
+      "prDescription": "Descripción",
+      "cancel": "Cancelar",
+      "copyPr": "Copiar PR",
+      "copied": "¡Copiado!"
+    },
+    "cowork": {
+      "title": "Cowork",
+      "subtitle": "Colaboración multi-agente",
+      "startSession": "Iniciar Sesión",
+      "endSession": "Terminar Sesión",
+      "selectAgent": "Seleccionar Agente",
+      "status": "Estado",
+      "task": "Tarea",
+      "log": "Log",
+      "idle": "Inactivo",
+      "running": "Ejecutando",
+      "error": "Error",
+      "empty": "Sin sesión activa"
+    }
   },
   "fleet": {
     "title": "Flota",
@@ -896,6 +939,55 @@
     "deleteConfirm": "¿Eliminar esta nota?",
     "untitled": "Sin título",
     "saving": "Guardando..."
+  },
+  "cowork": {
+    "title": "Cowork",
+    "subtitle": "Ejecuta varios agentes a la vez y coordina su trabajo",
+    "startSession": "Iniciar sesión",
+    "endSession": "Terminar sesión",
+    "empty": "Inicia una sesión de cowork para colaborar",
+    "emptyHint": "Elige agentes y lanza una sesión para verlos trabajar juntos aquí.",
+    "panelCount": "Paneles",
+    "selectAgent": "Seleccionar agente",
+    "noAgents": "No hay agentes disponibles",
+    "loadingAgents": "Cargando agentes...",
+    "status": "Estado",
+    "statusIdle": "Inactivo",
+    "statusRunning": "En ejecución",
+    "statusError": "Error",
+    "currentTask": "Tarea actual",
+    "taskPlaceholder": "Describe la tarea en la que está trabajando este agente...",
+    "log": "Registro",
+    "logPlaceholder": "La salida del agente aparecerá aquí...",
+    "agent": "Agente",
+    "layoutSaved": "Diseño guardado"
+  },
+  "code": {
+    "title": "Código",
+    "subtitle": "Explora archivos, inspecciona contenido y compara diffs",
+    "filePath": "Ruta del directorio",
+    "pathPlaceholder": "src/lib",
+    "browse": "Explorar",
+    "files": "Archivos",
+    "noFiles": "No se encontraron archivos",
+    "selectFile": "Selecciona un archivo para verlo",
+    "viewer": "Visor de código",
+    "codePlaceholder": "El contenido del archivo aparecerá aquí...",
+    "diff": "Visor de diferencias",
+    "before": "Antes",
+    "after": "Después",
+    "diffEmpty": "Introduce contenido antes/después para ver el diff",
+    "createPr": "Crear PR",
+    "prTitle": "Título del PR",
+    "prDescription": "Descripción del PR",
+    "prTitlePlaceholder": "feat: añadir nueva funcionalidad",
+    "prDescriptionPlaceholder": "Describe qué cambia este PR y por qué...",
+    "prBodyCopied": "Cuerpo del PR copiado al portapapeles",
+    "copyPrBody": "Copiar cuerpo del PR",
+    "cancel": "Cancelar",
+    "added": "añadidas",
+    "removed": "eliminadas",
+    "lines": "líneas"
   },
   "routines": {
     "title": "Rutinas",
