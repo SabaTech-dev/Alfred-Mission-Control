@@ -4,6 +4,7 @@ import { FormEvent } from "react";
 import { Loader2, SendHorizonal } from "lucide-react";
 
 import { useI18n } from "@/i18n/provider";
+import { estimateTokens } from "@/lib/token-estimate";
 
 interface ChatInputFormProps {
   input: string;
@@ -23,6 +24,8 @@ export function ChatInputForm({
   onSubmit,
 }: ChatInputFormProps) {
   const { t } = useI18n();
+  // chars / 4 approximation — good enough for a live counter, never blocks on a tokenizer
+  const tokenEstimate = estimateTokens(input);
 
   return (
     <form onSubmit={onSubmit} className="border-t p-4" style={{ borderColor: "var(--border)" }}>
@@ -52,6 +55,13 @@ export function ChatInputForm({
           {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <SendHorizonal className="h-4 w-4" />}
         </button>
       </div>
+      {input.trim().length > 0 ? (
+        <div className="mt-1.5 flex justify-end text-xs" style={{ color: "var(--text-muted)" }}>
+          <span>
+            {t("chat.tokenCounter.approx")} {tokenEstimate} {t("chat.tokenCounter.label")}
+          </span>
+        </div>
+      ) : null}
     </form>
   );
 }

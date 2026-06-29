@@ -309,7 +309,8 @@
   },
   "topbar": {
     "search": "Search... \u2318K",
-    "logout": "Logout"
+    "logout": "Logout",
+    "location": "Server"
   },
   "statusBar": {
     "services": "SVC",
@@ -334,6 +335,7 @@
     "liveLogs": "Live Logs",
     "memory": "Memory",
     "skills": "Skills",
+    "notebook": "Notebook",
     "quickActions": "Quick Actions",
     "openOffice": "Open Office",
     "smartSuggestions": "\ud83d\udca1 Smart Suggestions",
@@ -852,6 +854,67 @@
       "sendFailedTitle": "Message failed",
       "readOnlyTitle": "Read-only mode",
       "readOnlyDescription": "Gateway is offline. Sending is disabled until it reconnects."
+    },
+    "pinned": {
+      "title": "Pinned",
+      "pin": "Pin message",
+      "unpin": "Unpin message",
+      "limitReached": "Pin limit reached ({max}). Unpin another message first.",
+      "empty": "No pinned messages yet"
+    },
+    "share": {
+      "button": "Share",
+      "title": "Share conversation",
+      "download": "Download JSON",
+      "copySummary": "Copy summary",
+      "summaryCopied": "Summary copied to clipboard",
+      "downloaded": "Conversation exported",
+      "empty": "Nothing to share yet"
+    },
+    "tokenCounter": {
+      "label": "tokens",
+      "approx": "approx."
+    }
+  },
+  "notebook": {
+    "title": "Notebook",
+    "subtitle": "Markdown notes linked to your agents",
+    "newNote": "New Note",
+    "searchPlaceholder": "Search notes...",
+    "titlePlaceholder": "Note title...",
+    "contentPlaceholder": "Start writing in Markdown... (saved locally)",
+    "agent": "Linked agent",
+    "noAgent": "No agent",
+    "empty": "No notes yet",
+    "emptyHint": "Create your first note",
+    "edit": "Edit",
+    "preview": "Preview",
+    "split": "Split",
+    "created": "Created",
+    "updated": "Updated",
+    "deleteConfirm": "Delete this note?",
+    "untitled": "Untitled",
+    "saving": "Saving..."
+  },
+  "routines": {
+    "title": "Routines",
+    "subtitle": "Preset workflows to kick off common operations",
+    "open": "Open",
+    "morningBrief": {
+      "title": "Morning Brief",
+      "description": "Review agent activity, pending tasks, and system health to start the day."
+    },
+    "securitySweep": {
+      "title": "Security Sweep",
+      "description": "Audit services, firewall, and recent security-related events."
+    },
+    "e2eCheck": {
+      "title": "E2E Check",
+      "description": "Run end-to-end verification across the dashboard and key flows."
+    },
+    "costReview": {
+      "title": "Cost Review",
+      "description": "Inspect token usage and costs to keep spending under control."
     }
   },
   "activity": {

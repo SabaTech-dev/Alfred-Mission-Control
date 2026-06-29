@@ -9,6 +9,7 @@ import { AutoVoiceToggle } from "@/components/AutoVoiceToggle";
 import { NotificationDropdown } from "@/components/NotificationDropdown";
 import { LiveStatusIndicator } from "@/components/LiveStatusIndicator";
 import { GatewayStatusBadge } from "@/components/GatewayStatusBadge";
+import { SystemLocationBadge } from "@/components/Alfred/SystemLocationBadge";
 import { useAutoVoiceContext } from "@/components/AutoVoiceProvider";
 import { BRANDING } from "@/config/branding";
 import { useI18n } from "@/i18n/provider";
@@ -104,6 +105,7 @@ export function TopBar() {
             {BRANDING.appTitle}
           </h1>
           <GatewayStatusBadge />
+          <SystemLocationBadge />
           <LiveStatusIndicator color="var(--success)" size={8} mode="pulse" />
         </div>
 

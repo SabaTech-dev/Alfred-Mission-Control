@@ -309,7 +309,8 @@
   },
   "topbar": {
     "search": "Buscar... \u2318K",
-    "logout": "Cerrar sesi\u00f3n"
+    "logout": "Cerrar sesi\u00f3n",
+    "location": "Servidor"
   },
   "statusBar": {
     "services": "SVC",
@@ -334,6 +335,7 @@
     "liveLogs": "Logs en vivo",
     "memory": "Memoria",
     "skills": "Skills",
+    "notebook": "Libreta",
     "quickActions": "Acciones r\u00e1pidas",
     "openOffice": "Abrir Oficina",
     "smartSuggestions": "\ud83d\udca1 Sugerencias inteligentes",
@@ -852,6 +854,67 @@
       "sendFailedTitle": "Fall\u00f3 el env\u00edo",
       "readOnlyTitle": "Modo solo lectura",
       "readOnlyDescription": "El gateway est\u00e1 offline. El env\u00edo queda deshabilitado hasta reconectar."
+    },
+    "pinned": {
+      "title": "Fijados",
+      "pin": "Fijar mensaje",
+      "unpin": "Desfijar mensaje",
+      "limitReached": "L\u00edmite de fijados alcanzado ({max}). Desfij\u00e1 otro mensaje primero.",
+      "empty": "Todav\u00eda no hay mensajes fijados"
+    },
+    "share": {
+      "button": "Compartir",
+      "title": "Compartir conversaci\u00f3n",
+      "download": "Descargar JSON",
+      "copySummary": "Copiar resumen",
+      "summaryCopied": "Resumen copiado al portapapeles",
+      "downloaded": "Conversaci\u00f3n exportada",
+      "empty": "No hay nada que compartir todav\u00eda"
+    },
+    "tokenCounter": {
+      "label": "tokens",
+      "approx": "aprox."
+    }
+  },
+  "notebook": {
+    "title": "Libreta",
+    "subtitle": "Notas en Markdown vinculadas a tus agentes",
+    "newNote": "Nueva Nota",
+    "searchPlaceholder": "Buscar notas...",
+    "titlePlaceholder": "T\u00edtulo de la nota...",
+    "contentPlaceholder": "Escrib\u00ed en Markdown... (se guarda localmente)",
+    "agent": "Agente vinculado",
+    "noAgent": "Sin agente",
+    "empty": "No hay notas todav\u00eda",
+    "emptyHint": "Cre\u00e1 tu primera nota",
+    "edit": "Editar",
+    "preview": "Vista",
+    "split": "Dividir",
+    "created": "Creada",
+    "updated": "Actualizada",
+    "deleteConfirm": "\u00bfEliminar esta nota?",
+    "untitled": "Sin t\u00edtulo",
+    "saving": "Guardando..."
+  },
+  "routines": {
+    "title": "Rutinas",
+    "subtitle": "Flujos preconfigurados para arrancar operaciones habituales",
+    "open": "Abrir",
+    "morningBrief": {
+      "title": "Resumen Ma\u00f1anero",
+      "description": "Revis\u00e1 actividad de agentes, tareas pendientes y salud del sistema."
+    },
+    "securitySweep": {
+      "title": "Barrido de Seguridad",
+      "description": "Audit\u00e1 servicios, firewall y eventos de seguridad recientes."
+    },
+    "e2eCheck": {
+      "title": "Verificaci\u00f3n E2E",
+      "description": "Ejecut\u00e1 la verificaci\u00f3n de extremo a extremo del dashboard y flujos clave."
+    },
+    "costReview": {
+      "title": "Revisi\u00f3n de Costos",
+      "description": "Inspeccion\u00e1 el uso de tokens y costos para mantener el gasto a raya."
     }
   },
   "activity": {

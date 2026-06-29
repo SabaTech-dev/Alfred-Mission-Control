@@ -1,411 +1,456 @@
 "use client";
 
-import { authFetch } from "@/lib/auth-fetch";
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
+  ChevronLeft,
+  ChevronRight,
+  Eye,
+  Columns,
+  Download,
+  FileText,
+  Pencil,
+  Pin,
   Plus,
   Search,
   Trash2,
-  Download,
-  X,
-  FileText,
-  Clock,
-  ChevronLeft,
-  ChevronRight,
 } from "lucide-react";
 
-interface Note {
+import { useI18n } from "@/i18n/provider";
+import { authFetch } from "@/lib/auth-fetch";
+import {
+  createNote,
+  deleteNote as removeNote,
+  filterNotes,
+  loadNotes,
+  renderMarkdown,
+  upsertNote,
+  type NotebookNote,
+} from "@/lib/notebook";
+
+interface AgentOption {
   id: string;
-  title: string;
-  content: string;
-  createdAt: string;
-  updatedAt: string;
+  name: string;
 }
 
-export default function NotepadPage() {
-  const [notes, setNotes] = useState<Note[]>([]);
-  const [selectedNote, setSelectedNote] = useState<Note | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
+type ViewMode = "edit" | "preview" | "split";
+
+function formatRelative(iso: string): string {
+  const date = new Date(iso);
+  const diffMs = Date.now() - date.getTime();
+  const mins = Math.floor(diffMs / 60000);
+  const hours = Math.floor(diffMs / 3600000);
+  const days = Math.floor(diffMs / 86400000);
+  if (mins < 1) return "just now";
+  if (mins < 60) return `${mins}m`;
+  if (hours < 24) return `${hours}h`;
+  if (days < 7) return `${days}d`;
+  return date.toLocaleDateString();
+}
+
+export default function NotebookPage() {
+  const { t } = useI18n();
+  const [notes, setNotes] = useState<NotebookNote[]>([]);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
-  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [viewMode, setViewMode] = useState<ViewMode>("edit");
+  const [agents, setAgents] = useState<AgentOption[]>([]);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
-  const fetchNotes = useCallback(async () => {
-    try {
-      const res = await authFetch('/api/notepad');
-      const data = await res.json();
-      setNotes(Array.isArray(data) ? data : []);
-      if (data.length > 0 && !selectedNote) {
-        setSelectedNote(data[0]);
-      }
-    } catch (error) {
-      console.error('Failed to fetch notes:', error);
-    } finally {
-      setLoading(false);
-    }
-  }, [selectedNote]);
-
+  // Load notes from localStorage once on mount.
   useEffect(() => {
-    fetchNotes();
-  }, [fetchNotes]);
+    const loaded = loadNotes();
+    setNotes(loaded);
+    if (loaded.length > 0) setSelectedId(loaded[0].id);
+  }, []);
 
-  const createNote = async () => {
-    try {
-      const res = await authFetch('/api/notepad', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title: '', content: '' }),
-      });
-      const note = await res.json();
-      setNotes([note, ...notes]);
-      setSelectedNote(note);
-    } catch (error) {
-      console.error('Failed to create note:', error);
-    }
+  // Load agents for the linking dropdown (shared with chat).
+  useEffect(() => {
+    authFetch("/api/openclaw/agents")
+      .then((res) => (res.ok ? res.json() : { agents: [] }))
+      .then((data: { agents?: AgentOption[] }) => setAgents(data.agents ?? []))
+      .catch(() => setAgents([]));
+  }, []);
+
+  const selectedNote = useMemo(
+    () => notes.find((n) => n.id === selectedId) ?? null,
+    [notes, selectedId],
+  );
+
+  const filteredNotes = useMemo(
+    () => filterNotes(notes, searchQuery),
+    [notes, searchQuery],
+  );
+
+  const persist = useCallback((next: NotebookNote[]) => {
+    setNotes(next);
+  }, []);
+
+  const handleNewNote = () => {
+    const note = createNote({ title: "", content: "" });
+    const next = upsertNote(note);
+    persist(next);
+    setSelectedId(note.id);
+    setViewMode("edit");
   };
 
-  const saveNote = useCallback(async (note: Note) => {
-    setSaving(true);
-    try {
-      await authFetch('/api/notepad', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(note),
-      });
-      setNotes(notes.map(n => n.id === note.id ? note : n));
-    } catch (error) {
-      console.error('Failed to save note:', error);
-    } finally {
-      setTimeout(() => setSaving(false), 500);
-    }
-  }, [notes]);
-
-  const updateNote = (updates: Partial<Note>) => {
+  const handleUpdate = (updates: Partial<NotebookNote>) => {
     if (!selectedNote) return;
-
-    const updated = { ...selectedNote, ...updates };
-    setSelectedNote(updated);
-
-    // Debounce save
-    if (saveTimeoutRef.current) {
-      clearTimeout(saveTimeoutRef.current);
-    }
-    saveTimeoutRef.current = setTimeout(() => {
-      saveNote(updated);
-    }, 3000);
+    const updated: NotebookNote = {
+      ...selectedNote,
+      ...updates,
+      updatedAt: new Date().toISOString(),
+    };
+    const next = upsertNote(updated);
+    persist(next);
   };
 
-  const deleteNote = async (id: string) => {
-    try {
-      await authFetch(`/api/notepad?id=${id}`, { method: 'DELETE' });
-      const filtered = notes.filter(n => n.id !== id);
-      setNotes(filtered);
-      if (selectedNote?.id === id) {
-        setSelectedNote(filtered[0] || null);
-      }
-      setDeleteConfirm(null);
-    } catch (error) {
-      console.error('Failed to delete note:', error);
-    }
+  const handleSelectAgent = (agentId: string) => {
+    if (!selectedNote) return;
+    const agent = agents.find((a) => a.id === agentId);
+    handleUpdate({
+      agentId: agentId || undefined,
+      agentName: agent?.name ?? undefined,
+    });
   };
 
-  const exportNote = (note: Note) => {
-    const blob = new Blob([`# ${note.title}\n\n${note.content}`], { type: 'text/markdown' });
+  const handleDelete = (id: string) => {
+    const next = removeNote(id);
+    persist(next);
+    if (selectedId === id) setSelectedId(next[0]?.id ?? null);
+    setDeleteConfirmId(null);
+  };
+
+  const handleExport = (note: NotebookNote) => {
+    const body = `# ${note.title || t("notebook.untitled")}\n\n${note.content}`;
+    const blob = new Blob([body], { type: "text/markdown" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${note.title || 'note'}.md`;
-    a.click();
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = `${note.title || "note"}.md`;
+    anchor.click();
     URL.revokeObjectURL(url);
   };
 
-  const filteredNotes = notes.filter(note =>
-    note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    note.content.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr);
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffMins = Math.floor(diffMs / 60000);
-    const diffHours = Math.floor(diffMs / 3600000);
-    const diffDays = Math.floor(diffMs / 86400000);
-
-    if (diffMins < 1) return 'Just now';
-    if (diffMins < 60) return `${diffMins}m ago`;
-    if (diffHours < 24) return `${diffHours}h ago`;
-    if (diffDays < 7) return `${diffDays}d ago`;
-    return date.toLocaleDateString();
-  };
-
-  if (loading) {
-    return (
-      <div className="p-4 md:p-8 flex items-center justify-center min-h-[50vh]">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 mx-auto mb-4" style={{ borderColor: 'var(--accent)' }}></div>
-          <p style={{ color: 'var(--text-muted)' }}>Loading notes...</p>
-        </div>
-      </div>
-    );
-  }
+  const showEditor = viewMode === "edit" || viewMode === "split";
+  const showPreview = viewMode === "preview" || viewMode === "split";
 
   return (
-    <div className="p-4 md:p-8 h-[calc(100vh-2rem)] flex flex-col">
-      {/* Header */}
-      <div className="mb-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1
-              className="text-2xl md:text-3xl font-bold mb-1"
-              style={{
-                fontFamily: 'var(--font-heading)',
-                color: 'var(--text-primary)',
-                letterSpacing: '-1.5px'
-              }}
-            >
-              📝 Notepad
-            </h1>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>
-              Quick capture for your second brain
-            </p>
-          </div>
-          <div className="flex items-center gap-2">
-            {saving && (
-              <span className="text-xs px-2 py-1 rounded" style={{ color: 'var(--text-muted)' }}>
-                Saving...
-              </span>
-            )}
-            <button
-              onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="p-2 rounded-lg transition-all md:hidden"
-              style={{
-                backgroundColor: 'var(--card)',
-                border: '1px solid var(--border)',
-                color: 'var(--text-secondary)',
-              }}
-            >
-              {sidebarOpen ? <ChevronLeft className="w-5 h-5" /> : <ChevronRight className="w-5 h-5" />}
-            </button>
-          </div>
+    <div className="flex h-[calc(100vh-2rem)] flex-col">
+      <div className="mb-4 flex items-center justify-between">
+        <div>
+          <h1
+            className="mb-1 text-2xl font-bold md:text-3xl"
+            style={{
+              fontFamily: "var(--font-heading)",
+              color: "var(--text-primary)",
+              letterSpacing: "-1.5px",
+            }}
+          >
+            <Pencil className="mr-2 inline-block h-6 w-6 align-text-bottom" style={{ color: "var(--accent)" }} />
+            {t("notebook.title")}
+          </h1>
+          <p style={{ color: "var(--text-secondary)", fontSize: "14px" }}>
+            {t("notebook.subtitle")}
+          </p>
         </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="flex-1 flex gap-4 overflow-hidden">
-        {/* Sidebar - Notes List */}
-        <div
-          className={`${
-            sidebarOpen ? 'w-64' : 'w-0'
-          } flex-shrink-0 transition-all duration-300 overflow-hidden`}
+        <button
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className="rounded-lg p-2 transition-all md:hidden"
           style={{
-            backgroundColor: 'var(--card)',
-            border: '1px solid var(--border)',
-            borderRadius: '0.75rem',
+            backgroundColor: "var(--card)",
+            border: "1px solid var(--border)",
+            color: "var(--text-secondary)",
           }}
         >
-          <div className="w-64 h-full flex flex-col">
-            {/* Search & New */}
-            <div className="p-3 space-y-2" style={{ borderBottom: '1px solid var(--border)' }}>
+          {sidebarOpen ? <ChevronLeft className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
+        </button>
+      </div>
+
+      <div className="flex flex-1 gap-4 overflow-hidden">
+        {/* Notes list */}
+        <aside
+          className={`${sidebarOpen ? "w-64" : "w-0"} flex-shrink-0 overflow-hidden transition-all duration-300`}
+          style={{
+            backgroundColor: "var(--card)",
+            border: "1px solid var(--border)",
+            borderRadius: "0.75rem",
+          }}
+        >
+          <div className="flex h-full w-64 flex-col">
+            <div className="space-y-2 p-3" style={{ borderBottom: "1px solid var(--border)" }}>
               <div className="relative">
                 <Search
-                  className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4"
-                  style={{ color: 'var(--text-muted)' }}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4"
+                  style={{ color: "var(--text-muted)" }}
                 />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search notes..."
-                  className="w-full pl-9 pr-3 py-2 rounded-lg text-sm"
+                  placeholder={t("notebook.searchPlaceholder")}
+                  className="w-full rounded-lg py-2 pl-9 pr-3 text-sm"
                   style={{
-                    backgroundColor: 'var(--card-elevated)',
-                    border: '1px solid var(--border)',
-                    color: 'var(--text-primary)',
+                    backgroundColor: "var(--card-elevated)",
+                    border: "1px solid var(--border)",
+                    color: "var(--text-primary)",
                   }}
                 />
               </div>
               <button
-                onClick={createNote}
-                className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg font-medium transition-all hover:opacity-90"
+                onClick={handleNewNote}
+                className="flex w-full items-center justify-center gap-2 rounded-lg px-3 py-2 font-medium transition-all hover:opacity-90"
                 style={{
-                  backgroundColor: 'var(--accent)',
-                  color: 'var(--text-primary)',
+                  backgroundColor: "var(--accent)",
+                  color: "var(--text-primary)",
                 }}
               >
-                <Plus className="w-4 h-4" />
-                New Note
+                <Plus className="h-4 w-4" />
+                {t("notebook.newNote")}
               </button>
             </div>
 
-            {/* Notes List */}
-            <div className="flex-1 overflow-y-auto p-2 space-y-1">
-              {filteredNotes.map((note) => (
-                <div
-                  key={note.id}
-                  onClick={() => setSelectedNote(note)}
-                  className={`p-3 rounded-lg cursor-pointer transition-all group ${
-                    selectedNote?.id === note.id ? 'ring-2' : ''
-                  }`}
-                  style={{
-                    backgroundColor: selectedNote?.id === note.id ? 'var(--accent)' : 'var(--card-elevated)',
-                    color: selectedNote?.id === note.id ? 'var(--text-primary)' : 'var(--text-secondary)',
-                    outlineColor: 'var(--accent)',
-                  }}
-                >
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="flex-1 min-w-0">
-                      <p
-                        className="font-medium text-sm truncate"
-                        style={{ color: selectedNote?.id === note.id ? 'var(--text-primary)' : 'var(--text-primary)' }}
-                      >
-                        {note.title || 'Sin título'}
-                      </p>
-                      <p
-                        className="text-xs mt-1 truncate"
-                        style={{ color: selectedNote?.id === note.id ? 'var(--text-primary)' : 'var(--text-muted)', opacity: selectedNote?.id === note.id ? 0.8 : 1 }}
-                      >
-                        {note.content.slice(0, 50) || 'Empty note...'}
-                      </p>
-                      <p
-                        className="text-xs mt-1 flex items-center gap-1"
-                        style={{ color: selectedNote?.id === note.id ? 'var(--text-primary)' : 'var(--text-muted)', opacity: 0.6 }}
-                      >
-                        <Clock className="w-3 h-3" />
-                        {formatDate(note.updatedAt)}
-                      </p>
-                    </div>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setDeleteConfirm(note.id);
-                      }}
-                      className="opacity-0 group-hover:opacity-100 p-1 rounded transition-all hover:bg-red-500/20"
-                      style={{ color: 'var(--error)' }}
-                    >
-                      <Trash2 className="w-3 h-3" />
-                    </button>
-                  </div>
-
-                  {/* Delete Confirmation */}
-                  {deleteConfirm === note.id && (
-                    <div
-                      className="mt-2 p-2 rounded flex items-center justify-between gap-2"
-                      style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)' }}
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <span className="text-xs" style={{ color: 'var(--error)' }}>Delete?</span>
-                      <div className="flex gap-1">
-                        <button
-                          onClick={() => deleteNote(note.id)}
-                          className="text-xs px-2 py-1 rounded"
-                          style={{ backgroundColor: 'var(--error)', color: 'white' }}
+            <div className="flex-1 space-y-1 overflow-y-auto p-2">
+              {filteredNotes.map((note) => {
+                const isActive = note.id === selectedId;
+                return (
+                  <div
+                    key={note.id}
+                    onClick={() => setSelectedId(note.id)}
+                    className="group cursor-pointer rounded-lg p-3 transition-all"
+                    style={{
+                      backgroundColor: isActive ? "var(--accent)" : "var(--card-elevated)",
+                      outline: isActive ? "2px solid var(--accent)" : "none",
+                    }}
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0 flex-1">
+                        <p
+                          className="truncate text-sm font-medium"
+                          style={{ color: "var(--text-primary)" }}
                         >
-                          Yes
-                        </button>
-                        <button
-                          onClick={() => setDeleteConfirm(null)}
-                          className="text-xs px-2 py-1 rounded"
-                          style={{ backgroundColor: 'var(--card-elevated)', color: 'var(--text-secondary)' }}
+                          {note.title || t("notebook.untitled")}
+                        </p>
+                        <p
+                          className="mt-1 truncate text-xs"
+                          style={{ color: "var(--text-muted)" }}
                         >
-                          No
-                        </button>
+                          {note.content.slice(0, 60) || "…"}
+                        </p>
+                        <div
+                          className="mt-1 flex items-center gap-2 text-xs"
+                          style={{ color: "var(--text-muted)" }}
+                        >
+                          {note.agentName ? (
+                            <span className="inline-flex items-center gap-1">
+                              <Pin className="h-3 w-3" />
+                              {note.agentName}
+                            </span>
+                          ) : null}
+                          <span>· {formatRelative(note.updatedAt)}</span>
+                        </div>
                       </div>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setDeleteConfirmId(note.id);
+                        }}
+                        className="rounded p-1 opacity-0 transition-all hover:bg-red-500/20 group-hover:opacity-100"
+                        style={{ color: "var(--error)" }}
+                        title={t("notebook.deleteConfirm")}
+                      >
+                        <Trash2 className="h-3 w-3" />
+                      </button>
                     </div>
-                  )}
+
+                    {deleteConfirmId === note.id ? (
+                      <div
+                        className="mt-2 flex items-center justify-between gap-2 rounded p-2"
+                        style={{ backgroundColor: "rgba(239, 68, 68, 0.1)" }}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <span className="text-xs" style={{ color: "var(--error)" }}>
+                          {t("notebook.deleteConfirm")}
+                        </span>
+                        <div className="flex gap-1">
+                          <button
+                            onClick={() => handleDelete(note.id)}
+                            className="rounded px-2 py-1 text-xs"
+                            style={{ backgroundColor: "var(--error)", color: "white" }}
+                          >
+                            Yes
+                          </button>
+                          <button
+                            onClick={() => setDeleteConfirmId(null)}
+                            className="rounded px-2 py-1 text-xs"
+                            style={{ backgroundColor: "var(--card-elevated)", color: "var(--text-secondary)" }}
+                          >
+                            No
+                          </button>
+                        </div>
+                      </div>
+                    ) : null}
+                  </div>
+                );
+              })}
+
+              {filteredNotes.length === 0 ? (
+                <div className="py-8 text-center" style={{ color: "var(--text-muted)" }}>
+                  <FileText className="mx-auto mb-2 h-8 w-8 opacity-50" />
+                  <p className="text-sm">{t("notebook.empty")}</p>
                 </div>
-              ))}
-              {filteredNotes.length === 0 && (
-                <div className="text-center py-8" style={{ color: 'var(--text-muted)' }}>
-                  <FileText className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                  <p className="text-sm">No notes found</p>
-                </div>
-              )}
+              ) : null}
             </div>
           </div>
-        </div>
+        </aside>
 
         {/* Editor */}
-        <div
-          className="flex-1 rounded-xl overflow-hidden flex flex-col"
+        <section
+          className="flex flex-1 flex-col overflow-hidden rounded-xl"
           style={{
-            backgroundColor: 'var(--card)',
-            border: '1px solid var(--border)',
+            backgroundColor: "var(--card)",
+            border: "1px solid var(--border)",
           }}
         >
           {selectedNote ? (
             <>
-              {/* Editor Header */}
               <div
-                className="flex items-center justify-between px-4 py-3"
-                style={{ borderBottom: '1px solid var(--border)' }}
+                className="flex flex-wrap items-center gap-2 px-4 py-3"
+                style={{ borderBottom: "1px solid var(--border)" }}
               >
                 <input
                   type="text"
                   value={selectedNote.title}
-                  onChange={(e) => updateNote({ title: e.target.value })}
-                  placeholder="Note title..."
-                  className="flex-1 text-lg font-semibold bg-transparent border-none outline-none"
-                  style={{ color: 'var(--text-primary)' }}
+                  onChange={(e) => handleUpdate({ title: e.target.value })}
+                  placeholder={t("notebook.titlePlaceholder")}
+                  className="flex-1 border-none bg-transparent text-lg font-semibold outline-none"
+                  style={{ color: "var(--text-primary)" }}
                 />
-                <button
-                  onClick={() => exportNote(selectedNote)}
-                  className="p-2 rounded-lg transition-all hover:bg-green-500/20"
-                  style={{ color: 'var(--success)' }}
-                  title="Export as Markdown"
+
+                {/* View mode toggle */}
+                <div
+                  className="flex items-center gap-1 rounded-lg p-1"
+                  style={{ backgroundColor: "var(--card-elevated)", border: "1px solid var(--border)" }}
                 >
-                  <Download className="w-4 h-4" />
+                  <ModeButton active={viewMode === "edit"} onClick={() => setViewMode("edit")} title={t("notebook.edit")}>
+                    <Pencil className="h-4 w-4" />
+                  </ModeButton>
+                  <ModeButton active={viewMode === "split"} onClick={() => setViewMode("split")} title={t("notebook.split")}>
+                    <Columns className="h-4 w-4" />
+                  </ModeButton>
+                  <ModeButton active={viewMode === "preview"} onClick={() => setViewMode("preview")} title={t("notebook.preview")}>
+                    <Eye className="h-4 w-4" />
+                  </ModeButton>
+                </div>
+
+                {/* Agent linking */}
+                <select
+                  value={selectedNote.agentId ?? ""}
+                  onChange={(e) => handleSelectAgent(e.target.value)}
+                  className="rounded-md px-2 py-1.5 text-sm"
+                  style={{
+                    backgroundColor: "var(--card-elevated)",
+                    border: "1px solid var(--border)",
+                    color: "var(--text-primary)",
+                  }}
+                  title={t("notebook.agent")}
+                >
+                  <option value="">{t("notebook.noAgent")}</option>
+                  {agents.map((agent) => (
+                    <option key={agent.id} value={agent.id}>
+                      {agent.name ?? agent.id}
+                    </option>
+                  ))}
+                </select>
+
+                <button
+                  onClick={() => handleExport(selectedNote)}
+                  className="rounded-lg p-2 transition-all hover:bg-green-500/20"
+                  style={{ color: "var(--success)" }}
+                  title={t("notebook.updated")}
+                >
+                  <Download className="h-4 w-4" />
                 </button>
               </div>
 
-              {/* Editor Content */}
-              <textarea
-                value={selectedNote.content}
-                onChange={(e) => updateNote({ content: e.target.value })}
-                placeholder="Start writing... (auto-saves every 3 seconds)"
-                className="flex-1 w-full p-4 resize-none bg-transparent border-none outline-none"
-                style={{ color: 'var(--text-primary)' }}
-              />
+              {/* Editor / preview body */}
+              <div className="flex flex-1 overflow-hidden">
+                {showEditor ? (
+                  <textarea
+                    value={selectedNote.content}
+                    onChange={(e) => handleUpdate({ content: e.target.value })}
+                    placeholder={t("notebook.contentPlaceholder")}
+                    className={`resize-none bg-transparent p-4 outline-none ${showPreview ? "w-1/2 border-r" : "w-full"}`}
+                    style={{
+                      borderColor: "var(--border)",
+                      color: "var(--text-primary)",
+                      fontFamily: "var(--font-body)",
+                    }}
+                  />
+                ) : null}
+                {showPreview ? (
+                  <div
+                    className={`${showEditor ? "w-1/2" : "w-full"} overflow-y-auto p-4 markdown-preview`}
+                    // Markdown is sanitized by renderMarkdown (raw HTML is escaped)
+                    dangerouslySetInnerHTML={{ __html: renderMarkdown(selectedNote.content) }}
+                  />
+                ) : null}
+              </div>
 
-              {/* Editor Footer */}
               <div
-                className="px-4 py-2 flex items-center justify-between text-xs"
-                style={{
-                  borderTop: '1px solid var(--border)',
-                  color: 'var(--text-muted)',
-                }}
+                className="flex items-center justify-between px-4 py-2 text-xs"
+                style={{ borderTop: "1px solid var(--border)", color: "var(--text-muted)" }}
               >
                 <span>
-                  Created: {new Date(selectedNote.createdAt).toLocaleString()}
+                  {t("notebook.created")}: {new Date(selectedNote.createdAt).toLocaleString()}
                 </span>
                 <span>
-                  Last saved: {formatDate(selectedNote.updatedAt)}
+                  {t("notebook.updated")}: {formatRelative(selectedNote.updatedAt)}
                 </span>
               </div>
             </>
           ) : (
-            <div className="flex-1 flex items-center justify-center" style={{ color: 'var(--text-muted)' }}>
+            <div className="flex flex-1 items-center justify-center" style={{ color: "var(--text-muted)" }}>
               <div className="text-center">
-                <FileText className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                <p className="text-sm">Select a note or create a new one</p>
+                <FileText className="mx-auto mb-3 h-12 w-12 opacity-50" />
+                <p className="text-sm">{t("notebook.empty")}</p>
                 <button
-                  onClick={createNote}
-                  className="mt-3 px-4 py-2 rounded-lg font-medium transition-all hover:opacity-90"
-                  style={{
-                    backgroundColor: 'var(--accent)',
-                    color: 'var(--text-primary)',
-                  }}
+                  onClick={handleNewNote}
+                  className="mt-3 inline-flex items-center gap-1 rounded-lg px-4 py-2 font-medium transition-all hover:opacity-90"
+                  style={{ backgroundColor: "var(--accent)", color: "var(--text-primary)" }}
                 >
-                  <Plus className="inline-block w-4 h-4 mr-1" />
-                  New Note
+                  <Plus className="h-4 w-4" />
+                  {t("notebook.emptyHint")}
                 </button>
               </div>
             </div>
           )}
-        </div>
+        </section>
       </div>
     </div>
+  );
+}
+
+interface ModeButtonProps {
+  active: boolean;
+  onClick: () => void;
+  title: string;
+  children: React.ReactNode;
+}
+
+function ModeButton({ active, onClick, title, children }: ModeButtonProps) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      title={title}
+      className="rounded-md p-1.5 transition-all"
+      style={{
+        backgroundColor: active ? "var(--accent)" : "transparent",
+        color: active ? "var(--text-primary)" : "var(--text-secondary)",
+      }}
+    >
+      {children}
+    </button>
   );
 }

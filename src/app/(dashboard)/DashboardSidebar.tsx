@@ -4,6 +4,7 @@ import Link from "next/link";
 
 import {
   Brain,
+  BookOpen,
   Calendar,
   Puzzle,
   Server,
@@ -20,6 +21,7 @@ const QUICK_LINKS = [
   { href: "/logs", icon: Terminal, labelKey: "dashboard.liveLogs", color: "#60a5fa" },
   { href: "/memory", icon: Brain, labelKey: "dashboard.memory", color: "#f59e0b" },
   { href: "/skills", icon: Puzzle, labelKey: "dashboard.skills", color: "#4ade80" },
+  { href: "/notepad", icon: BookOpen, labelKey: "dashboard.notebook", color: "#f472b6" },
 ] as const;
 
 export function DashboardSidebar() {

@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
-import { AlertTriangle, Plus } from "lucide-react";
+import { AlertTriangle, Plus, Share } from "lucide-react";
 
 import { useToast } from "@/components/Toast";
 import { ChatInputForm } from "@/components/ChatInputForm";
@@ -11,6 +11,7 @@ import { useAutoVoiceContext } from "@/components/AutoVoiceProvider";
 import { useI18n } from "@/i18n/provider";
 import { authFetch } from "@/lib/auth-fetch";
 import { getErrorMessage, mapGatewayScopeError, processChatStream } from "@/lib/chat-stream";
+import { buildSharePayload, buildShareSummary, downloadJson } from "@/lib/share-chat";
 
 interface AgentOption {
   id: string;
@@ -191,6 +192,24 @@ export function AgentChatPanel() {
     setMessages([]);
   };
 
+  const handleShare = async () => {
+    const agentName = agents.find((a) => a.id === agentId)?.name;
+    // Only user/assistant turns are exported (see share-chat lib).
+    const payload = buildSharePayload({ agentId, agentName, sessionKey, messages });
+    if (payload.messageCount === 0) {
+      showInfo(t("chat.share.title"), t("chat.share.empty"));
+      return;
+    }
+    downloadJson(payload, `chat-${agentId || "export"}-${Date.now()}.json`);
+    try {
+      await navigator.clipboard.writeText(buildShareSummary({ agentName, messages }));
+      showInfo(t("chat.share.title"), t("chat.share.summaryCopied"));
+    } catch {
+      // Clipboard may be unavailable (permissions/Safari) — the file still downloaded.
+      showInfo(t("chat.share.title"), t("chat.share.downloaded"));
+    }
+  };
+
   const selectStyle = { backgroundColor: "var(--card-elevated)", border: "1px solid var(--border)", color: "var(--text-primary)" };
 
   return (
@@ -218,6 +237,16 @@ export function AgentChatPanel() {
             </button>
           </div>
         </label>
+        <button
+          type="button"
+          onClick={handleShare}
+          className="inline-flex items-center justify-center gap-1.5 self-end rounded-md px-3 py-2 text-sm font-medium transition-colors md:self-auto"
+          style={{ backgroundColor: "var(--card-elevated)", border: "1px solid var(--border)", color: "var(--text-primary)" }}
+          title={t("chat.share.button")}
+        >
+          <Share className="h-4 w-4" />
+          <span className="hidden md:inline">{t("chat.share.button")}</span>
+        </button>
       </div>
 
       {readOnly && (
