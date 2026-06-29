@@ -5,11 +5,10 @@ import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { AlertTriangle, Plus } from "lucide-react";
 
 import { useToast } from "@/components/Toast";
-import { AutoVoiceToggle } from "@/components/AutoVoiceToggle";
 import { ChatInputForm } from "@/components/ChatInputForm";
 import { ChatMessageList, MessageItem } from "@/components/ChatMessageList";
+import { useAutoVoiceContext } from "@/components/AutoVoiceProvider";
 import { useI18n } from "@/i18n/provider";
-import { useAutoVoice } from "@/hooks/useAutoVoice";
 import { authFetch } from "@/lib/auth-fetch";
 import { getErrorMessage, mapGatewayScopeError, processChatStream } from "@/lib/chat-stream";
 
@@ -62,12 +61,17 @@ export function AgentChatPanel() {
   const appliedUrlParamsRef = useRef(false);
   const listRef = useRef<HTMLDivElement | null>(null);
 
-  // Auto-T: reproduce respuestas del asistente en voz automaticamente
-  const autoVoice = useAutoVoice(
-    messages
-      .filter((m) => !isTechnicalMessage(m))
-      .map((m) => ({ id: m.id, role: m.role, content: m.content }))
-  );
+  // Auto-Voice: el toggle vive en el TopBar global; aqui solo empujamos los
+  // messages del historial (filtrando ruido tecnico) al provider compartido.
+  const { setMessages: setAutoVoiceMessages } = useAutoVoiceContext();
+
+  useEffect(() => {
+    setAutoVoiceMessages(
+      messages
+        .filter((m) => !isTechnicalMessage(m))
+        .map((m) => ({ id: m.id, role: m.role, content: m.content })),
+    );
+  }, [messages, setAutoVoiceMessages]);
 
   useEffect(() => {
     const loadAgents = async () => {
@@ -214,13 +218,6 @@ export function AgentChatPanel() {
             </button>
           </div>
         </label>
-        <div className="flex items-end">
-          <AutoVoiceToggle
-            isEnabled={autoVoice.isEnabled}
-            isSpeaking={autoVoice.isSpeaking}
-            onToggle={autoVoice.toggle}
-          />
-        </div>
       </div>
 
       {readOnly && (

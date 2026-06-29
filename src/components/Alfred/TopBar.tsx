@@ -5,9 +5,11 @@ import Image from "next/image";
 import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { GlobalSearch } from "../GlobalSearch";
+import { AutoVoiceToggle } from "@/components/AutoVoiceToggle";
 import { NotificationDropdown } from "@/components/NotificationDropdown";
 import { LiveStatusIndicator } from "@/components/LiveStatusIndicator";
 import { GatewayStatusBadge } from "@/components/GatewayStatusBadge";
+import { useAutoVoiceContext } from "@/components/AutoVoiceProvider";
 import { BRANDING } from "@/config/branding";
 import { useI18n } from "@/i18n/provider";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
@@ -19,6 +21,7 @@ export function TopBar() {
   const router = useRouter();
   const userMenuRef = useRef<HTMLDivElement>(null);
   const { t } = useI18n();
+  const autoVoice = useAutoVoiceContext();
   const displayName = BRANDING.ownerUsername || "Admin";
   const initial = displayName.charAt(0).toUpperCase();
 
@@ -136,6 +139,12 @@ export function TopBar() {
           </button>
 
           <LanguageSwitcher />
+
+          <AutoVoiceToggle
+            isEnabled={autoVoice.isEnabled}
+            isSpeaking={autoVoice.isSpeaking}
+            onToggle={autoVoice.toggle}
+          />
 
           <NotificationDropdown />
 
