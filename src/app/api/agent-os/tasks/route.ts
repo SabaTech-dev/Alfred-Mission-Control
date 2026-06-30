@@ -5,8 +5,10 @@
  */
 import { NextRequest, NextResponse } from "next/server";
 import { promises as fs } from "fs";
+import fsSync from "fs";
 import path from "path";
 import { execSync } from "child_process";
+import Database from "@/lib/sqlite-wrapper";
 
 export const dynamic = "force-dynamic";
 
@@ -136,16 +138,15 @@ interface KanbanDb {
   prepare: (sql: string) => {
     all: (...args: unknown[]) => unknown[];
   };
-  close: () => null;
+  close: () => void;
 }
 
 function getKanbanTasks(): PipelineTask[] {
   try {
     // Try to read from kanban database
     const kanbanData = path.join(process.cwd(), "data", "kanban.db");
-    if (!require("fs").existsSync(kanbanData)) return [];
+    if (!fsSync.existsSync(kanbanData)) return [];
 
-    const Database = require("better-sqlite3");
     const db: KanbanDb = new Database(kanbanData, { readonly: true });
 
     const rows = db
