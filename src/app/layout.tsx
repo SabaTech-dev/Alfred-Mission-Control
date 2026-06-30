@@ -22,6 +22,35 @@ const jetbrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains",
 });
 
+/**
+ * Inline Service Worker self-heal script.
+ *
+ * Kept as a plain string (no template interpolation) so it is trivial to audit
+ * and impossible to accidentally close the surrounding <script> tag. See the
+ * comment in <head> for the full rationale.
+ */
+const SW_SELF_HEAL_SCRIPT = [
+  "if('serviceWorker' in navigator){",
+  "navigator.serviceWorker.getRegistrations()",
+  ".then(function(rs){",
+  "var hadController=!!navigator.serviceWorker.controller;",
+  "return Promise.all(rs.map(function(r){return r.unregister();}));",
+  "})",
+  ".then(function(){",
+  "if(typeof caches!=='undefined'&&caches.keys){",
+  "return Promise.all(caches.keys().map(function(k){return caches.delete(k);}));",
+  "}",
+  "})",
+  ".then(function(){",
+  "if(hadController&&!sessionStorage.getItem('sw-cleaned')){",
+  "sessionStorage.setItem('sw-cleaned','1');",
+  "location.reload();",
+  "}",
+  "})",
+  ".catch(function(){});",
+  "}",
+].join("");
+
 export const viewport: Viewport = {
   themeColor: "#1a1a2e",
 };
@@ -51,9 +80,19 @@ export default function RootLayout({
             fallback that resolved to undefined, breaking every API call and
             staling the dashboard. It also cached navigation/RSC payloads
             cache-first, which broke SPA routing (every link rendered the same
-            page). This block unregisters any previously installed SW so
-            existing browsers self-heal without a manual DevTools cleanup. */}
-        <script dangerouslySetInnerHTML={{ __html: `if("serviceWorker"in navigator){navigator.serviceWorker.getRegistrations().then(function(rs){rs.forEach(function(r){r.unregister()})}).catch(function(){})}`} } />
+            page).
+
+            This block hard-uninstalls any previously installed SW so existing
+            browsers self-heal without a manual DevTools cleanup. It:
+              1. unregisters every registration,
+              2. wipes the CacheStorage the SW may have populated (so stale
+                 /api/* and RSC entries can't be re-served),
+              3. reloads ONCE if a SW was actually controlling this load,
+                 because an unregistered SW keeps controlling the current
+                 page until the next navigation. The sessionStorage flag
+                 guarantees we never loop. Users who never had the SW have no
+                 controller, so they are never reloaded. */}
+        <script dangerouslySetInnerHTML={{ __html: SW_SELF_HEAL_SCRIPT }} />
       </head>
       <body 
         className={`${inter.variable} ${sora.variable} ${jetbrainsMono.variable} font-sans`}

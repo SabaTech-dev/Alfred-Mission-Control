@@ -104,6 +104,11 @@ export function generateSuggestions(data?: Partial<UsageData>): Suggestion[] {
       fileStats: data.fileStats || getFileStats(),
       kanbanStats: data.kanbanStats || getKanbanStats(),
       agentStats: data.agentStats || getAgentStats(),
+      // Pass missionStats through when provided; otherwise let the mission
+      // analyzer fall back to loadMissionStats(). Previously this field was
+      // dropped here, so a caller-supplied missionStats was silently ignored
+      // and the analyzer always read from disk.
+      missionStats: data.missionStats,
     };
   } else {
     const collected = collectSuggestionsData();

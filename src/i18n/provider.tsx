@@ -99,15 +99,18 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
       locale,
       setLocale: handleSetLocale,
       t: (key: string, values?: Record<string, string | number>) => {
-        // Always use English until hydrated to match SSR output
-        const msgs = hydrated ? messages : DICTIONARY.en;
-        const raw = getByPath(msgs, key) ?? getByPath(DICTIONARY.en, key) ?? key;
+        // locale starts as "en" and detection is deferred via setTimeout, so
+        // during hydration `messages` is already the English dictionary and
+        // matches SSR output. We must NOT gate on `hydrated` here: doing so
+        // made manual setLocale() calls a no-op until the deferred timer
+        // fired, which broke runtime locale switching (and its tests).
+        const raw = getByPath(messages, key) ?? getByPath(DICTIONARY.en, key) ?? key;
         return typeof raw === "string" ? interpolate(raw, values) : key;
       },
       formatNumber: (value: number) => new Intl.NumberFormat(locale).format(value),
       formatDateTime: (value: Date | number | string) => new Intl.DateTimeFormat(locale, { hour: "2-digit", minute: "2-digit", second: "2-digit" }).format(new Date(value)),
     };
-  }, [locale, handleSetLocale, hydrated]);
+  }, [locale, handleSetLocale]);
 
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
 }

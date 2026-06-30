@@ -11,10 +11,16 @@ import { AgentConfig, AgentWithDesk, AvatarState } from "./agentsConfig";
 // Desk spacing - wider for better separation
 const DESK_SPACING_X = 7;
 
+// X bounds of the 18x10 main area rug (see test contract: x ∈ [-12, 12]).
+// Used to shrink spacing adaptively so wide agent counts never overflow.
+const RUG_HALF_WIDTH = 12;
+
 // Simple row offsets - all facing forward (towards camera/entrance)
 // z positive = towards entrance, z negative = towards back wall
+// Kept inside the rug depth (z ∈ [-3, 6]); main agent (index 0) sits at z=1,
+// so non-main rows avoid it.
 // NOTE: z=1 is reserved for main agent (index 0), so non-main rows avoid it
-const ROW_OFFSETS = [4, -1.5, -4, -6.5] as const;
+const ROW_OFFSETS = [4, 1.5, -1.5, -3] as const;
 
 /**
  * Calculate grid dimensions based on agent count
@@ -70,9 +76,13 @@ export function calculateDeskPosition(index: number, gridWidth: number): {
   // Get Z position from row offsets
   const zOffset = ROW_OFFSETS[Math.min(rowIndex, ROW_OFFSETS.length - 1)];
 
-  // Calculate X position, centered
-  const xOffset = (gridWidth - 1) * DESK_SPACING_X / 2;
-  const x = col * DESK_SPACING_X - xOffset;
+  // Calculate X position, centered.
+  // Adaptive spacing: prefer DESK_SPACING_X, but shrink it when the column
+  // count would otherwise push the outermost desks past the rug bounds.
+  const maxSpacing = gridWidth > 1 ? (2 * RUG_HALF_WIDTH) / (gridWidth - 1) : DESK_SPACING_X;
+  const spacing = Math.min(DESK_SPACING_X, maxSpacing);
+  const xOffset = (gridWidth - 1) * spacing / 2;
+  const x = col * spacing - xOffset;
 
   // All agents face forward (towards camera/entrance)
   const rotation = 0;

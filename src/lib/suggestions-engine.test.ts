@@ -67,6 +67,20 @@ describe("suggestions-engine", () => {
         fileStats: { totalFiles: 0, totalSize: 0, workspaceCount: 0, lastModified: null },
         kanbanStats: { totalTasks: 0, tasksByStatus: {}, overdueTasks: 0, unassignedTasks: 0 },
         agentStats: { totalAgents: 1, agentsWithHeartbeat: 1, agentsWithIdentity: 1, agentsWithoutIdentity: 0 },
+        // Provide an explicit, healthy missionStats so the result is independent
+        // of data/mission.json on disk. Without this the engine falls back to
+        // loadMissionStats() (no mission on the test machine) and emits a
+        // "mission-setup-required" suggestion, breaking the "no issues" intent.
+        missionStats: {
+          hasMission: true,
+          goalsCount: 3,
+          valuesCount: 3,
+          lastUpdated: new Date().toISOString(),
+          missionAgeDays: 0,
+          tasksAligned: 0,
+          tasksTotal: 0,
+          alignmentScore: 100,
+        },
       };
 
       const suggestions = generateSuggestions(data);

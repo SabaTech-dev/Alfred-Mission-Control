@@ -16,6 +16,14 @@ const mockedOps = vi.hoisted(() => ({
 
 vi.mock("@/operations/system-ops", () => mockedOps);
 
+// The system route was hardened with requireAgentOrSessionAuth (security fix
+// 66fbbdb). These tests exercise the handler's delegation logic, not auth, so
+// we stub the auth helper locally to always authorize. Per AGENTS.md, auth
+// mocks stay local to the test file (never global in vitest.setup.ts).
+vi.mock("@/lib/auth-helpers", () => ({
+  requireAgentOrSessionAuth: vi.fn().mockResolvedValue({ authorized: true }),
+}));
+
 describe("System API Route", () => {
   beforeEach(() => {
     vi.clearAllMocks();
