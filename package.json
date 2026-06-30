@@ -34,7 +34,7 @@
     "@types/dompurify": "^3.0.5",
     "@xyflow/react": "^12.10.1",
     "bcryptjs": "^3.0.3",
-    "better-sqlite3": "^12.10.0",
+    "better-sqlite3": "^12.11.1",
     "d3-cloud": "^1.2.8",
     "d3-force": "^3.0.0",
     "d3-scale-chromatic": "^3.1.0",
