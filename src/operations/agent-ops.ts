@@ -19,11 +19,86 @@ import {
 import { getOpenClawSessionsTelemetry } from "@/lib/telemetry/sources/openclaw-sessions";
 import { getModelDisplayName } from "@/lib/model-utils";
 import { createCache } from "@/lib/cache";
+import { runCliJson } from "@/lib/cli-runner";
 import { readFileSync, existsSync, readdirSync } from "fs";
 import { join } from "path";
 
 const OPENCLAW_DIR = process.env.OPENCLAW_DIR || "/home/joker/.openclaw";
 const HOME_DIR = process.env.HOME || "/root";
+
+// ----------------------------------------------------------------------------
+// Cached, non-blocking CLI enrichment.
+//
+// History: `loadAgentsFromConfig()` used to call `execSync("openclaw agents
+// list --json")` inline. That synchronous subprocess call blocked the Node
+// event loop for ~5 s (the CLI's startup cost) on EVERY render of /agents
+// and /api/agents. The browser-side App Router would then abort the RSC
+// navigation that was waiting on the same event loop, breaking SPA routing
+// for those pages.
+//
+// `getCliAgentMapCached()` is the replacement: it is async (uses the
+// async `runCliJson` helper, so the event loop keeps serving other
+// requests), it deduplicates concurrent in-flight callers to a single
+// subprocess, and it memoises the result for `CLI_CACHE_TTL_MS` so
+// repeated renders in the same tick (or within a minute) do not re-spawn
+// the CLI.
+// ----------------------------------------------------------------------------
+
+const CLI_CACHE_TTL_MS = 60_000;
+const CLI_TIMEOUT_MS = 5_000;
+const CLI_LABEL = "openclaw-agents-list";
+
+type CliAgentEntry = { id: string;[k: string]: unknown };
+
+let _cliCacheEntry: {
+  promise: Promise<Map<string, CliAgentEntry>>;
+  ts: number;
+} | null = null;
+
+/**
+ * Returns a Map of `agentId -> CLI agent record`, fetched from
+ * `openclaw agents list --json`. Results are cached for `CLI_CACHE_TTL_MS`
+ * and concurrent callers share the same in-flight promise (so a cold cache
+ * under load spawns at most one subprocess, not N).
+ *
+ * On any failure (CLI missing, non-zero exit, timeout, bad JSON) the
+ * function resolves to an empty Map — callers fall back to the
+ * filesystem-only view of the fleet rather than 500-ing the dashboard.
+ */
+export async function getCliAgentMapCached(): Promise<
+  Map<string, CliAgentEntry>
+> {
+  const now = Date.now();
+  if (_cliCacheEntry && now - _cliCacheEntry.ts < CLI_CACHE_TTL_MS) {
+    return _cliCacheEntry.promise;
+  }
+
+  const promise = (async () => {
+    const parsed = await runCliJson<CliAgentEntry[]>(
+      "openclaw agents list --json",
+      {
+        timeoutMs: CLI_TIMEOUT_MS,
+        cwd: OPENCLAW_DIR,
+        label: CLI_LABEL,
+      },
+    );
+    const map = new Map<string, CliAgentEntry>();
+    if (Array.isArray(parsed)) {
+      for (const a of parsed) {
+        if (a && typeof a.id === "string") map.set(a.id, a);
+      }
+    }
+    return map;
+  })();
+
+  _cliCacheEntry = { promise, ts: now };
+  return promise;
+}
+
+/** Test-only: drop the cache so TTL behaviour can be asserted deterministically. */
+export function __resetCliAgentCacheForTests(): void {
+  _cliCacheEntry = null;
+}
 
 /**
  * Discover skills by scanning the agent's skills directory
@@ -255,7 +330,9 @@ function discoverExternalAgents(existingIds: Set<string>): AgentInfo[] {
 /**
  * Load agents from openclaw.json configuration
  */
-function loadAgentsFromConfig(): AgentInfo[] {
+function loadAgentsFromConfig(
+  cliAgentMap: Map<string, CliAgentEntry> = new Map(),
+): AgentInfo[] {
   // Primary: filesystem discovery from ~/.openclaw/agents/<id>/
   const agentsDir = join(OPENCLAW_DIR, "agents");
   if (existsSync(agentsDir)) {
@@ -266,24 +343,9 @@ function loadAgentsFromConfig(): AgentInfo[] {
       );
 
       if (agentDirs.length > 0) {
-        // Try to load CLI data for enrichment (name, model)
-        let cliAgentMap = new Map<string, { identityName?: string; model?: string; workspace?: string }>();
-        try {
-          const { execSync } = require("child_process");
-          const cliOutput = execSync("openclaw agents list --json", {
-            encoding: "utf-8",
-            timeout: 5000,
-            cwd: OPENCLAW_DIR,
-          });
-          const cliAgents = JSON.parse(cliOutput);
-          if (Array.isArray(cliAgents)) {
-            for (const a of cliAgents) {
-              cliAgentMap.set(a.id, a);
-            }
-          }
-        } catch {
-          // CLI unavailable, proceed without enrichment
-        }
+        // CLI enrichment data is passed in by the caller (getCliAgentMapCached)
+        // — we never spawn the subprocess inline here. This keeps the event
+        // loop free and lets concurrent renders share a single CLI call.
 
         // Read openclaw.json to extract allowAgents for hierarchy
         let configAllowAgentsMap = new Map<string, { allowAgents: string[]; allowAgentsDetails: { id: string; name: string; emoji: string; color: string }[] }>();
@@ -496,10 +558,12 @@ function getPersistedAgentEntries(): AgentInfo[] {
   }));
 }
 
-function buildMergedAgentMap(): Map<string, AgentInfo> {
+function buildMergedAgentMap(
+  cliAgentMap: Map<string, CliAgentEntry> = new Map(),
+): Map<string, AgentInfo> {
   const merged = new Map<string, AgentInfo>();
 
-  for (const agent of loadAgentsFromConfig()) {
+  for (const agent of loadAgentsFromConfig(cliAgentMap)) {
     merged.set(agent.id, agent);
   }
 
@@ -522,7 +586,11 @@ function buildMergedAgentMap(): Map<string, AgentInfo> {
 
 export async function getAgents(): Promise<OperationResult<AgentInfo[]>> {
   try {
-    const agentsById = buildMergedAgentMap();
+    // Fetch CLI enrichment ONCE per TTL window (60s). This used to spawn
+    // a synchronous `openclaw agents list` subprocess on every call,
+    // blocking the event loop ~5s and breaking SPA routing.
+    const cliAgentMap = await getCliAgentMapCached();
+    const agentsById = buildMergedAgentMap(cliAgentMap);
     const allAgents = Array.from(agentsById.values());
 
     // Get activities ONCE for all agents — avoids N+1
@@ -597,7 +665,8 @@ export async function getAgents(): Promise<OperationResult<AgentInfo[]>> {
  */
 export async function getAgentStatusList(): Promise<OperationResult<AgentStatusEntry[]>> {
   try {
-    const agentsById = buildMergedAgentMap();
+    const cliAgentMap = await getCliAgentMapCached();
+    const agentsById = buildMergedAgentMap(cliAgentMap);
     const allAgents = Array.from(agentsById.values());
     const activitiesResult = getActivities({ limit: 1000, sort: "newest" });
     const recentActivities = activitiesResult.activities;
