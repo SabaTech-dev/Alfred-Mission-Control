@@ -47,7 +47,13 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
       <head>
-        <script dangerouslySetInnerHTML={{__html:`if("serviceWorker"in navigator)navigator.serviceWorker.register("/sw.js")`}} />
+        {/* Service Worker removed: it intercepted /api/* with a caches.match()
+            fallback that resolved to undefined, breaking every API call and
+            staling the dashboard. It also cached navigation/RSC payloads
+            cache-first, which broke SPA routing (every link rendered the same
+            page). This block unregisters any previously installed SW so
+            existing browsers self-heal without a manual DevTools cleanup. */}
+        <script dangerouslySetInnerHTML={{ __html: `if("serviceWorker"in navigator){navigator.serviceWorker.getRegistrations().then(function(rs){rs.forEach(function(r){r.unregister()})}).catch(function(){})}`} } />
       </head>
       <body 
         className={`${inter.variable} ${sora.variable} ${jetbrainsMono.variable} font-sans`}
