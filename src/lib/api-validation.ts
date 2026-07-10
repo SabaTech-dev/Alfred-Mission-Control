@@ -83,7 +83,7 @@ export const LoginSchema = z.object({
 });
 
 export const CreateAgentSchema = z.object({
-  id: z.string().optional(),
+  id: z.string().regex(/^[a-z0-9-]+$/, "Agent id must be lowercase alphanumeric with hyphens only").optional(),
   name: z.string().min(1, "Name is required"),
   model: z.string().optional(),
   systemPrompt: z.string().optional(),
