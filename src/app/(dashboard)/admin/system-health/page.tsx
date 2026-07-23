@@ -26,7 +26,6 @@ const serviceCategories: Record<string, CategoryName> = {
   "llama.cpp-gpu": "llm",
   "llama.cpp-embed": "llm",
   "coolify": "dev",
-  "n8n": "services",
   "browserless": "services",
   "langfuse": "services",
   "searxng": "services",

@@ -236,12 +236,11 @@ async function checkHttpService(name: string, url: string, port: number): Promis
 export async function collectStackServiceChecks(): Promise<StackServiceCheck[]> {
   const dockerContainers = parseDockerContainers();
 
-  const [gateway, postgresql, ollama, coolify, n8n, browserless, langfuse, qmd, llamaGpu, llamaEmbed, searxng, engram, prAgent] = await Promise.all([
+  const [gateway, postgresql, ollama, coolify, browserless, langfuse, qmd, llamaGpu, llamaEmbed, searxng, engram, prAgent] = await Promise.all([
     checkGatewayService(),
     checkPostgresService(dockerContainers),
     checkTcpService("ollama", 11434),
     checkTcpService("coolify", 8000),
-    checkTcpService("n8n", 5678),
     checkHttpService("browserless", "http://127.0.0.1:3002/pressure", 3002),
     checkHttpService("langfuse", "http://127.0.0.1:3001", 3001),
     checkTcpService("qmd-mcp", 8181),
@@ -258,7 +257,6 @@ export async function collectStackServiceChecks(): Promise<StackServiceCheck[]> 
     postgresql,
     ollama,
     coolify,
-    n8n,
     browserless,
     langfuse,
     qmd,
