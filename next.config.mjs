@@ -14,6 +14,15 @@ const nextConfig = {
   },
 
   outputFileTracingRoot: __dirname,
+  // Avoid NFT tracing the entire workspace via dynamic fs reads in API routes
+  outputFileTracingExcludes: [
+    '../reports/**/*',
+    '../memory/**/*',
+    '../output/**/*',
+    '../scripts/**/*',
+    '../docs/**/*',
+    '../skills/**/*',
+  ],
   allowedDevOrigins: [
     "100.84.105.74",
     "127.0.0.1",
