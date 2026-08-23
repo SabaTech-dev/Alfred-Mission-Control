@@ -1,12 +1,19 @@
 packages:
   - '.'
+# ── Dependency build-script policy (supply-chain hardening) ─────────────────
+# pnpm 11+ reads `allowBuilds` (map written by `pnpm approve-builds`).
+# Every dependency shipping a lifecycle script is listed with an explicit
+# true/false so installs are deterministic across machines.
+#   true  = script allowed to run (needed for functionality)
+#   false = explicitly denied (documented rationale below)
 allowBuilds:
-  agent-browser: true
-  better-sqlite3: true
-  edgedriver: true
-  geckodriver: true
-  puppeteer: true
-  sharp: true
-  unrs-resolver: true
-onlyBuiltDependencies:
-  - better-sqlite3
+  agent-browser: true   # downloads official vercel-labs binary (GitHub releases); no prebuilt optionalDeps — required for local agent-browser
+  edgedriver: false     # Edge driver download; no consumer (e2e = @playwright/test, agent-browser = chromium via puppeteer-core)
+  geckodriver: false    # Gecko driver download; no consumer (same reason as edgedriver)
+  puppeteer: false      # Chrome download; puppeteer-full never imported (runtime uses puppeteer-core + external Chrome — see Dockerfile note); also broke installs via corrupted cache
+  sharp: true           # no-op when @img/sharp-* prebuilt matches platform; source-build fallback only
+  unrs-resolver: true   # no-op when @unrs/resolver-binding-* prebuilt matches; source-build fallback only
+# Legacy list for pnpm 9 (CI pins pnpm/action-setup@v4 version:9).
+# In pnpm 9 an empty allow-list means no dependency scripts run in CI —
+# lint/build/test are green without any dep builds (verified on main runs).
+onlyBuiltDependencies: []
