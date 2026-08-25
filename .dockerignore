@@ -1,0 +1,23 @@
+# Build artifacts
+.next/
+node_modules/
+out/
+build/
+dist/
+
+# Local dev / workspace noise
+docs/specs/
+memory/
+reports/
+output/
+skills/
+*.log
+.env*
+!.env.example
+
+# Git / CI
+.git/
+.github/
+coverage/
+*.tsbuildinfo
+next.config.mjs.bak2
