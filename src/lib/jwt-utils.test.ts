@@ -135,4 +135,28 @@ describe("jwt-utils (JWT rotation)", () => {
       expect(await jwtUtils.isValidToken(token)).toBe(true);
     });
   });
+
+  describe("build-time import safety (Next.js page-data collection)", () => {
+    // `next build` imports route modules to collect page data while runtime
+    // secrets are absent (Docker/CI builds have no .env.local). A module-level
+    // loadKeys() used to throw during import and kill the whole build
+    // ("Failed to collect page data for /api/...").
+    it("does not throw at import time when no JWT env is set", async () => {
+      await expect(import("./jwt-utils")).resolves.toBeTruthy();
+    });
+
+    it("fails fast on first token operation when no JWT env is set", async () => {
+      const { jwtUtils } = await import("./jwt-utils");
+      await expect(jwtUtils.createSessionToken()).rejects.toThrow(/JWT_SECRET/);
+    });
+
+    it("still validates eagerly-enough: secret configured after import is used", async () => {
+      // Lazy cache must initialize on first use, not at import, so setting
+      // the env after import (e.g. Next loading .env.local) still works.
+      const mod = await import("./jwt-utils");
+      process.env.JWT_SECRET = "lazy-loaded-secret-thats-long-enough!!";
+      const token = await mod.jwtUtils.createSessionToken(3600000, { role: "admin" });
+      expect(await mod.jwtUtils.isValidToken(token)).toBe(true);
+    });
+  });
 });
