@@ -58,15 +58,26 @@ function loadKeys(): { entries: KeyEntry[]; currentKid: string | null } {
   return { entries: [{ kid: "legacy", secret }], currentKid: "legacy" };
 }
 
-// Module-level key cache (re-initialized on each import = per-request in dev, once in prod)
-const keyCache = loadKeys();
+// Module-level key cache, lazily initialized on first use.
+// Lazy because `next build` imports route modules during page-data
+// collection while runtime secrets are absent (Docker/CI builds) — a
+// module-level loadKeys() would throw at import time and kill the build.
+// Fail-fast is preserved: the first sign/verify call still validates.
+let keyCache: { entries: KeyEntry[]; currentKid: string | null } | null = null;
+
+function getKeyCache(): { entries: KeyEntry[]; currentKid: string | null } {
+  if (keyCache === null) {
+    keyCache = loadKeys();
+  }
+  return keyCache;
+}
 
 function encodeSecret(secret: string): Uint8Array {
   return new TextEncoder().encode(secret);
 }
 
 function findKey(kid: string): KeyEntry | undefined {
-  return keyCache.entries.find((k) => k.kid === kid);
+  return getKeyCache().entries.find((k) => k.kid === kid);
 }
 
 export const jwtUtils = {
@@ -93,9 +104,9 @@ export const jwtUtils = {
     const now = Math.floor(Date.now() / 1000);
     const exp = now + Math.floor(validatedTtlMs / 1000);
 
-    const currentKey = findKey(keyCache.currentKid!);
+    const currentKey = findKey(getKeyCache().currentKid!);
     if (!currentKey) {
-      throw new Error(`Current signing key "${keyCache.currentKid}" not found`);
+      throw new Error(`Current signing key "${getKeyCache().currentKid}" not found`);
     }
 
     const jwt = await new SignJWT({
@@ -137,12 +148,13 @@ export const jwtUtils = {
       }
 
       // Try keys in order: matching kid first, then all others
+      const { entries } = getKeyCache();
       const keysToTry = preferredKid
         ? [
-            ...keyCache.entries.filter((k) => k.kid === preferredKid),
-            ...keyCache.entries.filter((k) => k.kid !== preferredKid),
+            ...entries.filter((k) => k.kid === preferredKid),
+            ...entries.filter((k) => k.kid !== preferredKid),
           ]
-        : keyCache.entries;
+        : entries;
 
       for (const keyEntry of keysToTry) {
         try {
