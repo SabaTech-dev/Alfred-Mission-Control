@@ -1,0 +1,29 @@
+# Dependabot configuration — prevents alert re-accumulation.
+# Context: the repo accumulated 123 Dependabot alerts since 2026-06 because
+# version updates were never configured (alerts are on by default, update PRs
+# are not). This file enables grouped weekly update PRs for the npm ecosystem.
+# NOTE: the repo is pnpm-only — Dependabot reads pnpm-lock.yaml under the
+# "npm" ecosystem. Keep package-lock.json out of the tree (see .gitignore).
+version: 2
+
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "07:00"
+      timezone: "Europe/Madrid"
+    versioning-strategy: "auto"
+    # Single group for the whole ecosystem: one weekly PR instead of one per
+    # package, which keeps review load low and matches the hygiene workflow.
+    groups:
+      npm-dependencies:
+        patterns:
+          - "*"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "chore(deps)"
+      prefix-development: "chore(dev-deps)"
+    labels:
+      - "dependencies"

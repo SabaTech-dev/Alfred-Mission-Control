@@ -2,6 +2,9 @@
 
 # dependencies
 /node_modules
+# npm lockfile is vestigial here: this repo is pnpm-only (Dockerfile + CI use
+# pnpm install --frozen-lockfile) — keep npm from re-adding a stale manifest
+/package-lock.json
 /.pnp
 .pnp.*
 .yarn/*
