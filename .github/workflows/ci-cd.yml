@@ -67,7 +67,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build
-        run: pnpm build || ([ $? -eq 1 ] && echo '::warning::Build exited 1 (known Turbopack NFT warning)' && exit 0)
+        run: pnpm build
 
   test:
     name: Unit Tests
