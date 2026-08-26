@@ -22,6 +22,12 @@ concurrency:
   group: slsa-${{ github.ref }}
   cancel-in-progress: true
 
+# GHCR/Docker exigen repositorios en lowercase; github.repository contiene
+# mayúsculas (SabaTech-dev/Alfred-Mission-Control) y buildx rechaza el tag.
+# Nombre canónico fijo del artefacto — usar SIEMPRE env.IMAGE_NAME.
+env:
+  IMAGE_NAME: ghcr.io/sabatech-dev/alfred-mission-control
+
 jobs:
   provenance:
     name: Build & Attest
@@ -48,14 +54,14 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/${{ github.repository }}:${{ github.sha }}
+          tags: ${{ env.IMAGE_NAME }}:${{ github.sha }}
           provenance: true
           sbom: true
 
       - name: Generate build provenance attestation
         uses: actions/attest-build-provenance@1c608d11d69870c2092266b3f9a6f3abbf17002c
         with:
-          subject-name: ghcr.io/${{ github.repository }}
+          subject-name: ${{ env.IMAGE_NAME }}
           subject-digest: ${{ steps.build.outputs.digest }}
           push-to-registry: true
 
@@ -73,5 +79,5 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Verification command:**" >> $GITHUB_STEP_SUMMARY
           echo '```bash' >> $GITHUB_STEP_SUMMARY
-          echo "docker buildx imagetools inspect ghcr.io/${{ github.repository }}:sha-${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "docker buildx imagetools inspect ${{ env.IMAGE_NAME }}:${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
