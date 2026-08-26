@@ -22,4 +22,6 @@ ENV PORT=3001
 
 EXPOSE 3001
 
-CMD ["node", "node_modules/.bin/next", "start", "-H", "0.0.0.0", "-p", "3001"]
+# node_modules/.bin/next is a POSIX shell shim (pnpm layout) and cannot be run
+# with `node`; invoke Next's real JS entrypoint instead.
+CMD ["node", "node_modules/next/dist/bin/next", "start", "-H", "0.0.0.0", "-p", "3001"]
