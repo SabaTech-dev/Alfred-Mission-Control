@@ -3,13 +3,18 @@ FROM node:22-slim
 # Install build dependencies for native modules (better-sqlite3)
 RUN apt-get update && apt-get install -y python3 make g++ && rm -rf /var/lib/apt/lists/*
 
-# pnpm: el repo es pnpm-first (pnpm-lock.yaml + pnpm-workspace.yaml + CI con pnpm 9).
-# El build anterior moría con "spawn pnpm ENOENT" al usar npm con scripts que invocan pnpm.
-RUN npm install -g pnpm@9
+# pnpm via corepack: the exact version is resolved from the packageManager
+# field in package.json (single source of truth, pinned in PR #12). Replaces
+# the floating `npm install -g pnpm@9`, which drifted from the repo pin.
+ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
+RUN corepack enable pnpm
 
 WORKDIR /app
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+# Fail fast if the corepack-resolved pnpm drifts from the pinned packageManager.
+RUN pnpm --version
+
 COPY scripts/ ./scripts/
 RUN pnpm install --frozen-lockfile
 
