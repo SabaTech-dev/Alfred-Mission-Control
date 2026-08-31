@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "Alfred - OpenClaw Mission Control Dashboard",
   "private": true,
+  "packageManager": "pnpm@9.15.9",
+  "engines": {
+    "pnpm": ">=9 <10"
+  },
   "scripts": {
     "dev": "next dev -H 0.0.0.0",
     "build": "next build",
