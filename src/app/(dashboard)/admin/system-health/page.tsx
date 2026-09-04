@@ -22,7 +22,7 @@ const serviceCategories: Record<string, CategoryName> = {
   "alfred-mc": "core",
   "openclaw-gateway": "core",
   "postgresql": "core",
-  "ollama": "llm",
+  "llama.cpp-rerank": "llm",
   "llama.cpp-gpu": "llm",
   "llama.cpp-embed": "llm",
   "coolify": "dev",
