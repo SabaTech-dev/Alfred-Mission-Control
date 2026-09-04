@@ -236,16 +236,17 @@ async function checkHttpService(name: string, url: string, port: number): Promis
 export async function collectStackServiceChecks(): Promise<StackServiceCheck[]> {
   const dockerContainers = parseDockerContainers();
 
-  const [gateway, postgresql, ollama, coolify, browserless, langfuse, qmd, llamaGpu, llamaEmbed, searxng, engram, prAgent] = await Promise.all([
+  const [gateway, postgresql, llamaRerank, coolify, browserless, langfuse, qmd, llamaGpu, llamaEmbed, llamaEmbedMem, searxng, engram, prAgent] = await Promise.all([
     checkGatewayService(),
     checkPostgresService(dockerContainers),
-    checkTcpService("ollama", 11434),
+    checkTcpService("llama.cpp-rerank", 8005),
     checkTcpService("coolify", 8000),
     checkHttpService("browserless", "http://127.0.0.1:3002/pressure", 3002),
     checkHttpService("langfuse", "http://127.0.0.1:3001", 3001),
     checkTcpService("qmd-mcp", 8181),
     checkTcpService("llama.cpp-gpu", 8001),
     checkTcpService("llama.cpp-embed", 8002),
+    checkTcpService("llama.cpp-embed-memory", 8006),
     checkHttpService("searxng", "http://127.0.0.1:8081", 8081),
     checkTcpService("engram", 7437),
     checkTcpService("pr-agent", 3003),
@@ -255,13 +256,14 @@ export async function collectStackServiceChecks(): Promise<StackServiceCheck[]> 
     { name: "alfred-mc", status: "up", details: "API route responding" },
     gateway,
     postgresql,
-    ollama,
+    llamaRerank,
     coolify,
     browserless,
     langfuse,
     qmd,
     llamaGpu,
     llamaEmbed,
+    llamaEmbedMem,
     searxng,
     engram,
     prAgent,

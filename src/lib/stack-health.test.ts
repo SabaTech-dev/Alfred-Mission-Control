@@ -15,7 +15,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 const mockChecks = {
   gateway: { name: "openclaw-gateway", status: "up" as const, details: "OK" },
   postgresql: { name: "postgresql", status: "up" as const, details: "OK" },
-  ollama: { name: "ollama", status: "up" as const, details: "OK" },
+  llamaRerank: { name: "llama.cpp-rerank", status: "up" as const, details: "OK" },
   coolify: { name: "coolify", status: "up" as const, details: "OK" },
   browserless: { name: "browserless", status: "up" as const, details: "OK" },
   langfuse: { name: "langfuse", status: "up" as const, details: "OK" },
