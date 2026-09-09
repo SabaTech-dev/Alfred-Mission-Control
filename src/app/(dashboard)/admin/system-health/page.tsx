@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 interface HealthCheck {
   name: string;
-  status: "up" | "down";
+  status: "up" | "down" | "held";
   details: string;
 }
 
@@ -25,8 +25,8 @@ const serviceCategories: Record<string, CategoryName> = {
   "llama.cpp-rerank": "llm",
   "llama.cpp-gpu": "llm",
   "llama.cpp-embed": "llm",
+  "llama.cpp-embed-memory": "llm",
   "coolify": "dev",
-  "browserless": "services",
   "langfuse": "services",
   "searxng": "services",
   "qmd-mcp": "services",
@@ -43,11 +43,15 @@ const categoryLabels: Record<CategoryName, string> = {
 };
 
 function statusColor(status: string) {
-  return status === "up" ? "#22c55e" : "#ef4444";
+  if (status === "up") return "#22c55e";
+  if (status === "held") return "#f59e0b";
+  return "#ef4444";
 }
 
 function statusBg(status: string) {
-  return status === "up" ? "rgba(34,197,94,0.1)" : "rgba(239,68,68,0.1)";
+  if (status === "up") return "rgba(34,197,94,0.1)";
+  if (status === "held") return "rgba(245,158,11,0.1)";
+  return "rgba(239,68,68,0.1)";
 }
 
 function ServiceCard({ check }: { check: HealthCheck }) {
@@ -136,7 +140,10 @@ export default function SystemHealthPage() {
 
   const totalServices = allChecks.length;
   const upServices = allChecks.filter((c) => c.status === "up").length;
-  const overallStatus = upServices === totalServices ? "healthy" : upServices > 0 ? "degraded" : "down";
+  const heldCount = allChecks.filter((c) => c.status === "held").length;
+  const downCount = allChecks.filter((c) => c.status === "down").length;
+  // "held" services are intentional operator stops — they do not degrade health.
+  const overallStatus = downCount === 0 ? "healthy" : upServices > 0 ? "degraded" : "down";
 
   return (
     <AdminPageLayout
@@ -169,7 +176,7 @@ export default function SystemHealthPage() {
             {overallStatus === "healthy" ? "✅ All Systems Operational" : overallStatus === "degraded" ? "⚠️ Degraded" : "❌ Critical"}
           </span>
           <span style={{ fontSize: "13px", color: "var(--text-muted)" }}>
-            {upServices}/{totalServices} services up
+            {upServices}/{totalServices} services up{heldCount > 0 ? ` · ⏸️ ${heldCount} held` : ""}
           </span>
         </div>
         <div style={{ display: "flex", gap: "16px", fontSize: "12px", color: "var(--text-muted)" }}>
