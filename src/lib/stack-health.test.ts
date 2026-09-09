@@ -15,12 +15,11 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 const mockChecks = {
   gateway: { name: "openclaw-gateway", status: "up" as const, details: "OK" },
   postgresql: { name: "postgresql", status: "up" as const, details: "OK" },
-  ollama: { name: "ollama", status: "up" as const, details: "OK" },
+  llamaRerank: { name: "llama.cpp-rerank", status: "up" as const, details: "OK" },
   coolify: { name: "coolify", status: "up" as const, details: "OK" },
-  browserless: { name: "browserless", status: "up" as const, details: "OK" },
   langfuse: { name: "langfuse", status: "up" as const, details: "OK" },
   qmd: { name: "qmd-mcp", status: "up" as const, details: "OK" },
-  llamaGpu: { name: "llama.cpp-gpu", status: "up" as const, details: "OK" },
+  llamaGpu: { name: "llama.cpp-gpu", status: "held" as const, details: "port 8001 not reachable — HELD (expected-down)" },
   llamaEmbed: { name: "llama.cpp-embed", status: "up" as const, details: "OK" },
   searxng: { name: "searxng", status: "up" as const, details: "OK" },
   engram: { name: "engram", status: "up" as const, details: "OK" },
@@ -34,6 +33,16 @@ describe("stack-health", () => {
       const { summarizeStackHealth } = await import("@/lib/stack-health");
       const allUp = Object.values(mockChecks).filter(c => c.name !== "osint-nexus");
       expect(summarizeStackHealth(allUp)).toBe("healthy");
+    });
+
+    it("should return 'healthy' when only up and held checks exist (held does not degrade)", async () => {
+      const { summarizeStackHealth } = await import("@/lib/stack-health");
+      const upAndHeld = Object.values(mockChecks).filter(
+        c => c.status === "up" || c.status === "held",
+      );
+      expect(upAndHeld.length).toBeGreaterThan(0);
+      expect(upAndHeld.some(c => c.status === "held")).toBe(true);
+      expect(summarizeStackHealth(upAndHeld)).toBe("healthy");
     });
 
     it("should return 'degraded' when any check is down", async () => {
@@ -75,6 +84,33 @@ describe("stack-health", () => {
       const osintCheck = checks.find(c => c.name === "osint-nexus");
       expect(osintCheck).toBeUndefined();
     });
+
+    it("should NOT include ollama (service removed 2026-08-28)", async () => {
+      const { collectStackServiceChecks } = await import("@/lib/stack-health");
+      const checks = await collectStackServiceChecks();
+      const ollamaCheck = checks.find(c => c.name === "ollama");
+      expect(ollamaCheck).toBeUndefined();
+    });
+
+    it("should NOT include browserless (service uninstalled 2026-09-04)", async () => {
+      const { collectStackServiceChecks } = await import("@/lib/stack-health");
+      const checks = await collectStackServiceChecks();
+      const browserlessCheck = checks.find(c => c.name === "browserless");
+      expect(browserlessCheck).toBeUndefined();
+    });
+
+    it("should report llama.cpp-gpu as held (intentional stop), never down, while port 8001 is stopped", async () => {
+      const { collectStackServiceChecks } = await import("@/lib/stack-health");
+      const checks = await collectStackServiceChecks();
+      const llamaGpu = checks.find(c => c.name === "llama.cpp-gpu");
+      expect(llamaGpu).toBeDefined();
+      // Port 8001 (Ornith) is HELD — intentionally stopped by the operator.
+      // If the port listens again the check flips to "up"; it must never be "down".
+      expect(["held", "up"]).toContain(llamaGpu!.status);
+      if (llamaGpu!.status === "held") {
+        expect(llamaGpu!.details).toContain("HELD");
+      }
+    });
   });
 
   describe("formatStackHeartbeat", () => {
@@ -82,13 +118,16 @@ describe("stack-health", () => {
       const { formatStackHeartbeat } = await import("@/lib/stack-health");
       const checks = [
         { name: "test-up", status: "up" as const, details: "OK" },
+        { name: "test-held", status: "held" as const, details: "HELD (expected-down)" },
         { name: "test-down", status: "down" as const, details: "FAIL" },
       ];
       const lines = formatStackHeartbeat(checks);
       expect(lines[0]).toContain("✅");
       expect(lines[0]).toContain("test-up");
-      expect(lines[1]).toContain("❌");
-      expect(lines[1]).toContain("test-down");
+      expect(lines[1]).toContain("⏸️");
+      expect(lines[1]).toContain("test-held");
+      expect(lines[2]).toContain("❌");
+      expect(lines[2]).toContain("test-down");
     });
   });
 });

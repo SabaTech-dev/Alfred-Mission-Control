@@ -5,7 +5,12 @@ import { safeExecFile } from "@/lib/safe-exec";
 
 export interface StackServiceCheck {
   name: string;
-  status: "up" | "down";
+  /**
+   * "held" = expected-down by explicit operator decision (intentional stop).
+   * Held services do NOT degrade overall stack health; they are surfaced so
+   * the dashboard stays truthful without phantom "degraded" states.
+   */
+  status: "up" | "down" | "held";
   details: string;
 }
 
@@ -120,6 +125,34 @@ async function checkTcpService(name: string, port: number): Promise<StackService
   };
 }
 
+/**
+ * TCP check for a service that is intentionally stopped ("held") by the
+ * operator. Reports "up" if the port is listening again (e.g. the service was
+ * re-enabled), otherwise "held" with the reason — never "down" — so an
+ * intentional stop does not degrade overall stack health.
+ */
+async function checkHeldTcpService(
+  name: string,
+  port: number,
+  heldReason: string,
+): Promise<StackServiceCheck> {
+  const result = await canConnectTcpAny(port, 1000);
+
+  if (result.ok) {
+    return {
+      name,
+      status: "up",
+      details: `listening on port ${port} (${result.host}) — HELD lifted`,
+    };
+  }
+
+  return {
+    name,
+    status: "held",
+    details: `port ${port} not reachable — HELD (expected-down): ${heldReason}`,
+  };
+}
+
 async function checkGatewayService(): Promise<StackServiceCheck> {
   const probe = await probeGatewayRuntime(2000);
 
@@ -230,22 +263,32 @@ async function checkHttpService(name: string, url: string, port: number): Promis
  * Collect health checks for all monitored stack services.
  *
  * NOTE: The legacy memory API (port 9077) was removed — migrated to native
- * memory-core (SQLite + Ollama nomic-embed). OSINT Nexus (port 8420) was also
- * removed from health checks as it is not a core service.
+ * memory-core (SQLite + nomic-embed via llama.cpp :8002). OSINT Nexus (port
+ * 8420) was also removed from health checks as it is not a core service.
+ * Ollama (:11434, service removed 2026-08-28) and browserless (:3002,
+ * uninstalled 2026-09-04) were dropped as phantom-down sources.
+ * llama.cpp-gpu (:8001, Ornith) is probed as HELD: intentionally stopped by
+ * Joker on 2026-09-08 (clean stop, NRestarts=0); production LLM serving runs
+ * on 1Cat-vLLM Estrella v2 :8009. Revert to a plain TCP check if Ornith
+ * returns with operator GO.
  */
 export async function collectStackServiceChecks(): Promise<StackServiceCheck[]> {
   const dockerContainers = parseDockerContainers();
 
-  const [gateway, postgresql, ollama, coolify, browserless, langfuse, qmd, llamaGpu, llamaEmbed, searxng, engram, prAgent] = await Promise.all([
+  const [gateway, postgresql, llamaRerank, coolify, langfuse, qmd, llamaGpu, llamaEmbed, llamaEmbedMem, searxng, engram, prAgent] = await Promise.all([
     checkGatewayService(),
     checkPostgresService(dockerContainers),
-    checkTcpService("ollama", 11434),
+    checkTcpService("llama.cpp-rerank", 8005),
     checkTcpService("coolify", 8000),
-    checkHttpService("browserless", "http://127.0.0.1:3002/pressure", 3002),
     checkHttpService("langfuse", "http://127.0.0.1:3001", 3001),
     checkTcpService("qmd-mcp", 8181),
-    checkTcpService("llama.cpp-gpu", 8001),
+    checkHeldTcpService(
+      "llama.cpp-gpu",
+      8001,
+      "parada intencional Joker 2026-09-08 (Ornith, card 2ba781a9); serving prod = 1Cat-vLLM :8009; revertir con GO Joker",
+    ),
     checkTcpService("llama.cpp-embed", 8002),
+    checkTcpService("llama.cpp-embed-memory", 8006),
     checkHttpService("searxng", "http://127.0.0.1:8081", 8081),
     checkTcpService("engram", 7437),
     checkTcpService("pr-agent", 3003),
@@ -255,13 +298,13 @@ export async function collectStackServiceChecks(): Promise<StackServiceCheck[]> 
     { name: "alfred-mc", status: "up", details: "API route responding" },
     gateway,
     postgresql,
-    ollama,
+    llamaRerank,
     coolify,
-    browserless,
     langfuse,
     qmd,
     llamaGpu,
     llamaEmbed,
+    llamaEmbedMem,
     searxng,
     engram,
     prAgent,
@@ -269,11 +312,15 @@ export async function collectStackServiceChecks(): Promise<StackServiceCheck[]> 
 }
 
 export function summarizeStackHealth(checks: StackServiceCheck[]): "healthy" | "degraded" {
-  return checks.every((check) => check.status === "up") ? "healthy" : "degraded";
+  return checks.every((check) => check.status !== "down") ? "healthy" : "degraded";
 }
 
 export function formatStackHeartbeat(checks: StackServiceCheck[]): string[] {
-  return checks.map(
-    (check) => `${check.status === "up" ? "✅" : "❌"} ${check.name}: ${check.details}`,
-  );
+  const symbols: Record<StackServiceCheck["status"], string> = {
+    up: "✅",
+    held: "⏸️",
+    down: "❌",
+  };
+
+  return checks.map((check) => `${symbols[check.status]} ${check.name}: ${check.details}`);
 }

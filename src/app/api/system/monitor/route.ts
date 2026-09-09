@@ -17,7 +17,9 @@ const PROBE_TIMEOUT_MS = 5000;
 const SYSTEM_SERVICES = [
   "alfred-mission-control",
   "docker",
-  "ollama",
+  "llama-main",
+  "llama-embeddings",
+  "llama-rerank",
   "tailscaled",
   "fail2ban",
   "redis-server",
