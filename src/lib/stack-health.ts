@@ -271,11 +271,14 @@ async function checkHttpService(name: string, url: string, port: number): Promis
  * Joker on 2026-09-08 (clean stop, NRestarts=0); production LLM serving runs
  * on 1Cat-vLLM Estrella v2 :8009. Revert to a plain TCP check if Ornith
  * returns with operator GO.
+ * llama-vllm (:8009, juez prod) added 2026-09-19 (card 06106b5c): HTTP /health
+ * probe with TCP fallback — it was the detection gap of the 2026-09-18 outage
+ * (49min down, silent).
  */
 export async function collectStackServiceChecks(): Promise<StackServiceCheck[]> {
   const dockerContainers = parseDockerContainers();
 
-  const [gateway, postgresql, llamaRerank, coolify, langfuse, qmd, llamaGpu, llamaEmbed, llamaEmbedMem, searxng, engram, prAgent] = await Promise.all([
+  const [gateway, postgresql, llamaRerank, coolify, langfuse, qmd, llamaGpu, llamaVllm, llamaEmbed, llamaEmbedMem, searxng, engram, prAgent] = await Promise.all([
     checkGatewayService(),
     checkPostgresService(dockerContainers),
     checkTcpService("llama.cpp-rerank", 8005),
@@ -287,6 +290,7 @@ export async function collectStackServiceChecks(): Promise<StackServiceCheck[]> 
       8001,
       "parada intencional Joker 2026-09-08 (Ornith, card 2ba781a9); serving prod = 1Cat-vLLM :8009; revertir con GO Joker",
     ),
+    checkHttpService("llama-vllm", "http://127.0.0.1:8009/health", 8009),
     checkTcpService("llama.cpp-embed", 8002),
     checkTcpService("llama.cpp-embed-memory", 8006),
     checkHttpService("searxng", "http://127.0.0.1:8081", 8081),
@@ -303,6 +307,7 @@ export async function collectStackServiceChecks(): Promise<StackServiceCheck[]> 
     langfuse,
     qmd,
     llamaGpu,
+    llamaVllm,
     llamaEmbed,
     llamaEmbedMem,
     searxng,

@@ -99,6 +99,14 @@ describe("stack-health", () => {
       expect(browserlessCheck).toBeUndefined();
     });
 
+    it("should include llama-vllm juez prod :8009 (card 06106b5c, gap 18-sep)", async () => {
+      const { collectStackServiceChecks } = await import("@/lib/stack-health");
+      const checks = await collectStackServiceChecks();
+      const vllm = checks.find(c => c.name === "llama-vllm");
+      expect(vllm).toBeDefined();
+      expect(["up", "down"]).toContain(vllm!.status);
+    });
+
     it("should report llama.cpp-gpu as held (intentional stop), never down, while port 8001 is stopped", async () => {
       const { collectStackServiceChecks } = await import("@/lib/stack-health");
       const checks = await collectStackServiceChecks();
