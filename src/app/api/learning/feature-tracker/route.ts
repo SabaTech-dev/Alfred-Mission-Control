@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
 
-const WORKSPACE = process.env.WORKSPACE_PATH || path.join(process.env.HOME || "/home/ubuntu", ".openclaw/workspace");
+const WORKSPACE = process.env.WORKSPACE_PATH || path.join(process.env.HOME || "/home/joker", ".openclaw/workspace");
 const DATA_DIR = path.join(process.cwd(), "data");
 const STATE_FILE = path.join(DATA_DIR, "feature-tracker-state.json");
 

@@ -4,7 +4,7 @@ import path from "path";
 
 const WORKSPACE_ROOT = path.resolve(
   process.env.WORKSPACE_PATH ||
-    path.join(process.env.HOME || "/home/ubuntu", ".openclaw/workspace")
+    path.join(process.env.HOME || "/home/joker", ".openclaw/workspace")
 );
 
 /**

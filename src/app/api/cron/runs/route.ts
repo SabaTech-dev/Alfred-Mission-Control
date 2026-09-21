@@ -1,3 +1,4 @@
+import { OPENCLAW_BIN } from "@/lib/openclaw-bin";
 import { NextRequest, NextResponse } from "next/server";
 import { safeExecFile, isValidId } from "@/lib/safe-exec";
 
@@ -24,7 +25,7 @@ export async function GET(request: NextRequest) {
     let runs: RunEntry[] = [];
 
     try {
-      const result = safeExecFile("/home/ubuntu/.npm-global/bin/openclaw", ["cron", "runs", id, "--json"], {
+      const result = safeExecFile(OPENCLAW_BIN, ["cron", "runs", id, "--json"], {
         timeout: 10000,
       });
 

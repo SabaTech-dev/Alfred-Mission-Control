@@ -1,3 +1,4 @@
+import { OPENCLAW_BIN } from "@/lib/openclaw-bin";
 /**
  * Subagents Dashboard API
  * GET /api/subagents - Returns comprehensive sub-agent data with timeline
@@ -163,7 +164,7 @@ function getMetrics(subagents: SubagentInfo[]): {
 
 export async function GET() {
   try {
-    const result = safeExecFile("/home/ubuntu/.npm-global/bin/openclaw", ["sessions", "--json"], {
+    const result = safeExecFile(OPENCLAW_BIN, ["sessions", "--json"], {
       timeout: 10000,
     });
 

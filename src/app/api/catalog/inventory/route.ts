@@ -42,7 +42,7 @@ interface InventoryData {
 const OPENCLAW_ROOT = "/home/joker/.openclaw";
 const OPENCLAW_JSON = path.join(OPENCLAW_ROOT, "openclaw.json");
 const SYSTEM_SKILLS_DIR =
-  "/home/ubuntu/.npm-global/lib/node_modules/openclaw/skills";
+  process.env.OPENCLAW_SKILLS_DIR ?? "/home/linuxbrew/.linuxbrew/lib/node_modules/openclaw/skills";
 const WORKSPACE_SKILLS_DIR = path.join(OPENCLAW_ROOT, "skills");
 const PLUGIN_SKILLS_DIR = path.join(OPENCLAW_ROOT, "plugin-skills");
 

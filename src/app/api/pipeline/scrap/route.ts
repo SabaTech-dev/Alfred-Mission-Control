@@ -68,7 +68,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const workspaceDir = process.env.OPENCLAW_WORKSPACE || "/home/ubuntu/.openclaw/workspace";
+    const workspaceDir = process.env.OPENCLAW_WORKSPACE || "/home/joker/.openclaw/workspace";
     if (!isSafePath(workspaceDir)) {
       return NextResponse.json(
         { success: false, error: "Invalid workspace configuration" },

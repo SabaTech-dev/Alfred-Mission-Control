@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
 
-const WORKSPACE = process.env.WORKSPACE_PATH || path.join(process.env.HOME || "/home/ubuntu", ".openclaw/workspace");
+const WORKSPACE = process.env.WORKSPACE_PATH || path.join(process.env.HOME || "/home/joker", ".openclaw/workspace");
 
 interface LearningEntry {
   id: string;

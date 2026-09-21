@@ -1,3 +1,4 @@
+import { OPENCLAW_BIN } from "@/lib/openclaw-bin";
 /**
  * Active Sub-agents API
  * GET /api/agents/subagents - Returns currently active sub-agent sessions
@@ -44,7 +45,7 @@ function parseSubagentKey(key: string): { parentId: string; subagentId: string }
 
 export async function GET() {
   try {
-    const result = safeExecFile("/home/ubuntu/.npm-global/bin/openclaw", ["sessions", "--json"], {
+    const result = safeExecFile(OPENCLAW_BIN, ["sessions", "--json"], {
       timeout: 10000,
     });
 

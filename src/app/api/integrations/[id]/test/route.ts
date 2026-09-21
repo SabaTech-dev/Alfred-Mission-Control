@@ -1,3 +1,4 @@
+import { OPENCLAW_BIN } from "@/lib/openclaw-bin";
 /**
  * Integration Test API
  * POST /api/integrations/[id]/test
@@ -45,7 +46,7 @@ async function testTelegram(): Promise<TestResult> {
 
     // Try to get bot info
     try {
-      const result = safeExecFile("/home/ubuntu/.npm-global/bin/openclaw", ["message", "send", "--help"], {
+      const result = safeExecFile(OPENCLAW_BIN, ["message", "send", "--help"], {
         timeout: 5000,
       });
       
