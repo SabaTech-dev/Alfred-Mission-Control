@@ -5,6 +5,7 @@ import { join } from "path";
 import { isValidCron } from "@/lib/cron-parser";
 import { safeExecFile, isValidId, isValidCronAction } from "@/lib/safe-exec";
 import { validateBody, CreateCronJobSchema, UpdateCronJobSchema } from "@/lib/api-validation";
+import { buildCronAddArgs } from "@/lib/cron-args";
 
 export const dynamic = "force-dynamic";
 
@@ -99,44 +100,14 @@ export async function POST(request: NextRequest) {
     const rawBody = await request.json();
     const validation = validateBody(CreateCronJobSchema, rawBody);
     if (!validation.success) return validation.error;
-    const { name, schedule, every, at, timezone, agentId, message, description, disabled } = validation.data;
+    const { schedule } = validation.data;
 
     if (schedule && !isValidCron(schedule)) {
       return NextResponse.json({ error: "Invalid cron expression" }, { status: 400 });
     }
 
-    const args: string[] = ["cron", "add", "--json", "--name", name];
-
-    if (schedule) {
-      args.push("--cron", schedule);
-    }
-
-    if (every) {
-      args.push("--every", every);
-    }
-
-    if (at) {
-      args.push("--at", at);
-    }
-
-    const tz = timezone || "Europe/Madrid";
-    args.push("--tz", tz);
-
-    if (agentId) {
-      args.push("--agent", agentId);
-    }
-
-    if (message) {
-      args.push("--message", message);
-    }
-
-    if (description) {
-      args.push("--description", description);
-    }
-
-    if (disabled) {
-      args.push("--disabled");
-    }
+    // --tz is only sent when the CLI accepts it (cron expr or offset-less at).
+    const args = buildCronAddArgs(validation.data);
 
     console.log("[cron API] Creating job:", `openclaw ${args.slice(0, 4).join(" ")}... (message redacted)`);
 
