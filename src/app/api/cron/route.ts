@@ -131,7 +131,7 @@ export async function POST(request: NextRequest) {
 
     await createNotification(
       "Cron Job Created",
-      `Job "${name}" has been created successfully.`,
+      `Job "${validation.data.name}" has been created successfully.`,
       "success"
     );
 
