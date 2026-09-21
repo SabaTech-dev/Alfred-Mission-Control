@@ -5,7 +5,7 @@ import { join } from "path";
 import { isValidCron } from "@/lib/cron-parser";
 import { safeExecFile, isValidId, isValidCronAction } from "@/lib/safe-exec";
 import { validateBody, CreateCronJobSchema, UpdateCronJobSchema } from "@/lib/api-validation";
-import { buildCronAddArgs } from "@/lib/cron-args";
+import { buildCronAddArgs, shouldSendTimezone } from "@/lib/cron-args";
 
 export const dynamic = "force-dynamic";
 
@@ -188,7 +188,8 @@ export async function PUT(request: NextRequest) {
       args.push("--at", at);
     }
 
-    if (timezone) {
+    // --tz is only sent when the CLI accepts it (cron expr or offset-less at).
+    if (timezone && shouldSendTimezone({ schedule, every, at })) {
       args.push("--tz", timezone);
     }
 
