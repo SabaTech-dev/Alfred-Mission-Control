@@ -40,6 +40,9 @@ export function useCronJobs(initialData: CronPageData) {
     logPath?: string;
   }>({ isOpen: false, jobId: "", jobName: "" });
 
+  // C1: initial data comes from the server component (force-dynamic SSR via the
+  // operations layer), so there is no fetch-on-mount by design — this runs only
+  // on manual refresh and after mutations.
   const fetchAllData = useCallback(async () => {
     try {
       setError(null);
