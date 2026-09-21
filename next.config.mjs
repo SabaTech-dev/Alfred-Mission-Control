@@ -84,6 +84,8 @@ const nextConfig = {
               "img-src 'self' data: blob:",
               "font-src 'self' data:",
               "connect-src 'self' ws: wss:",
+              // D1: the 3D office spawns its worker from a blob: URL
+              "worker-src 'self' blob:",
               "frame-ancestors 'none'",
               "base-uri 'self'",
               "form-action 'self'",
