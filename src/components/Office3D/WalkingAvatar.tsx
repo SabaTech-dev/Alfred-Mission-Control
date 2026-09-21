@@ -2,7 +2,7 @@
 
 import { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { Vector3 } from 'three';
+import { Vector3, Timer } from 'three';
 import type { Group } from 'three';
 import VoxelAvatar from './VoxelAvatar';
 import type { AgentConfig, AgentStatus } from './agentsConfig';
@@ -138,16 +138,20 @@ export default function WalkingAvatar({
   const speed = getAgentSpeed(seed);
 
   const groupRef = useRef<Group>(null);
+  // D2: THREE.Clock is deprecated since three r183 — own Timer replaces frameState.clock.
+  const timerRef = useRef<Timer | null>(null);
   const movementState = useRef<MovementState>('walking');
   const targetRef = useRef<Vector3 | null>(null);
   const pauseUntilRef = useRef<number>(0);
   const variationRef = useRef<number>(0);
   const initializedRef = useRef(false);
 
-  useFrame((frameState) => {
+  useFrame(() => {
     if (!groupRef.current || !visible) return;
 
-    const delta = frameState.clock.getDelta();
+    const timer = (timerRef.current ??= new Timer());
+    timer.update();
+    const delta = timer.getDelta();
     const now = Date.now();
     const position = groupRef.current.position;
 
@@ -186,7 +190,7 @@ export default function WalkingAvatar({
         targetRef.current = pickDestination(seed, officeBounds, obstacles, variationRef.current);
       } else {
         // Slight idle animation while paused
-        position.y = Math.sin(frameState.clock.elapsedTime * 1.2 + seed) * 0.008;
+        position.y = Math.sin(timer.getElapsed() * 1.2 + seed) * 0.008;
         onPositionUpdate(agent.id, position.clone());
       }
       return;
