@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Lock, AlertCircle } from "lucide-react";
 import { useI18n, I18nProvider } from "@/i18n/provider";
+import { sanitizeRedirect } from "@/lib/redirect-utils";
 
 export function LoginForm() {
   const [password, setPassword] = useState("");
@@ -29,8 +30,8 @@ export function LoginForm() {
       const data = await res.json();
 
       if (data.success) {
-        const from = searchParams.get("from") || "/";
-        router.push(from);
+        // F-A: sanitize redirect target (open redirect / CWE-601)
+        router.push(sanitizeRedirect(searchParams.get("from")));
         router.refresh();
       } else {
         setError(t("login.incorrectPassword"));
