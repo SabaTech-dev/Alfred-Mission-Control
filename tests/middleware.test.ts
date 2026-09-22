@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { NextRequest } from "next/server";
 
-import { middleware } from "./middleware";
+import { middleware } from "../middleware";
 import { resetAgentKeysCache } from "@/lib/agent-auth";
 import { jwtUtils } from "@/lib/jwt-utils";
 
@@ -115,5 +115,52 @@ describe("middleware auth policy", () => {
 
     const response = await middleware(request);
     expect(response.status).toBe(200);
+  });
+
+  // F-D: prefix matching must be per-segment, not raw startsWith.
+  // Sibling paths must not inherit the prefix's agent-credential policy.
+  it("does not match sibling paths that extend a protected prefix (F-D)", async () => {
+    const siblings = [
+      "/api/configx",
+      "/api/cron-jobs-extra",
+      "/api/kanban-evil",
+      "/api/sessions-admin",
+    ];
+
+    for (const route of siblings) {
+      const request = new NextRequest(new URL(`http://localhost${route}`), {
+        headers: {
+          "X-Agent-Id": "agent-a",
+          "X-Agent-Key": "key-agent-a",
+        },
+      });
+      const response = await middleware(request);
+      expect(response.status, route).toBe(401);
+    }
+  });
+
+  it("matches nested subpaths of protected prefixes (F-D)", async () => {
+    const request = new NextRequest(new URL("http://localhost/api/kanban/agent/tasks"), {
+      headers: {
+        "X-Agent-Id": "agent-a",
+        "X-Agent-Key": "key-agent-a",
+      },
+    });
+
+    const response = await middleware(request);
+    expect(response.status).toBe(200);
+  });
+
+  // F-B: /api/health stays public, but its detail subpath requires auth
+  it("keeps /api/health public but requires auth for /api/health/detail (F-B)", async () => {
+    const health = await middleware(
+      new NextRequest(new URL("http://localhost/api/health"))
+    );
+    expect(health.status).toBe(200);
+
+    const detail = await middleware(
+      new NextRequest(new URL("http://localhost/api/health/detail"))
+    );
+    expect(detail.status).toBe(401);
   });
 });

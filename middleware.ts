@@ -90,6 +90,13 @@ const AGENT_OR_SESSION_API_PREFIXES = [
   "/api/swarm",
 ];
 
+// F-D: prefix matching is per-segment — "/api/config" must not match "/api/configx"
+function matchesPrefix(pathname: string, prefixes: string[]): boolean {
+  return prefixes.some(
+    (prefix) => pathname === prefix || pathname.startsWith(prefix + "/")
+  );
+}
+
 function extractToken(request: NextRequest): string | null {
   // Check Authorization header first
   const authHeader = request.headers.get("Authorization");
@@ -123,7 +130,7 @@ export async function middleware(request: NextRequest) {
 
 
   // Agent-only API routes must use explicit agent credentials
-  if (AGENT_ONLY_API_PREFIXES.some((prefix) => pathname.startsWith(prefix))) {
+  if (matchesPrefix(pathname, AGENT_ONLY_API_PREFIXES)) {
     const agentId = validateAgentAuth(request);
 
     if (!agentId) {
@@ -140,7 +147,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // Kanban agent endpoints allow either agent headers or authenticated session
-  if (AGENT_OR_SESSION_API_PREFIXES.some((prefix) => pathname.startsWith(prefix))) {
+  if (matchesPrefix(pathname, AGENT_OR_SESSION_API_PREFIXES)) {
     const agentId = validateAgentAuth(request);
     if (agentId) {
       return NextResponse.next();
@@ -204,7 +211,9 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
+  // F-C: exclude only real static asset suffixes, not any path containing a dot
+  // (the old `.*\..*` matcher would have left future dotted paths unguarded).
   matcher: [
-    "/((?!_next/static|_next/image|_next/webpack|favicon.ico|.*\\..*).*)",
+    "/((?!_next/static|_next/image|_next/webpack|favicon\\.ico|.*\\.(?:js|css|mjs|map|ico|png|jpe?g|gif|svg|webp|avif|bmp|woff2?|ttf|otf|eot|txt|xml|wasm|mp4|webm|mp3|ogg|pdf)$).*)",
   ],
 };
