@@ -6,7 +6,7 @@
  * Public routes:
  * - /api/auth/login
  * - /api/auth/logout
- * - /api/health
+ * - /api/health (minimal: { status } only; detail at /api/health/detail requires session)
  *
  * /api/heartbeat:
  * - GET /api/heartbeat → SESSION REQUIRED

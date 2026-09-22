@@ -104,7 +104,7 @@ export default function SystemHealthPage() {
   const [uptime, setUptime] = useState<number | null>(null);
 
   function fetchHealth() {
-    fetch("/api/health")
+    fetch("/api/health/detail")
       .then((r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         return r.json();
