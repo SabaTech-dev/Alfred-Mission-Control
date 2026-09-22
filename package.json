@@ -64,6 +64,7 @@
     "remark-wiki-link": "^2.0.1",
     "server-only": "^0.0.1",
     "three": "^0.183.0",
+    "troika-three-text": "0.52.4",
     "zod": "^4.3.6"
   },
   "devDependencies": {

@@ -8,6 +8,7 @@ import { Suspense, useState, useRef, Fragment } from "react";
 import { Vector3 } from "three";
 
 import { type AgentState } from "./agentsConfig";
+import "./officeFonts";
 import AgentDesk from "./AgentDesk";
 import Floor from "./Floor";
 import Walls from "./Walls";
